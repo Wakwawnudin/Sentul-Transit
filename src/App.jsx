@@ -1,0 +1,370 @@
+import React, { useState } from 'react';
+import { 
+  Home, 
+  MapPin, 
+  Maximize, 
+  Bed, 
+  Bath, 
+  Clock, 
+  Calendar, 
+  Shield, 
+  Building, 
+  Phone, 
+  ChevronRight,
+  CheckCircle2,
+  MessageCircle,
+  Tv,
+  Wind,
+  Coffee,
+  Utensils,
+  Waves,
+  Sparkles,
+  UtensilsCrossed
+} from 'lucide-react';
+
+// Komponen Logo Google Maps Kustom
+const GoogleMapsLogo = () => (
+  <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#4285F4"/>
+    <path d="M12 7c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" fill="#FFFFFF"/>
+    <path d="M12 2c-3.87 0-7 3.13-7 7 0 1.61.41 3.09 1.13 4.43L12 22l5.87-8.57C18.59 12.09 19 10.61 19 9c0-3.87-3.13-7-7-7z" fill="none" stroke="#FFFFFF" strokeWidth="0.5"/>
+    <path d="M7.13 13.43c.72 1.34 3.87 5.57 4.87 8.57.1-.3.1-.3 0 0z" fill="#34A853"/>
+    <path d="M16.87 13.43c-.72 1.34-3.87 5.57-4.87 8.57-.1-.3-.1-.3 0 0z" fill="#FBBC05"/>
+    <path d="M12 2c-.34 0-.67.02-1 .07V9h1V2z" fill="#EA4335"/>
+  </svg>
+);
+
+const App = () => {
+  const [activeFilter, setActiveFilter] = useState('Semua');
+  const [selectedRoom, setSelectedRoom] = useState(null);
+
+  // Konfigurasi Kontak & Lokasi
+  const waNumber = "6283830033717";
+  const mapsLink = "https://share.google/490MII2W8A99899m7";
+
+  const handleWaClick = (roomName = "") => {
+    const text = roomName 
+      ? `Halo, saya ingin booking unit ${roomName} di Sentul Tower Apartment.` 
+      : "Halo";
+    window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`, '_blank');
+  };
+
+  // Data Harga Default (Studio & 1BR)
+  const defaultTransit = [
+    { label: '3 Jam', price: 'Rp 150.000' },
+    { label: '6 Jam', price: 'Rp 200.000' },
+    { label: '9 Jam', price: 'Rp 250.000' },
+    { label: '12 Jam', price: 'Rp 300.000' },
+  ];
+  const defaultFullday = [
+    { label: 'Weekday (Sen-Kam)', price: 'Rp 300.000' },
+    { label: 'Weekend (Jum-Min)', price: 'Rp 350.000' },
+  ];
+
+  // Data Harga Khusus 2 Bedroom
+  const specialTransit2BR = [
+    { label: '3 Jam', price: 'Rp 200.000' },
+    { label: '6 Jam', price: 'Rp 250.000' },
+    { label: '9 Jam', price: 'Rp 300.000' },
+    { label: '12 Jam', price: 'Rp 350.000' },
+  ];
+  const specialFullday2BR = [
+    { label: 'Weekday (Sen-Kam)', price: 'Rp 650.000' },
+    { label: 'Weekend (Jum-Min)', price: 'Rp 700.000' },
+  ];
+
+  const rooms = [
+    {
+      id: 1,
+      name: 'STUDIO',
+      type: 'Studio',
+      size: '24m²',
+      beds: 1,
+      image: 'https://images.unsplash.com/photo-1768383550694-adb7ddddad7d?q=80&w=1335&auto=format&fit=crop',
+      description: 'Unit studio minimalis dengan interior modern yang sangat nyaman untuk istirahat sejenak atau staycation harian.',
+      startFrom: '150rb',
+      transit: defaultTransit,
+      fullday: defaultFullday,
+      specs: [
+        { icon: <Bed size={16}/>, text: 'Queen Size Bed' },
+        { icon: <Wind size={16}/>, text: 'Full AC' },
+        { icon: <Tv size={16}/>, text: 'Smart TV (Netflix)' },
+        { icon: <UtensilsCrossed size={16}/>, text: 'Resto 24jam Siap Antar' },
+        { icon: <Utensils size={16}/>, text: 'Kitchen Set' },
+        { icon: <Waves size={16}/>, text: 'Water Heater' },
+        { icon: <Sparkles size={16}/>, text: 'Peralatan Mandi' },
+        { icon: <Coffee size={16}/>, text: 'Complimentary Coffee' }
+      ]
+    },
+    {
+      id: 2,
+      name: '1 Bedroom',
+      type: '1BR',
+      size: '38m²',
+      beds: 1,
+      // Gambar terbaru 1 Bedroom
+      image: 'https://images.unsplash.com/photo-1768384554121-339e5c56b0e2?q=80&w=1335&auto=format&fit=crop',
+      description: 'Unit dengan kamar tidur terpisah dan ruang tamu yang luas untuk privasi maksimal.',
+      startFrom: '150rb',
+      transit: defaultTransit,
+      fullday: defaultFullday,
+      specs: [
+        { icon: <Bed size={16}/>, text: 'King Size Bed' },
+        { icon: <Wind size={16}/>, text: 'Full AC (Kamar & Ruang Tamu)' },
+        { icon: <Tv size={16}/>, text: 'Smart TV 42" & Netflix' },
+        { icon: <Building size={16}/>, text: 'Ruang Tamu Terpisah' },
+        { icon: <UtensilsCrossed size={16}/>, text: 'Resto 24jam Siap Antar' },
+        { icon: <Waves size={16}/>, text: 'Water Heater' },
+        { icon: <Utensils size={16}/>, text: 'Peralatan Masak' },
+        { icon: <Maximize size={16}/>, text: 'Balkon View Gunung' }
+      ]
+    },
+    {
+      id: 3,
+      name: 'Family 2 Bedroom',
+      type: '2BR',
+      size: '56m²',
+      beds: 2,
+      image: 'https://images.unsplash.com/photo-1768383550621-89197b8b9705?q=80&w=1335&auto=format&fit=crop',
+      description: 'Unit paling luas dengan 2 kamar tidur, sangat pas untuk keluarga atau grup kecil.',
+      startFrom: '200rb',
+      transit: specialTransit2BR,
+      fullday: specialFullday2BR,
+      specs: [
+        { icon: <Bed size={16}/>, text: '1 Queen + 1 Single Bed' },
+        { icon: <Wind size={16}/>, text: 'Full AC di Setiap Kamar' },
+        { icon: <Tv size={16}/>, text: 'Smart TV & Home Theater' },
+        { icon: <UtensilsCrossed size={16}/>, text: 'Resto 24jam Siap Antar' },
+        { icon: <Utensils size={16}/>, text: 'Kitchen Set & Kulkas' },
+        { icon: <Waves size={16}/>, text: 'Water Heater & Bathup' },
+        { icon: <Building size={16}/>, text: 'Ruang Keluarga Luas' },
+        { icon: <Maximize size={16}/>, text: 'Balkon Luas View Gunung' }
+      ]
+    }
+  ];
+
+  const filteredRooms = activeFilter === 'Semua' ? rooms : rooms.filter(r => r.type === activeFilter);
+
+  return (
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-24">
+      {/* Navbar */}
+      <nav className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 py-3 flex justify-between items-center shadow-sm">
+        <div className="flex items-center gap-2">
+          <div className="bg-indigo-600 p-1.5 rounded-lg text-white shadow-lg shadow-indigo-200">
+            <Building size={20} />
+          </div>
+          <span className="font-bold text-lg tracking-tight text-indigo-950 uppercase">Sentul Tower</span>
+        </div>
+        <button onClick={() => handleWaClick()} className="bg-green-50 text-green-600 p-2.5 rounded-full border border-green-100 active:scale-90 transition-transform">
+          <Phone size={18} />
+        </button>
+      </nav>
+
+      {/* Hero */}
+      <header className="relative h-[220px] overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=1000" className="w-full h-full object-cover" alt="Apartemen Sentul Tower" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/40 to-transparent flex flex-col justify-end p-6">
+          <div className="flex items-center gap-1.5 bg-indigo-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full w-fit mb-2">
+            <MapPin size={10} /> SENTUL CITY, BOGOR
+          </div>
+          <h1 className="text-2xl font-black text-white leading-tight uppercase tracking-tight">Sentul Tower Apartment</h1>
+          <p className="text-slate-200 text-xs italic font-medium">Tempat terbaik untuk Transit & Staycation di Sentul</p>
+        </div>
+      </header>
+
+      {/* Ringkasan Harga */}
+      <section className="px-4 -mt-6 relative z-10">
+        <div className="bg-white rounded-[24px] shadow-2xl shadow-indigo-100/50 border border-slate-100 p-4 grid grid-cols-2 gap-3">
+          <div className="bg-indigo-50/50 p-4 rounded-2xl flex flex-col items-center border border-indigo-100">
+            <Clock className="text-indigo-600 mb-1.5" size={18} />
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Transit</span>
+            <span className="text-sm font-black text-indigo-700 underline decoration-indigo-200 decoration-2 underline-offset-4 tracking-tight">Mulai 150rb</span>
+          </div>
+          <div className="bg-indigo-50/50 p-4 rounded-2xl flex flex-col items-center border border-indigo-100">
+            <Calendar className="text-indigo-600 mb-1.5" size={18} />
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Fullday</span>
+            <span className="text-sm font-black text-indigo-700 underline decoration-indigo-200 decoration-2 underline-offset-4 tracking-tight">Mulai 300rb</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Katalog & Filter */}
+      <section className="px-4 py-8">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-lg font-black text-slate-800 uppercase tracking-widest">Katalog Unit</h2>
+          <div className="flex gap-1.5">
+            {['Semua', 'Studio', '1BR', '2BR'].map(f => (
+              <button key={f} onClick={() => setActiveFilter(f)} className={`text-[9px] font-black px-3.5 py-2 rounded-full border transition-all ${activeFilter === f ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-200' : 'bg-white border-slate-200 text-slate-500 hover:border-indigo-300'}`}>{f}</button>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          {filteredRooms.map(room => (
+            <div key={room.id} onClick={() => setSelectedRoom(room)} className="bg-white rounded-[32px] overflow-hidden shadow-sm border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer group">
+              <div className="relative h-56 overflow-hidden">
+                <img src={room.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={room.name} />
+                <div className="absolute top-4 left-4 flex gap-2">
+                  <span className="bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest">{room.type}</span>
+                  {room.type === '2BR' && <span className="bg-amber-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg">PREMIUM</span>}
+                </div>
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-black text-slate-900 mb-1.5 uppercase tracking-tight">{room.name}</h3>
+                <div className="flex items-center gap-4 text-slate-400 text-[11px] font-bold mb-5 uppercase tracking-wide">
+                  <div className="flex items-center gap-1.5"><Maximize size={14}/> {room.size}</div>
+                  <div className="flex items-center gap-1.5"><Bed size={14}/> {room.beds} Bed</div>
+                  <div className="flex items-center gap-1.5"><Shield size={14}/> 24/7 Aman</div>
+                </div>
+                <div className="flex justify-between items-end pt-5 border-t border-slate-50">
+                  <div>
+                    <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1">Harga Mulai</p>
+                    <p className="text-2xl font-black text-indigo-600 tracking-tight">Rp {room.startFrom}</p>
+                  </div>
+                  <button className="bg-indigo-600 text-white font-bold px-6 py-3 rounded-2xl text-[11px] uppercase tracking-widest shadow-lg shadow-indigo-100">Detail Kamar</button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-slate-900 text-white p-8 mx-4 rounded-[40px] mb-8 shadow-2xl relative overflow-hidden">
+        <div className="relative z-10">
+          <h3 className="text-2xl font-black mb-3 uppercase tracking-tighter italic">Sentul Tower Apartment</h3>
+          <p className="text-slate-400 text-[11px] leading-relaxed mb-8 font-medium italic">"Privasi dan Kenyamanan Anda Adalah Prioritas Kami"</p>
+          
+          <div className="space-y-3 mb-10">
+            <div className="flex items-center gap-3 bg-slate-800/60 p-3.5 rounded-2xl border border-slate-700/50 shadow-sm">
+              <CheckCircle2 className="text-indigo-400" size={18} />
+              <span className="text-xs font-bold uppercase tracking-widest text-slate-200">Checkout Jam 12 Siang</span>
+            </div>
+            <div className="flex items-center gap-3 bg-slate-800/60 p-3.5 rounded-2xl border border-slate-700/50 shadow-sm">
+              <UtensilsCrossed className="text-indigo-400" size={18} />
+              <span className="text-xs font-bold uppercase tracking-widest text-slate-200">Resto 24jam Siap Antar</span>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-center gap-6 pt-8 border-t border-slate-800">
+            <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-white p-3 rounded-2xl hover:scale-110 active:scale-95 transition-all shadow-xl flex items-center justify-center">
+              <GoogleMapsLogo />
+            </a>
+            <button onClick={() => handleWaClick()} className="bg-green-600 p-3 rounded-2xl hover:scale-110 active:scale-95 transition-all shadow-xl shadow-green-900/30">
+              <MessageCircle className="text-white" size={24} />
+            </button>
+            <div className="h-6 w-[1px] bg-slate-700"></div>
+            <p className="text-[10px] font-black text-indigo-400 tracking-widest uppercase text-center leading-tight">
+              Apartemen<br/>Sentul Transit
+            </p>
+          </div>
+        </div>
+        <div className="absolute top-[-20%] right-[-10%] w-48 h-48 bg-indigo-600/10 rounded-full blur-3xl"></div>
+      </footer>
+
+      {/* Modal Detail */}
+      {selectedRoom && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center">
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setSelectedRoom(null)}></div>
+          <div className="bg-white w-full max-w-md rounded-t-[40px] relative z-10 p-7 animate-slide-up overflow-y-auto max-h-[95vh] no-scrollbar shadow-2xl">
+            <div className="w-16 h-1.5 bg-slate-200 rounded-full mx-auto mb-8"></div>
+            
+            <div className="relative mb-6">
+               <img src={selectedRoom.image} className="w-full h-64 object-cover rounded-[32px] shadow-lg" alt={`Detail ${selectedRoom.name}`} />
+               <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-xl shadow-sm">
+                  <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Pilihan {selectedRoom.type}</p>
+               </div>
+            </div>
+            
+            <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-2 tracking-tight">{selectedRoom.name}</h2>
+            <p className="text-slate-500 text-sm mb-8 leading-relaxed font-medium">{selectedRoom.description}</p>
+
+            {/* Bagian Harga */}
+            <div className="space-y-6 mb-8">
+              <div className="bg-slate-50 p-5 rounded-[32px] border border-slate-100 shadow-inner">
+                <h4 className="text-[10px] font-black text-slate-400 flex items-center gap-2 mb-5 uppercase tracking-[0.2em]"><Clock size={14} className="text-indigo-600"/> Paket Harga Transit</h4>
+                <div className="grid grid-cols-2 gap-3">
+                  {selectedRoom.transit.map((p, i) => (
+                    <div key={i} className="bg-white p-4 rounded-2xl border border-slate-200/50 shadow-sm flex flex-col items-center">
+                      <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">{p.label}</p>
+                      <p className="text-sm font-black text-indigo-700 tracking-tight">{p.price}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-indigo-50/40 p-5 rounded-[32px] border border-indigo-100 shadow-sm">
+                <h4 className="text-[10px] font-black text-indigo-400 flex items-center gap-2 mb-5 uppercase tracking-[0.2em]"><Calendar size={14}/> Paket Harga Fullday</h4>
+                <div className="space-y-3">
+                  {selectedRoom.fullday.map((p, i) => (
+                    <div key={i} className="flex justify-between items-center bg-white p-4 rounded-2xl border border-indigo-50 shadow-sm">
+                      <p className="text-[10px] font-black text-slate-600 uppercase tracking-tight">{p.label}</p>
+                      <p className="text-sm font-black text-indigo-700 tracking-tight">{p.price}</p>
+                    </div>
+                  ))}
+                  <div className="pt-2">
+                     <div className="bg-amber-50 p-3 rounded-xl border border-amber-100 flex items-center justify-center gap-2">
+                        <Clock size={14} className="text-amber-600" />
+                        <p className="text-[10px] text-amber-700 font-black uppercase tracking-tighter">Check Out Maksimal Jam 12 Siang</p>
+                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Seksi Spesifikasi Unit */}
+            <div className="mb-10 px-1">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-[2px] bg-slate-100 flex-1"></div>
+                <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em]">Spesifikasi Unit</h4>
+                <div className="h-[2px] bg-slate-100 flex-1"></div>
+              </div>
+              <div className="grid grid-cols-2 gap-y-5 gap-x-4">
+                {selectedRoom.specs.map((spec, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <div className="w-9 h-9 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 shadow-sm border border-indigo-100/50">
+                      {spec.icon}
+                    </div>
+                    <span className="text-[11px] font-bold text-slate-700 leading-tight tracking-tight uppercase">{spec.text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <button onClick={() => handleWaClick(selectedRoom.name)} className="w-full bg-green-600 text-white font-black py-5 rounded-[24px] flex items-center justify-center gap-3 shadow-2xl shadow-green-200 active:scale-95 transition-all uppercase tracking-widest text-xs">
+              <MessageCircle size={20} /> Hubungi Lewat WhatsApp
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* FAB (Floating Action Button) */}
+      {!selectedRoom && (
+        <div className="fixed bottom-6 left-0 right-0 px-6 z-40">
+          <div onClick={() => handleWaClick()} className="bg-indigo-600 text-white shadow-2xl rounded-[24px] p-5 flex justify-between items-center max-w-sm mx-auto animate-bounce-subtle cursor-pointer active:scale-95 transition-transform">
+            <div className="flex items-center gap-4">
+              <div className="w-11 h-11 rounded-2xl bg-white/20 flex items-center justify-center backdrop-blur-md shadow-inner"><Clock size={24} /></div>
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">Sentul Tower</p>
+                <p className="text-sm font-black tracking-tight">Booking Cepat Via WA</p>
+              </div>
+            </div>
+            <ChevronRight size={24} />
+          </div>
+        </div>
+      )}
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes slide-up { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes bounce-subtle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        .animate-slide-up { animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .animate-bounce-subtle { animation: bounce-subtle 4s infinite ease-in-out; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}} />
+    </div>
+  );
+};
+
+export default App;
+
