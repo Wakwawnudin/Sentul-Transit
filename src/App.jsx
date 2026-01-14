@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Home, 
   MapPin, 
@@ -10,6 +10,7 @@ import {
   Shield, 
   Building, 
   Phone, 
+  ChevronLeft,
   ChevronRight,
   CheckCircle2,
   MessageCircle,
@@ -41,6 +42,29 @@ const App = () => {
   // Konfigurasi Kontak & Lokasi
   const waNumber = "6283830033717";
   const mapsLink = "https://share.google/490MII2W8A99899m7";
+
+  // LOGIKA NAVIGASI BACK BUTTON (Popstate)
+  useEffect(() => {
+    const handlePopState = () => {
+      if (selectedRoom) {
+        setSelectedRoom(null);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [selectedRoom]);
+
+  const openRoomDetail = (room) => {
+    setSelectedRoom(room);
+    window.history.pushState({ modalOpen: true }, "");
+  };
+
+  const closeRoomDetail = () => {
+    setSelectedRoom(null);
+    if (window.history.state?.modalOpen) {
+      window.history.back();
+    }
+  };
 
   const handleWaClick = (roomName = "") => {
     const text = roomName 
@@ -102,7 +126,6 @@ const App = () => {
       type: '1BR',
       size: '38m²',
       beds: 1,
-      // Gambar terbaru 1 Bedroom
       image: 'https://images.unsplash.com/photo-1768384554121-339e5c56b0e2?q=80&w=1335&auto=format&fit=crop',
       description: 'Unit dengan kamar tidur terpisah dan ruang tamu yang luas untuk privasi maksimal.',
       startFrom: '150rb',
@@ -201,7 +224,7 @@ const App = () => {
 
         <div className="space-y-6">
           {filteredRooms.map(room => (
-            <div key={room.id} onClick={() => setSelectedRoom(room)} className="bg-white rounded-[32px] overflow-hidden shadow-sm border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer group">
+            <div key={room.id} onClick={() => openRoomDetail(room)} className="bg-white rounded-[32px] overflow-hidden shadow-sm border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer group">
               <div className="relative h-56 overflow-hidden">
                 <img src={room.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={room.name} />
                 <div className="absolute top-4 left-4 flex gap-2">
@@ -265,9 +288,19 @@ const App = () => {
       {/* Modal Detail */}
       {selectedRoom && (
         <div className="fixed inset-0 z-50 flex items-end justify-center">
-          <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setSelectedRoom(null)}></div>
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={closeRoomDetail}></div>
           <div className="bg-white w-full max-w-md rounded-t-[40px] relative z-10 p-7 animate-slide-up overflow-y-auto max-h-[95vh] no-scrollbar shadow-2xl">
-            <div className="w-16 h-1.5 bg-slate-200 rounded-full mx-auto mb-8"></div>
+            {/* Header dengan Tombol Kembali (Alternatif Navigasi) */}
+            <div className="flex items-center justify-between mb-6">
+              <button 
+                onClick={closeRoomDetail}
+                className="flex items-center gap-1.5 text-indigo-600 font-black text-[11px] uppercase tracking-widest bg-indigo-50 px-4 py-2.5 rounded-2xl active:scale-95 transition-all"
+              >
+                <ChevronLeft size={18} /> Kembali
+              </button>
+              <div className="w-12 h-1.5 bg-slate-200 rounded-full"></div>
+              <div className="w-20"></div> {/* Spacer balance */}
+            </div>
             
             <div className="relative mb-6">
                <img src={selectedRoom.image} className="w-full h-64 object-cover rounded-[32px] shadow-lg" alt={`Detail ${selectedRoom.name}`} />
