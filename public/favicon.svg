@@ -1,3 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <path fill="#CFA34D" d="M373.8,202.4h-65.3v-96h-77v96h-65.3v101h65.3v105h77v-51.6h69.9c9.6,0,17.5-7.9,17.5-17.5v-35c0-9.6-7.9-17.5-17.5-17.5h-69.9v-84.4h65.3V202.4z M298.5,131.9h-52.6v-16h52.6V131.9z M298.5,157.9h-52.6v-16h52.6V157.9z M298.5,183.9h-52.6v-16h52.6V183.9z M208.5,365.9h-26v-26h26V365.9z M208.5,326.9h-26v-26h26V326.9z M208.5,287.9h-26v-26h26V287.9z M208.5,248.9h-26v-26h26V248.9z M169.5,365.9h-26v-26h26V365.9z M169.5,326.9h-26v-26h26V326.9z M169.5,287.9h-26v-26h26V287.9z"/>
+  <defs>
+    <linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F2D587;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#CFA34D;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A68340;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <path fill="url(#gold-grad)" d="M 480 30 L 480 160 L 440 160 L 440 120 L 310 120 L 310 440 L 390 440 L 390 490 L 120 490 L 120 440 L 200 440 L 200 120 L 70 120 L 70 160 L 30 160 L 30 30 Z"/>
 </svg>
