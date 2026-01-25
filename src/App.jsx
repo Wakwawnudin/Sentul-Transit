@@ -1,27 +1,87 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
-  Home, 
-  MapPin, 
-  Maximize, 
-  Bed, 
-  Bath, 
-  Clock, 
-  Calendar, 
-  Shield, 
-  Building, 
-  Phone, 
-  ChevronLeft,
-  ChevronRight,
-  CheckCircle2,
-  MessageCircle,
-  Tv,
-  Wind,
-  Coffee,
-  Utensils,
-  Waves,
-  Sparkles,
-  UtensilsCrossed
+  Home, MapPin, Maximize, Bed, Bath, Clock, Calendar, Shield, 
+  Building, Phone, ChevronLeft, ChevronRight, CheckCircle2, 
+  MessageCircle, Tv, Wind, Coffee, Utensils, Waves, Sparkles, 
+  UtensilsCrossed, Image as ImageIcon
 } from 'lucide-react';
+
+// --- KOMPONEN BARU: IMAGE SLIDER ---
+const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32px]" }) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const scrollRef = useRef(null);
+
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      const { scrollLeft, clientWidth } = scrollRef.current;
+      const index = Math.round(scrollLeft / clientWidth);
+      setActiveIndex(index);
+    }
+  };
+
+  const scrollNext = (e) => {
+    e.stopPropagation();
+    if (scrollRef.current) {
+      const { clientWidth } = scrollRef.current;
+      scrollRef.current.scrollBy({ left: clientWidth, behavior: 'smooth' });
+    }
+  };
+
+  const scrollPrev = (e) => {
+    e.stopPropagation();
+    if (scrollRef.current) {
+      const { clientWidth } = scrollRef.current;
+      scrollRef.current.scrollBy({ left: -clientWidth, behavior: 'smooth' });
+    }
+  };
+
+  return (
+    <div className={`relative w-full ${heightClass} group`}>
+      {/* Scrollable Container */}
+      <div 
+        ref={scrollRef}
+        onScroll={handleScroll}
+        className={`flex overflow-x-auto snap-x snap-mandatory w-full h-full no-scrollbar ${roundedClass}`}
+        style={{ scrollBehavior: 'smooth' }}
+      >
+        {images.map((img, idx) => (
+          <img 
+            key={idx}
+            src={img} 
+            className="w-full h-full object-cover shrink-0 snap-center" 
+            alt={`Slide ${idx}`} 
+          />
+        ))}
+      </div>
+
+      {/* Overlay Gradient untuk Text readability */}
+      <div className={`absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none ${roundedClass}`}></div>
+
+      {/* Indikator Dots */}
+      <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-10">
+        {images.map((_, idx) => (
+          <div 
+            key={idx} 
+            className={`h-1.5 rounded-full transition-all duration-300 shadow-sm ${activeIndex === idx ? 'w-6 bg-white' : 'w-1.5 bg-white/50'}`}
+          />
+        ))}
+      </div>
+
+      {/* Tombol Navigasi (Hanya muncul di Desktop/Hover) */}
+      <div className="absolute inset-y-0 left-2 flex items-center opacity-0 group-hover:opacity-100 transition-opacity md:flex hidden">
+        <button onClick={scrollPrev} className="bg-white/30 hover:bg-white/50 backdrop-blur text-white p-1 rounded-full"><ChevronLeft size={20}/></button>
+      </div>
+      <div className="absolute inset-y-0 right-2 flex items-center opacity-0 group-hover:opacity-100 transition-opacity md:flex hidden">
+        <button onClick={scrollNext} className="bg-white/30 hover:bg-white/50 backdrop-blur text-white p-1 rounded-full"><ChevronRight size={20}/></button>
+      </div>
+      
+      {/* Badge Jumlah Foto */}
+      <div className="absolute bottom-3 right-3 bg-black/50 backdrop-blur px-2 py-1 rounded-md flex items-center gap-1 text-[9px] text-white font-bold">
+        <ImageIcon size={10} /> {activeIndex + 1}/{images.length}
+      </div>
+    </div>
+  );
+};
 
 // Komponen Logo Google Maps Kustom
 const GoogleMapsLogo = () => (
@@ -43,7 +103,6 @@ const App = () => {
   const waNumber = "6283830033717";
   const mapsLink = "https://share.google/490MII2W8A99899m7";
 
-  // LOGIKA NAVIGASI BACK BUTTON (Popstate)
   useEffect(() => {
     const handlePopState = () => {
       if (selectedRoom) {
@@ -73,7 +132,6 @@ const App = () => {
     window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`, '_blank');
   };
 
-  // Data Harga Default (Studio & 1BR)
   const defaultTransit = [
     { label: '3 Jam', price: 'Rp 150.000' },
     { label: '6 Jam', price: 'Rp 200.000' },
@@ -85,7 +143,6 @@ const App = () => {
     { label: 'Weekend (Jum-Min)', price: 'Rp 350.000' },
   ];
 
-  // Data Harga Khusus 2 Bedroom
   const specialTransit2BR = [
     { label: '3 Jam', price: 'Rp 200.000' },
     { label: '6 Jam', price: 'Rp 250.000' },
@@ -97,6 +154,7 @@ const App = () => {
     { label: 'Weekend (Jum-Min)', price: 'Rp 700.000' },
   ];
 
+  // --- DATA UPDATE: MENAMBAHKAN MULTIPLE IMAGES ---
   const rooms = [
     {
       id: 1,
@@ -104,7 +162,11 @@ const App = () => {
       type: 'Studio',
       size: '24m²',
       beds: 1,
-      image: 'https://images.unsplash.com/photo-1768383550694-adb7ddddad7d?q=80&w=1335&auto=format&fit=crop',
+      images: [ // Menggunakan Array
+        'https://images.unsplash.com/photo-1768383550694-adb7ddddad7d?q=80&w=1335&auto=format&fit=crop', // Bed
+        'https://images.unsplash.com/photo-1584622050111-993a426fbf0a?auto=format&fit=crop&q=80&w=1000', // Bath
+        'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&q=80&w=1000'  // Kitchen
+      ],
       description: 'Unit studio minimalis dengan interior modern yang sangat nyaman untuk istirahat sejenak atau staycation harian.',
       startFrom: '150rb',
       transit: defaultTransit,
@@ -126,7 +188,11 @@ const App = () => {
       type: '1BR',
       size: '38m²',
       beds: 1,
-      image: 'https://images.unsplash.com/photo-1768384554121-339e5c56b0e2?q=80&w=1335&auto=format&fit=crop',
+      images: [
+        'https://images.unsplash.com/photo-1768384554121-339e5c56b0e2?q=80&w=1335&auto=format&fit=crop', // Living
+        'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&q=80&w=1000', // Bed
+        'https://images.unsplash.com/photo-1583847661884-3883d81a6157?auto=format&fit=crop&q=80&w=1000'  // Kitchen
+      ],
       description: 'Unit dengan kamar tidur terpisah dan ruang tamu yang luas untuk privasi maksimal.',
       startFrom: '150rb',
       transit: defaultTransit,
@@ -148,7 +214,12 @@ const App = () => {
       type: '2BR',
       size: '56m²',
       beds: 2,
-      image: 'https://images.unsplash.com/photo-1768383550621-89197b8b9705?q=80&w=1335&auto=format&fit=crop',
+      images: [
+        'https://images.unsplash.com/photo-1768383550621-89197b8b9705?q=80&w=1335&auto=format&fit=crop', // Living
+        'https://images.unsplash.com/photo-1560448204-603b3fc33ddc?auto=format&fit=crop&q=80&w=1000', // Bed 1
+        'https://images.unsplash.com/photo-1505693314120-0d443867891c?auto=format&fit=crop&q=80&w=1000', // Bed 2
+        'https://images.unsplash.com/photo-1584622050111-993a426fbf0a?auto=format&fit=crop&q=80&w=1000' // Bath
+      ],
       description: 'Unit paling luas dengan 2 kamar tidur, sangat pas untuk keluarga atau grup kecil.',
       startFrom: '200rb',
       transit: specialTransit2BR,
@@ -224,14 +295,18 @@ const App = () => {
 
         <div className="space-y-6">
           {filteredRooms.map(room => (
-            <div key={room.id} onClick={() => openRoomDetail(room)} className="bg-white rounded-[32px] overflow-hidden shadow-sm border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer group">
-              <div className="relative h-56 overflow-hidden">
-                <img src={room.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={room.name} />
-                <div className="absolute top-4 left-4 flex gap-2">
+            <div key={room.id} onClick={() => openRoomDetail(room)} className="bg-white rounded-[32px] shadow-sm border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer group">
+              <div className="relative">
+                {/* --- IMPLEMENTASI SLIDER DI CARD UTAMA --- */}
+                <ImageSlider images={room.images} heightClass="h-56" roundedClass="rounded-t-[32px]" />
+                
+                {/* Labels tetap di atas Slider */}
+                <div className="absolute top-4 left-4 flex gap-2 pointer-events-none z-20">
                   <span className="bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest">{room.type}</span>
                   {room.type === '2BR' && <span className="bg-amber-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg">PREMIUM</span>}
                 </div>
               </div>
+              
               <div className="p-6">
                 <h3 className="text-xl font-black text-slate-900 mb-1.5 uppercase tracking-tight">{room.name}</h3>
                 <div className="flex items-center gap-4 text-slate-400 text-[11px] font-bold mb-5 uppercase tracking-wide">
@@ -290,7 +365,7 @@ const App = () => {
         <div className="fixed inset-0 z-50 flex items-end justify-center">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={closeRoomDetail}></div>
           <div className="bg-white w-full max-w-md rounded-t-[40px] relative z-10 p-7 animate-slide-up overflow-y-auto max-h-[95vh] no-scrollbar shadow-2xl">
-            {/* Header dengan Tombol Kembali (Alternatif Navigasi) */}
+            {/* Header dengan Tombol Kembali */}
             <div className="flex items-center justify-between mb-6">
               <button 
                 onClick={closeRoomDetail}
@@ -299,12 +374,14 @@ const App = () => {
                 <ChevronLeft size={18} /> Kembali
               </button>
               <div className="w-12 h-1.5 bg-slate-200 rounded-full"></div>
-              <div className="w-20"></div> {/* Spacer balance */}
+              <div className="w-20"></div> 
             </div>
             
             <div className="relative mb-6">
-               <img src={selectedRoom.image} className="w-full h-64 object-cover rounded-[32px] shadow-lg" alt={`Detail ${selectedRoom.name}`} />
-               <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-xl shadow-sm">
+               {/* --- IMPLEMENTASI SLIDER DI MODAL DETAIL --- */}
+               <ImageSlider images={selectedRoom.images} heightClass="h-72" roundedClass="rounded-[32px]" />
+               
+               <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-xl shadow-sm z-20">
                   <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Pilihan {selectedRoom.type}</p>
                </div>
             </div>
@@ -394,10 +471,12 @@ const App = () => {
         .animate-bounce-subtle { animation: bounce-subtle 4s infinite ease-in-out; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* Smooth Scroll Snap */
+        .snap-mandatory { scroll-snap-type: x mandatory; }
+        .snap-center { scroll-snap-align: center; }
       `}} />
     </div>
   );
 };
 
 export default App;
-
