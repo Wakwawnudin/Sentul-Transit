@@ -216,9 +216,9 @@ const App = () => {
       beds: 2,
       images: [
         'https://images.unsplash.com/photo-1768383550621-89197b8b9705?q=80&w=1335&auto=format&fit=crop', // Living
-        'https://images.unsplash.com/photo-1560448204-603b3fc33ddc?auto=format&fit=crop&q=80&w=1000', // Bed 1
-        'https://images.unsplash.com/photo-1505693314120-0d443867891c?auto=format&fit=crop&q=80&w=1000', // Bed 2
-        'https://images.unsplash.com/photo-1584622050111-993a426fbf0a?auto=format&fit=crop&q=80&w=1000' // Bath
+        'https://ik.imagekit.io/x06namgbin/20260125_153112.jpg?updatedAt=1769330366470', // Bed 1
+        'https://ik.imagekit.io/x06namgbin/20260125_153129.jpg?updatedAt=1769330366255', // Bed 2
+        'https://ik.imagekit.io/x06namgbin/20260125_153156.jpg?updatedAt=1769330366650' // Bath
       ],
       description: 'Unit paling luas dengan 2 kamar tidur, sangat pas untuk keluarga atau grup kecil.',
       startFrom: '200rb',
