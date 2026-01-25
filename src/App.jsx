@@ -6,7 +6,7 @@ import {
   UtensilsCrossed, Image as ImageIcon
 } from 'lucide-react';
 
-// --- KOMPONEN BARU: IMAGE SLIDER ---
+// --- KOMPONEN IMAGE SLIDER ---
 const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32px]" }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef(null);
@@ -54,7 +54,7 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
         ))}
       </div>
 
-      {/* Overlay Gradient untuk Text readability */}
+      {/* Overlay Gradient */}
       <div className={`absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none ${roundedClass}`}></div>
 
       {/* Indikator Dots */}
@@ -67,7 +67,7 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
         ))}
       </div>
 
-      {/* Tombol Navigasi (Hanya muncul di Desktop/Hover) */}
+      {/* Tombol Navigasi Desktop */}
       <div className="absolute inset-y-0 left-2 flex items-center opacity-0 group-hover:opacity-100 transition-opacity md:flex hidden">
         <button onClick={scrollPrev} className="bg-white/30 hover:bg-white/50 backdrop-blur text-white p-1 rounded-full"><ChevronLeft size={20}/></button>
       </div>
@@ -83,7 +83,7 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
   );
 };
 
-// Komponen Logo Google Maps Kustom
+// Komponen Logo Google Maps
 const GoogleMapsLogo = () => (
   <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#4285F4"/>
@@ -99,7 +99,7 @@ const App = () => {
   const [activeFilter, setActiveFilter] = useState('Semua');
   const [selectedRoom, setSelectedRoom] = useState(null);
 
-  // Konfigurasi Kontak & Lokasi
+  // Konfigurasi
   const waNumber = "6283830033717";
   const mapsLink = "https://share.google/490MII2W8A99899m7";
 
@@ -154,7 +154,6 @@ const App = () => {
     { label: 'Weekend (Jum-Min)', price: 'Rp 700.000' },
   ];
 
-  // --- DATA UPDATE: MENAMBAHKAN MULTIPLE IMAGES ---
   const rooms = [
     {
       id: 1,
@@ -162,10 +161,13 @@ const App = () => {
       type: 'Studio',
       size: '24m²',
       beds: 1,
-      images: [ // Menggunakan Array
-        'https://images.unsplash.com/photo-1768383550694-adb7ddddad7d?q=80&w=1335&auto=format&fit=crop', // Bed
-        'https://images.unsplash.com/photo-1584622050111-993a426fbf0a?auto=format&fit=crop&q=80&w=1000', // Bath
-        'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&q=80&w=1000'  // Kitchen
+      images: [
+        'https://images.unsplash.com/photo-1768383550694-adb7ddddad7d?q=80&w=1335&auto=format&fit=crop', // Cover Asli
+        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155132.jpg',
+        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155244.jpg',
+        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155214.jpg',
+        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155232.jpg',
+        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155201.jpg'
       ],
       description: 'Unit studio minimalis dengan interior modern yang sangat nyaman untuk istirahat sejenak atau staycation harian.',
       startFrom: '150rb',
@@ -189,9 +191,12 @@ const App = () => {
       size: '38m²',
       beds: 1,
       images: [
-        'https://images.unsplash.com/photo-1768384554121-339e5c56b0e2?q=80&w=1335&auto=format&fit=crop', // Living
-        'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&q=80&w=1000', // Bed
-        'https://images.unsplash.com/photo-1583847661884-3883d81a6157?auto=format&fit=crop&q=80&w=1000'  // Kitchen
+        'https://images.unsplash.com/photo-1768384554121-339e5c56b0e2?q=80&w=1335&auto=format&fit=crop', // Cover Asli
+        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155148.jpg',
+        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155301.jpg',
+        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155318.jpg',
+        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155345.jpg',
+        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155332.jpg'
       ],
       description: 'Unit dengan kamar tidur terpisah dan ruang tamu yang luas untuk privasi maksimal.',
       startFrom: '150rb',
@@ -215,10 +220,10 @@ const App = () => {
       size: '56m²',
       beds: 2,
       images: [
-        'https://images.unsplash.com/photo-1768383550621-89197b8b9705?q=80&w=1335&auto=format&fit=crop', // Living
-        'https://ik.imagekit.io/x06namgbin/20260125_153112.jpg?updatedAt=1769330366470', // Bed 1
-        'https://ik.imagekit.io/x06namgbin/20260125_153129.jpg?updatedAt=1769330366255', // Bed 2
-        'https://ik.imagekit.io/x06namgbin/20260125_153156.jpg?updatedAt=1769330366650' // Bath
+        'https://images.unsplash.com/photo-1768383550621-89197b8b9705?q=80&w=1335&auto=format&fit=crop',
+        'https://ik.imagekit.io/x06namgbin/20260125_153112.jpg?updatedAt=1769330366470',
+        'https://ik.imagekit.io/x06namgbin/20260125_153129.jpg?updatedAt=1769330366255',
+        'https://ik.imagekit.io/x06namgbin/20260125_153156.jpg?updatedAt=1769330366650'
       ],
       description: 'Unit paling luas dengan 2 kamar tidur, sangat pas untuk keluarga atau grup kecil.',
       startFrom: '200rb',
@@ -297,7 +302,7 @@ const App = () => {
           {filteredRooms.map(room => (
             <div key={room.id} onClick={() => openRoomDetail(room)} className="bg-white rounded-[32px] shadow-sm border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer group">
               <div className="relative">
-                {/* --- IMPLEMENTASI SLIDER DI CARD UTAMA --- */}
+                {/* SLIDER DI CARD UTAMA */}
                 <ImageSlider images={room.images} heightClass="h-56" roundedClass="rounded-t-[32px]" />
                 
                 {/* Labels tetap di atas Slider */}
@@ -378,7 +383,7 @@ const App = () => {
             </div>
             
             <div className="relative mb-6">
-               {/* --- IMPLEMENTASI SLIDER DI MODAL DETAIL --- */}
+               {/* SLIDER DI MODAL DETAIL */}
                <ImageSlider images={selectedRoom.images} heightClass="h-72" roundedClass="rounded-[32px]" />
                
                <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-xl shadow-sm z-20">
