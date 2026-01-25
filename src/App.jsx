@@ -3,7 +3,7 @@ import {
   Home, MapPin, Maximize, Bed, Bath, Clock, Calendar, Shield, 
   Building, Phone, ChevronLeft, ChevronRight, CheckCircle2, 
   MessageCircle, Tv, Wind, Coffee, Utensils, Waves, Sparkles, 
-  UtensilsCrossed, Image as ImageIcon
+  UtensilsCrossed
 } from 'lucide-react';
 
 // --- KOMPONEN IMAGE SLIDER ---
@@ -73,11 +73,6 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
       </div>
       <div className="absolute inset-y-0 right-2 flex items-center opacity-0 group-hover:opacity-100 transition-opacity md:flex hidden">
         <button onClick={scrollNext} className="bg-white/30 hover:bg-white/50 backdrop-blur text-white p-1 rounded-full"><ChevronRight size={20}/></button>
-      </div>
-      
-      {/* Badge Jumlah Foto */}
-      <div className="absolute bottom-3 right-3 bg-black/50 backdrop-blur px-2 py-1 rounded-md flex items-center gap-1 text-[9px] text-white font-bold">
-        <ImageIcon size={10} /> {activeIndex + 1}/{images.length}
       </div>
     </div>
   );
@@ -162,7 +157,7 @@ const App = () => {
       size: '24m²',
       beds: 1,
       images: [
-        'https://images.unsplash.com/photo-1768383550694-adb7ddddad7d?q=80&w=1335&auto=format&fit=crop', // Cover Asli
+        'https://images.unsplash.com/photo-1768383550694-adb7ddddad7d?q=80&w=1335&auto=format&fit=crop',
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155132.jpg',
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155244.jpg',
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155214.jpg',
@@ -191,7 +186,7 @@ const App = () => {
       size: '38m²',
       beds: 1,
       images: [
-        'https://images.unsplash.com/photo-1768384554121-339e5c56b0e2?q=80&w=1335&auto=format&fit=crop', // Cover Asli
+        'https://images.unsplash.com/photo-1768384554121-339e5c56b0e2?q=80&w=1335&auto=format&fit=crop',
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155148.jpg',
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155301.jpg',
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155318.jpg',
@@ -246,17 +241,28 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-24">
-      {/* Navbar */}
+      {/* Navbar Updated: Ada Google Maps di sebelah tombol Telepon */}
       <nav className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 py-3 flex justify-between items-center shadow-sm">
+        {/* Kiri: Brand */}
         <div className="flex items-center gap-2">
           <div className="bg-indigo-600 p-1.5 rounded-lg text-white shadow-lg shadow-indigo-200">
             <Building size={20} />
           </div>
           <span className="font-bold text-lg tracking-tight text-indigo-950 uppercase">Sentul Tower</span>
         </div>
-        <button onClick={() => handleWaClick()} className="bg-green-50 text-green-600 p-2.5 rounded-full border border-green-100 active:scale-90 transition-transform">
-          <Phone size={18} />
-        </button>
+
+        {/* Kanan: Actions (Maps & Call) */}
+        <div className="flex items-center gap-2">
+          {/* Tombol Maps */}
+          <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-white p-2.5 rounded-full border border-slate-200 shadow-sm active:scale-90 transition-transform flex items-center justify-center">
+             <GoogleMapsLogo />
+          </a>
+          
+          {/* Tombol Call/WA */}
+          <button onClick={() => handleWaClick()} className="bg-green-50 text-green-600 p-2.5 rounded-full border border-green-100 active:scale-90 transition-transform">
+            <Phone size={18} />
+          </button>
+        </div>
       </nav>
 
       {/* Hero */}
