@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Analytics } from '@vercel/analytics/react'; // <-- IMPORT YANG BENAR UNTUK VITE
 import { 
   Home, MapPin, Maximize, Bed, Bath, Clock, Calendar, Shield, 
   Building, Phone, ChevronLeft, ChevronRight, CheckCircle2, 
@@ -486,6 +487,9 @@ const App = () => {
         .snap-mandatory { scroll-snap-type: x mandatory; }
         .snap-center { scroll-snap-align: center; }
       `}} />
+      
+      {/* VERCEL ANALYTICS COMPONENT */}
+      <Analytics />
     </div>
   );
 };
