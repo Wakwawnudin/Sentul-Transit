@@ -7,33 +7,22 @@ import {
   UtensilsCrossed, Key, Wallet
 } from 'lucide-react';
 
-// --- KOMPONEN IMAGE SLIDER (DENGAN AUTO SLIDE) ---
+// --- KOMPONEN IMAGE SLIDER ---
 const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32px]", altPrefix = "Apartemen Sentul Tower" }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef(null);
 
-  // --- LOGIKA AUTO SLIDE ---
   useEffect(() => {
-    // Jangan slide kalau gambar cuma 1
     if (images.length <= 1) return;
-
     const interval = setInterval(() => {
       if (scrollRef.current) {
         const { clientWidth } = scrollRef.current;
-        // Hitung index berikutnya (jika sudah terakhir, balik ke 0)
         const nextIndex = (activeIndex + 1) % images.length;
-        
-        scrollRef.current.scrollTo({
-          left: nextIndex * clientWidth,
-          behavior: 'smooth'
-        });
+        scrollRef.current.scrollTo({ left: nextIndex * clientWidth, behavior: 'smooth' });
       }
-    }, 3500); // Slide setiap 3.5 detik
-
-    // Bersihkan interval saat komponen di-unmount atau user scroll manual (activeIndex berubah)
+    }, 3500); 
     return () => clearInterval(interval);
   }, [activeIndex, images.length]);
-  // -------------------------
 
   const handleScroll = () => {
     if (scrollRef.current) {
@@ -76,18 +65,12 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
           />
         ))}
       </div>
-
       <div className={`absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none ${roundedClass}`}></div>
-
       <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-10">
         {images.map((_, idx) => (
-          <div 
-            key={idx} 
-            className={`h-1.5 rounded-full transition-all duration-300 shadow-sm ${activeIndex === idx ? 'w-6 bg-white' : 'w-1.5 bg-white/50'}`}
-          />
+          <div key={idx} className={`h-1.5 rounded-full transition-all duration-300 shadow-sm ${activeIndex === idx ? 'w-6 bg-white' : 'w-1.5 bg-white/50'}`} />
         ))}
       </div>
-
       <div className="absolute inset-y-0 left-2 flex items-center opacity-0 group-hover:opacity-100 transition-opacity md:flex hidden">
         <button onClick={scrollPrev} className="bg-white/30 hover:bg-white/50 backdrop-blur text-white p-1 rounded-full"><ChevronLeft size={20}/></button>
       </div>
@@ -112,9 +95,24 @@ const GoogleMapsLogo = () => (
 const App = () => {
   const [activeFilter, setActiveFilter] = useState('Semua');
   const [selectedRoom, setSelectedRoom] = useState(null);
+  const [refCode, setRefCode] = useState(""); // STATE BARU: MENYIMPAN KODE REFERRAL
 
   const waNumber = "6283830033717";
   const mapsLink = "https://share.google/490MII2W8A99899m7";
+
+  // --- LOGIKA REFERRAL SYSTEM ---
+  useEffect(() => {
+    // 1. Cek apakah ada parameter "?ref=..." di URL
+    const queryParams = new URLSearchParams(window.location.search);
+    const ref = queryParams.get('ref');
+    
+    // 2. Jika ada, simpan ke State
+    if (ref) {
+      setRefCode(ref);
+      // Opsional: Simpan ke LocalStorage agar ingat meskipun user refresh
+      // localStorage.setItem('referral', ref); 
+    }
+  }, []);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -138,24 +136,28 @@ const App = () => {
     }
   };
 
+  // --- UPDATE LOGIKA WHATSAPP ---
   const handleWaClick = (messageType = "general", roomName = "") => {
     let text = "";
     
+    // Tambahkan info referral di akhir pesan jika ada
+    const refTag = refCode ? `\n\n(Info dari: ${refCode})` : "";
+
     switch (messageType) {
       case "booking":
-        text = `Halo, saya tertarik dengan unit ${roomName} di Apartemen Sentul Tower.`;
+        text = `Halo, saya tertarik dengan unit ${roomName} di Apartemen Sentul Tower.${refTag}`;
         break;
       case "chat":
-        text = "Halo, saya mau tanya-tanya tentang sewa Apartemen Sentul Tower.";
+        text = `Halo, saya mau tanya-tanya tentang sewa Apartemen Sentul Tower.${refTag}`;
         break;
       case "key":
-        text = "Halo, saya sudah sampai di lokasi dan ingin AMBIL KUNCI.";
+        text = `Halo, saya sudah sampai di lokasi dan ingin AMBIL KUNCI.${refTag}`;
         break;
       case "payment":
-        text = "Halo, saya ingin melakukan PEMBAYARAN DI TEMPAT.";
+        text = `Halo, saya ingin melakukan PEMBAYARAN DI TEMPAT.${refTag}`;
         break;
       default:
-        text = "Halo, saya mau tanya sewa Apartemen Sentul Tower.";
+        text = `Halo, saya mau tanya sewa Apartemen Sentul Tower.${refTag}`;
     }
 
     window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`, '_blank');
@@ -340,7 +342,6 @@ const App = () => {
           {filteredRooms.map(room => (
             <div key={room.id} onClick={() => openRoomDetail(room)} className="bg-white rounded-[32px] p-3 shadow-sm border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer group">
               <div className="relative">
-                {/* UPDATE: h-72 agar proporsional */}
                 <ImageSlider images={room.images} heightClass="h-72" roundedClass="rounded-[24px]" altPrefix={`Interior ${room.name} Sentul Tower`} />
                 <div className="absolute top-4 left-4 flex gap-2 pointer-events-none z-20">
                   <span className="bg-black/70 backdrop-blur-md text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest">{room.type}</span>
