@@ -252,7 +252,7 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-24">
-      {/* Navbar */}
+      {/* Navbar: LOGO ST EMAS */}
       <nav className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 py-3 flex justify-between items-center shadow-sm">
         <div className="flex items-center gap-2">
           <div className="p-1 rounded-lg">
@@ -271,9 +271,9 @@ const App = () => {
         </div>
       </nav>
 
-      {/* Hero Header */}
+      {/* Hero Header: GAMBAR UTAMA BARU */}
       <header className="relative h-[450px] overflow-hidden">
-        <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=1000" className="w-full h-full object-cover" alt="Apartemen Sentul Tower View Gunung" />
+        <img src="https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260206_022711.jpg" className="w-full h-full object-cover" alt="Apartemen Sentul Tower View Gunung" />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/40 to-transparent flex flex-col justify-end p-6">
           <div className="flex items-center gap-1.5 bg-slate-900 border border-slate-800 text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-full w-fit mb-3 shadow-lg">
             <MapPin size={10} /> DEKAT AEON MALL SENTUL
@@ -299,7 +299,7 @@ const App = () => {
         </div>
       </section>
 
-      {/* Katalog & Filter: AESTHETIC UPDATE */}
+      {/* Katalog & Filter */}
       <section className="px-4 py-8">
         <div className="flex flex-col gap-4 mb-6 md:flex-row md:justify-between md:items-center">
           <h2 className="text-lg font-black text-slate-800 uppercase tracking-widest">KATALOG APARTEMEN</h2>
@@ -312,18 +312,16 @@ const App = () => {
 
         <div className="space-y-6">
           {filteredRooms.map(room => (
-            // UPDATE: Menambahkan padding (p-3) pada container kartu utama
             <div key={room.id} onClick={() => openRoomDetail(room)} className="bg-white rounded-[32px] p-3 shadow-sm border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer group">
               <div className="relative">
-                {/* UPDATE: Mengubah height jadi h-80 dan rounded jadi rounded-[24px] (bulat penuh) */}
-                <ImageSlider images={room.images} heightClass="h-80" roundedClass="rounded-[24px]" altPrefix={`Interior ${room.name} Sentul Tower`} />
+                {/* UPDATE: h-72 agar proporsional */}
+                <ImageSlider images={room.images} heightClass="h-72" roundedClass="rounded-[24px]" altPrefix={`Interior ${room.name} Sentul Tower`} />
                 <div className="absolute top-4 left-4 flex gap-2 pointer-events-none z-20">
                   <span className="bg-black/70 backdrop-blur-md text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest">{room.type}</span>
                   {room.type === '2BR' && <span className="bg-[#D4AF37] text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg">PREMIUM</span>}
                 </div>
               </div>
               
-              {/* UPDATE: Menyesuaikan padding teks agar seimbang dengan padding kartu */}
               <div className="pt-5 px-3 pb-3">
                 <h3 className="text-xl font-black text-slate-900 mb-1.5 uppercase tracking-tight">{room.name}</h3>
                 <div className="flex items-center gap-4 text-slate-400 text-[11px] font-bold mb-5 uppercase tracking-wide">
