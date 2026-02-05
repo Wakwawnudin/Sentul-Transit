@@ -7,6 +7,9 @@ import {
   UtensilsCrossed, Key, Wallet
 } from 'lucide-react';
 
+// --- LOGO WHATSAPP CUSTOM ---
+const waLogo = "https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/whatsapp-logo-whatsapp-icon-whatsapp-transparent-free-png.png";
+
 // --- KOMPONEN IMAGE SLIDER ---
 const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32px]", altPrefix = "Apartemen Sentul Tower" }) => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -252,7 +255,7 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-24">
-      {/* Navbar: LOGO TELEPON GANTI WHATSAPP (Warna Tetap) */}
+      {/* Navbar: LOGO TELEPON GANTI IMAGE LOGO */}
       <nav className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 py-3 flex justify-between items-center shadow-sm">
         <div className="flex items-center gap-2">
           <div className="p-1 rounded-lg">
@@ -265,8 +268,9 @@ const App = () => {
           <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-white p-2.5 rounded-full border border-slate-200 shadow-sm active:scale-90 transition-transform flex items-center justify-center">
              <GoogleMapsLogo />
           </a>
-          <button onClick={() => handleWaClick("general")} className="bg-green-50 text-green-600 p-2.5 rounded-full border border-green-100 active:scale-90 transition-transform">
-            <MessageCircle size={18} /> {/* UPDATED: PHONE -> MESSAGE CIRCLE */}
+          <button onClick={() => handleWaClick("general")} className="bg-green-50 text-green-600 p-2 rounded-full border border-green-100 active:scale-90 transition-transform flex items-center justify-center w-[42px] h-[42px]">
+             {/* IMAGE LOGO WA - Navbar */}
+             <img src={waLogo} alt="WhatsApp" className="w-[18px] h-[18px] object-contain" />
           </button>
         </div>
       </nav>
@@ -347,11 +351,11 @@ const App = () => {
           <h3 className="text-2xl font-black mb-3 uppercase tracking-tighter italic">Apartemen Sentul Tower</h3>
           <p className="text-slate-400 text-[11px] leading-relaxed mb-8 font-medium italic">"Privasi dan Kenyamanan Anda Adalah Prioritas Kami"</p>
           
+          {/* --- CARA ORDER MUDAH --- */}
           <div className="mb-10">
              <h4 className="text-[11px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-5 text-center">Cara Order Mudah</h4>
              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                 
-                {/* 1. CHAT WHATSAPP */}
                 <div 
                   onClick={() => handleWaClick("chat")}
                   className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center text-center group hover:bg-slate-800 transition-colors cursor-pointer active:scale-95"
@@ -360,7 +364,6 @@ const App = () => {
                    <span className="text-[10px] font-bold text-slate-200 uppercase tracking-wide">1. Chat WhatsApp</span>
                 </div>
 
-                {/* 2. DATANG LOKASI */}
                 <a 
                   href={mapsLink} 
                   target="_blank" 
@@ -371,7 +374,6 @@ const App = () => {
                    <span className="text-[10px] font-bold text-slate-200 uppercase tracking-wide">2. Datang Lokasi</span>
                 </a>
 
-                {/* 3. AMBIL KUNCI */}
                 <div 
                   onClick={() => handleWaClick("key")}
                   className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center text-center group hover:bg-slate-800 transition-colors cursor-pointer active:scale-95"
@@ -380,7 +382,6 @@ const App = () => {
                    <span className="text-[10px] font-bold text-slate-200 uppercase tracking-wide">3. Ambil Kunci</span>
                 </div>
 
-                {/* 4. BAYAR DI TEMPAT */}
                 <div 
                   onClick={() => handleWaClick("payment")}
                   className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center text-center group hover:bg-slate-800 transition-colors cursor-pointer active:scale-95"
@@ -407,8 +408,9 @@ const App = () => {
             <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-white p-3 rounded-2xl hover:scale-110 active:scale-95 transition-all shadow-xl flex items-center justify-center">
               <GoogleMapsLogo />
             </a>
-            <button onClick={() => handleWaClick("general")} className="bg-[#25D366] p-3 rounded-2xl hover:scale-110 active:scale-95 transition-all shadow-xl shadow-green-900/30">
-              <MessageCircle className="text-white" size={24} />
+            <button onClick={() => handleWaClick("general")} className="bg-[#25D366] p-3 rounded-2xl hover:scale-110 active:scale-95 transition-all shadow-xl shadow-green-900/30 flex items-center justify-center">
+               {/* IMAGE LOGO WA - Footer */}
+               <img src={waLogo} alt="WhatsApp" className="w-6 h-6 object-contain" />
             </button>
             <div className="h-6 w-[1px] bg-slate-700"></div>
             <p className="text-[10px] font-black text-[#D4AF37] tracking-widest uppercase text-center leading-tight">
@@ -470,7 +472,7 @@ const App = () => {
                   <div className="pt-2">
                      <div className="bg-amber-50 p-3 rounded-xl border border-amber-100 flex items-center justify-center gap-2">
                         <Clock size={14} className="text-amber-600" />
-                        <p className="text-[10px] text-amber-700 font-black uppercase tracking-tighter">Check Out Fullday Maksimal Jam 12 Siang</p>
+                        <p className="text-[10px] text-amber-700 font-black uppercase tracking-tighter">Check Out Maksimal Jam 12 Siang</p>
                      </div>
                   </div>
                 </div>
@@ -496,7 +498,9 @@ const App = () => {
             </div>
 
             <button onClick={() => handleWaClick("booking", selectedRoom.name)} className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-black py-5 rounded-[24px] flex items-center justify-center gap-3 shadow-2xl shadow-green-200 active:scale-95 transition-all uppercase tracking-widest text-xs">
-              <MessageCircle size={20} /> Hubungi Lewat WhatsApp
+              {/* IMAGE LOGO WA - Modal Button */}
+              <img src={waLogo} alt="WhatsApp" className="w-5 h-5 object-contain" />
+              Hubungi Lewat WhatsApp
             </button>
           </div>
         </div>
@@ -507,7 +511,10 @@ const App = () => {
         <div className="fixed bottom-6 left-0 right-0 px-6 z-40">
           <div onClick={() => handleWaClick("general")} className="bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-2xl rounded-[24px] p-5 flex justify-between items-center max-w-sm mx-auto animate-bounce-subtle cursor-pointer active:scale-95 transition-transform">
             <div className="flex items-center gap-4">
-              <div className="w-11 h-11 rounded-2xl bg-white/20 flex items-center justify-center backdrop-blur-md shadow-inner"><MessageCircle size={24} /></div> {/* UPDATED: CLOCK -> MESSAGE CIRCLE */}
+              <div className="w-11 h-11 rounded-2xl bg-white/20 flex items-center justify-center backdrop-blur-md shadow-inner">
+                {/* IMAGE LOGO WA - FAB */}
+                <img src={waLogo} alt="WhatsApp" className="w-7 h-7 object-contain" />
+              </div>
               <div>
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">Apartemen Sentul Tower</p>
                 <p className="text-sm font-black tracking-tight">Booking Cepat Via WA</p>
