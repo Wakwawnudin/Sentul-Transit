@@ -7,9 +7,6 @@ import {
   UtensilsCrossed, Key, Wallet
 } from 'lucide-react';
 
-// --- LOGO WHATSAPP CUSTOM ---
-const waLogo = "https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/whatsapp-logo-whatsapp-icon-whatsapp-transparent-free-png.png";
-
 // --- KOMPONEN IMAGE SLIDER ---
 const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32px]", altPrefix = "Apartemen Sentul Tower" }) => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -255,7 +252,7 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-24">
-      {/* Navbar: LOGO TELEPON GANTI IMAGE LOGO */}
+      {/* Navbar */}
       <nav className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 py-3 flex justify-between items-center shadow-sm">
         <div className="flex items-center gap-2">
           <div className="p-1 rounded-lg">
@@ -268,9 +265,8 @@ const App = () => {
           <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-white p-2.5 rounded-full border border-slate-200 shadow-sm active:scale-90 transition-transform flex items-center justify-center">
              <GoogleMapsLogo />
           </a>
-          <button onClick={() => handleWaClick("general")} className="bg-green-50 text-green-600 p-2 rounded-full border border-green-100 active:scale-90 transition-transform flex items-center justify-center w-[42px] h-[42px]">
-             {/* IMAGE LOGO WA - Navbar */}
-             <img src={waLogo} alt="WhatsApp" className="w-[18px] h-[18px] object-contain" />
+          <button onClick={() => handleWaClick("general")} className="bg-green-50 text-green-600 p-2.5 rounded-full border border-green-100 active:scale-90 transition-transform">
+            <MessageCircle size={18} />
           </button>
         </div>
       </nav>
@@ -303,7 +299,7 @@ const App = () => {
         </div>
       </section>
 
-      {/* Katalog & Filter */}
+      {/* Katalog & Filter: AESTHETIC UPDATE */}
       <section className="px-4 py-8">
         <div className="flex flex-col gap-4 mb-6 md:flex-row md:justify-between md:items-center">
           <h2 className="text-lg font-black text-slate-800 uppercase tracking-widest">KATALOG APARTEMEN</h2>
@@ -316,16 +312,19 @@ const App = () => {
 
         <div className="space-y-6">
           {filteredRooms.map(room => (
-            <div key={room.id} onClick={() => openRoomDetail(room)} className="bg-white rounded-[32px] shadow-sm border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer group">
+            // UPDATE: Menambahkan padding (p-3) pada container kartu utama
+            <div key={room.id} onClick={() => openRoomDetail(room)} className="bg-white rounded-[32px] p-3 shadow-sm border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer group">
               <div className="relative">
-                <ImageSlider images={room.images} heightClass="h-56" roundedClass="rounded-t-[32px]" altPrefix={`Interior ${room.name} Sentul Tower`} />
+                {/* UPDATE: Mengubah height jadi h-80 dan rounded jadi rounded-[24px] (bulat penuh) */}
+                <ImageSlider images={room.images} heightClass="h-80" roundedClass="rounded-[24px]" altPrefix={`Interior ${room.name} Sentul Tower`} />
                 <div className="absolute top-4 left-4 flex gap-2 pointer-events-none z-20">
                   <span className="bg-black/70 backdrop-blur-md text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest">{room.type}</span>
                   {room.type === '2BR' && <span className="bg-[#D4AF37] text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg">PREMIUM</span>}
                 </div>
               </div>
               
-              <div className="p-6">
+              {/* UPDATE: Menyesuaikan padding teks agar seimbang dengan padding kartu */}
+              <div className="pt-5 px-3 pb-3">
                 <h3 className="text-xl font-black text-slate-900 mb-1.5 uppercase tracking-tight">{room.name}</h3>
                 <div className="flex items-center gap-4 text-slate-400 text-[11px] font-bold mb-5 uppercase tracking-wide">
                   <div className="flex items-center gap-1.5"><Maximize size={14}/> {room.size}</div>
@@ -351,11 +350,9 @@ const App = () => {
           <h3 className="text-2xl font-black mb-3 uppercase tracking-tighter italic">Apartemen Sentul Tower</h3>
           <p className="text-slate-400 text-[11px] leading-relaxed mb-8 font-medium italic">"Privasi dan Kenyamanan Anda Adalah Prioritas Kami"</p>
           
-          {/* --- CARA ORDER MUDAH --- */}
           <div className="mb-10">
              <h4 className="text-[11px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-5 text-center">Cara Order Mudah</h4>
              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                
                 <div 
                   onClick={() => handleWaClick("chat")}
                   className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center text-center group hover:bg-slate-800 transition-colors cursor-pointer active:scale-95"
@@ -363,7 +360,6 @@ const App = () => {
                    <MessageCircle className="text-[#D4AF37] mb-2 group-hover:scale-110 transition-transform" size={22} />
                    <span className="text-[10px] font-bold text-slate-200 uppercase tracking-wide">1. Chat WhatsApp</span>
                 </div>
-
                 <a 
                   href={mapsLink} 
                   target="_blank" 
@@ -373,7 +369,6 @@ const App = () => {
                    <MapPin className="text-[#D4AF37] mb-2 group-hover:scale-110 transition-transform" size={22} />
                    <span className="text-[10px] font-bold text-slate-200 uppercase tracking-wide">2. Datang Lokasi</span>
                 </a>
-
                 <div 
                   onClick={() => handleWaClick("key")}
                   className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center text-center group hover:bg-slate-800 transition-colors cursor-pointer active:scale-95"
@@ -381,7 +376,6 @@ const App = () => {
                    <Key className="text-[#D4AF37] mb-2 group-hover:scale-110 transition-transform" size={22} />
                    <span className="text-[10px] font-bold text-slate-200 uppercase tracking-wide">3. Ambil Kunci</span>
                 </div>
-
                 <div 
                   onClick={() => handleWaClick("payment")}
                   className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center text-center group hover:bg-slate-800 transition-colors cursor-pointer active:scale-95"
@@ -389,14 +383,13 @@ const App = () => {
                    <Wallet className="text-[#D4AF37] mb-2 group-hover:scale-110 transition-transform" size={22} />
                    <span className="text-[10px] font-bold text-slate-200 uppercase tracking-wide">4. Bayar di Tempat</span>
                 </div>
-
              </div>
           </div>
 
           <div className="space-y-3 mb-10">
             <div className="flex items-center gap-3 bg-slate-800/60 p-3.5 rounded-2xl border border-slate-700/50 shadow-sm">
               <CheckCircle2 className="text-[#D4AF37]" size={18} />
-              <span className="text-xs font-bold uppercase tracking-widest text-slate-200">Checkout Jam 12 Siang</span>
+              <span className="text-xs font-bold uppercase tracking-widest text-slate-200">Checkout Fullday jam 12 Siang</span>
             </div>
             <div className="flex items-center gap-3 bg-slate-800/60 p-3.5 rounded-2xl border border-slate-700/50 shadow-sm">
               <UtensilsCrossed className="text-[#D4AF37]" size={18} />
@@ -408,9 +401,8 @@ const App = () => {
             <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-white p-3 rounded-2xl hover:scale-110 active:scale-95 transition-all shadow-xl flex items-center justify-center">
               <GoogleMapsLogo />
             </a>
-            <button onClick={() => handleWaClick("general")} className="bg-[#25D366] p-3 rounded-2xl hover:scale-110 active:scale-95 transition-all shadow-xl shadow-green-900/30 flex items-center justify-center">
-               {/* IMAGE LOGO WA - Footer */}
-               <img src={waLogo} alt="WhatsApp" className="w-6 h-6 object-contain" />
+            <button onClick={() => handleWaClick("general")} className="bg-[#25D366] p-3 rounded-2xl hover:scale-110 active:scale-95 transition-all shadow-xl shadow-green-900/30">
+              <MessageCircle className="text-white" size={24} />
             </button>
             <div className="h-6 w-[1px] bg-slate-700"></div>
             <p className="text-[10px] font-black text-[#D4AF37] tracking-widest uppercase text-center leading-tight">
@@ -472,7 +464,7 @@ const App = () => {
                   <div className="pt-2">
                      <div className="bg-amber-50 p-3 rounded-xl border border-amber-100 flex items-center justify-center gap-2">
                         <Clock size={14} className="text-amber-600" />
-                        <p className="text-[10px] text-amber-700 font-black uppercase tracking-tighter">Check Out Maksimal Jam 12 Siang</p>
+                        <p className="text-[10px] text-amber-700 font-black uppercase tracking-tighter">Checkout Fullday jam 12 Siang</p>
                      </div>
                   </div>
                 </div>
@@ -498,9 +490,7 @@ const App = () => {
             </div>
 
             <button onClick={() => handleWaClick("booking", selectedRoom.name)} className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-black py-5 rounded-[24px] flex items-center justify-center gap-3 shadow-2xl shadow-green-200 active:scale-95 transition-all uppercase tracking-widest text-xs">
-              {/* IMAGE LOGO WA - Modal Button */}
-              <img src={waLogo} alt="WhatsApp" className="w-5 h-5 object-contain" />
-              Hubungi Lewat WhatsApp
+              <MessageCircle size={20} /> Hubungi Lewat WhatsApp
             </button>
           </div>
         </div>
@@ -511,10 +501,7 @@ const App = () => {
         <div className="fixed bottom-6 left-0 right-0 px-6 z-40">
           <div onClick={() => handleWaClick("general")} className="bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-2xl rounded-[24px] p-5 flex justify-between items-center max-w-sm mx-auto animate-bounce-subtle cursor-pointer active:scale-95 transition-transform">
             <div className="flex items-center gap-4">
-              <div className="w-11 h-11 rounded-2xl bg-white/20 flex items-center justify-center backdrop-blur-md shadow-inner">
-                {/* IMAGE LOGO WA - FAB */}
-                <img src={waLogo} alt="WhatsApp" className="w-7 h-7 object-contain" />
-              </div>
+              <div className="w-11 h-11 rounded-2xl bg-white/20 flex items-center justify-center backdrop-blur-md shadow-inner"><MessageCircle size={24} /></div>
               <div>
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">Apartemen Sentul Tower</p>
                 <p className="text-sm font-black tracking-tight">Booking Cepat Via WA</p>
