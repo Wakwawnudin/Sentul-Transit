@@ -6,5 +6,18 @@
       <stop offset="100%" style="stop-color:#A68340;stop-opacity:1" />
     </linearGradient>
   </defs>
-  <path fill="url(#gold-grad)" d="M 480 30 L 480 160 L 440 160 L 440 120 L 310 120 L 310 440 L 390 440 L 390 490 L 120 490 L 120 440 L 200 440 L 200 120 L 70 120 L 70 160 L 30 160 L 30 30 Z"/>
+  
+  <text 
+    x="50%" 
+    y="55%" 
+    dominant-baseline="middle" 
+    text-anchor="middle" 
+    font-family="Arial, Helvetica, sans-serif" 
+    font-weight="900" 
+    font-size="320" 
+    fill="url(#gold-grad)"
+    style="filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.2));"
+  >
+    ST
+  </text>
 </svg>
