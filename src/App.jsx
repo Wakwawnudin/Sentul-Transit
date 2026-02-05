@@ -95,22 +95,20 @@ const GoogleMapsLogo = () => (
 const App = () => {
   const [activeFilter, setActiveFilter] = useState('Semua');
   const [selectedRoom, setSelectedRoom] = useState(null);
-  const [refCode, setRefCode] = useState(""); // STATE BARU: MENYIMPAN KODE REFERRAL
+  const [refCode, setRefCode] = useState("");
 
   const waNumber = "6283830033717";
   const mapsLink = "https://share.google/490MII2W8A99899m7";
 
-  // --- LOGIKA REFERRAL SYSTEM ---
+  // --- LOGIKA REFERRAL SYSTEM (DENGAN URL CLEANING) ---
   useEffect(() => {
-    // 1. Cek apakah ada parameter "?ref=..." di URL
     const queryParams = new URLSearchParams(window.location.search);
     const ref = queryParams.get('ref');
     
-    // 2. Jika ada, simpan ke State
     if (ref) {
       setRefCode(ref);
-      // Opsional: Simpan ke LocalStorage agar ingat meskipun user refresh
-      // localStorage.setItem('referral', ref); 
+      const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
     }
   }, []);
 
@@ -136,11 +134,8 @@ const App = () => {
     }
   };
 
-  // --- UPDATE LOGIKA WHATSAPP ---
   const handleWaClick = (messageType = "general", roomName = "") => {
     let text = "";
-    
-    // Tambahkan info referral di akhir pesan jika ada
     const refTag = refCode ? `\n\n(Info dari: ${refCode})` : "";
 
     switch (messageType) {
@@ -299,9 +294,9 @@ const App = () => {
         </div>
       </nav>
 
-      {/* Hero Header: GAMBAR UTAMA BARU */}
+      {/* Hero Header: GAMBAR UTAMA BARU (AI ENHANCED) */}
       <header className="relative h-[450px] overflow-hidden">
-        <img src="https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260206_022711.jpg" className="w-full h-full object-cover" alt="Apartemen Sentul Tower View Gunung" />
+        <img src="https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/AIEnhancer_20260206_022711.png" className="w-full h-full object-cover" alt="Apartemen Sentul Tower View Gunung" />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/40 to-transparent flex flex-col justify-end p-6">
           <div className="flex items-center gap-1.5 bg-slate-900 border border-slate-800 text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-full w-fit mb-3 shadow-lg">
             <MapPin size={10} /> DEKAT AEON MALL SENTUL
