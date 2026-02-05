@@ -8,7 +8,6 @@ import {
 } from 'lucide-react';
 
 // --- KOMPONEN IMAGE SLIDER (UPDATED FOR SEO) ---
-// Menambahkan prop 'altPrefix' untuk SEO Alt Text pada gambar
 const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32px]", altPrefix = "Apartemen Sentul Tower" }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef(null);
@@ -50,7 +49,6 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
             key={idx}
             src={img} 
             className="w-full h-full object-cover shrink-0 snap-center" 
-            // SEO UPDATE: Dynamic Alt Text
             alt={`${altPrefix} - View ${idx + 1} - Fasilitas Lengkap`} 
           />
         ))}
@@ -146,7 +144,6 @@ const App = () => {
     { label: 'Weekend (Jum-Min)', price: 'Rp 700.000' },
   ];
 
-  // --- DATA KAMAR DENGAN INJEKSI KEYWORD SEO ---
   const rooms = [
     {
       id: 1,
@@ -162,7 +159,6 @@ const App = () => {
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155232.jpg',
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155201.jpg'
       ],
-      // Keyword: Sewa harian, dekat AEON Mall
       description: 'Unit studio minimalis yang cocok untuk sewa harian. Lokasi strategis dekat AEON Mall Sentul City, ideal untuk istirahat sejenak setelah berbelanja atau bekerja.',
       startFrom: '150rb',
       transit: defaultTransit,
@@ -192,7 +188,6 @@ const App = () => {
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155345.jpg',
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155332.jpg'
       ],
-      // Keyword: Apartemen murah sentul, privasi maksimal
       description: 'Pilihan terbaik apartemen murah Sentul dengan ruang tamu terpisah. Menawarkan privasi maksimal untuk pasangan atau profesional yang membutuhkan ketenangan.',
       startFrom: '150rb',
       transit: defaultTransit,
@@ -220,7 +215,6 @@ const App = () => {
         'https://ik.imagekit.io/x06namgbin/20260125_153129.jpg?updatedAt=1769330366255',
         'https://ik.imagekit.io/x06namgbin/20260125_153156.jpg?updatedAt=1769330366650'
       ],
-      // Keyword: Transit 3 jam, Staycation keluarga
       description: 'Unit luas untuk staycation keluarga atau grup. Tersedia opsi transit 3 jam Sentul Tower yang fleksibel. Nikmati pemandangan gunung dan fasilitas lengkap.',
       startFrom: '200rb',
       transit: specialTransit2BR,
@@ -242,13 +236,14 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-24">
-      {/* Navbar */}
+      {/* Navbar: AESTHETIC FIX */}
       <nav className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 py-3 flex justify-between items-center shadow-sm">
         <div className="flex items-center gap-2">
           <div className="bg-indigo-600 p-1.5 rounded-lg text-white shadow-lg shadow-indigo-200">
             <Building size={20} />
           </div>
-          <span className="font-bold text-lg tracking-tight text-indigo-950 uppercase">Apartemen Sentul Tower</span>
+          {/* FONT SIZE ADJUSTED: text-sm untuk mobile, text-lg untuk desktop */}
+          <span className="font-bold text-sm md:text-lg tracking-tight text-indigo-950 uppercase">Apartemen Sentul Tower</span>
         </div>
 
         <div className="flex items-center gap-2">
@@ -261,14 +256,13 @@ const App = () => {
         </div>
       </nav>
 
-      {/* Hero Header: SEO H1 */}
+      {/* Hero Header */}
       <header className="relative h-[220px] overflow-hidden">
         <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=1000" className="w-full h-full object-cover" alt="Apartemen Sentul Tower View Gunung" />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/40 to-transparent flex flex-col justify-end p-6">
           <div className="flex items-center gap-1.5 bg-indigo-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full w-fit mb-2">
             <MapPin size={10} /> DEKAT AEON MALL SENTUL
           </div>
-          {/* H1 Tag Utama */}
           <h1 className="text-2xl font-black text-white leading-tight uppercase tracking-tight">Apartemen Sentul Tower</h1>
           <p className="text-slate-200 text-xs italic font-medium">Solusi Staycation Nyaman di Sentul City</p>
         </div>
@@ -290,14 +284,15 @@ const App = () => {
         </div>
       </section>
 
-      {/* Katalog & Filter */}
+      {/* Katalog & Filter: LAYOUT & TEXT FIX */}
       <section className="px-4 py-8">
-        <div className="flex justify-between items-center mb-6">
-          {/* SEO H2: Keyword Targeting */}
-          <h2 className="text-lg font-black text-slate-800 uppercase tracking-widest">Katalog Apartemen Murah Sentul</h2>
-          <div className="flex gap-1.5">
+        {/* Layout berubah jadi flex-col (atas bawah) di mobile, flex-row (samping) di desktop */}
+        <div className="flex flex-col gap-4 mb-6 md:flex-row md:justify-between md:items-center">
+          {/* Judul diperpendek sesuai request */}
+          <h2 className="text-lg font-black text-slate-800 uppercase tracking-widest">KATALOG APARTEMEN</h2>
+          <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1 md:pb-0">
             {['Semua', 'Studio', '1BR', '2BR'].map(f => (
-              <button key={f} onClick={() => setActiveFilter(f)} className={`text-[9px] font-black px-3.5 py-2 rounded-full border transition-all ${activeFilter === f ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-200' : 'bg-white border-slate-200 text-slate-500 hover:border-indigo-300'}`}>{f}</button>
+              <button key={f} onClick={() => setActiveFilter(f)} className={`text-[9px] font-black px-3.5 py-2 rounded-full border transition-all whitespace-nowrap ${activeFilter === f ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-200' : 'bg-white border-slate-200 text-slate-500 hover:border-indigo-300'}`}>{f}</button>
             ))}
           </div>
         </div>
@@ -306,7 +301,6 @@ const App = () => {
           {filteredRooms.map(room => (
             <div key={room.id} onClick={() => openRoomDetail(room)} className="bg-white rounded-[32px] shadow-sm border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer group">
               <div className="relative">
-                {/* Passing room name untuk Alt Text SEO */}
                 <ImageSlider images={room.images} heightClass="h-56" roundedClass="rounded-t-[32px]" altPrefix={`Interior ${room.name} Sentul Tower`} />
                 <div className="absolute top-4 left-4 flex gap-2 pointer-events-none z-20">
                   <span className="bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest">{room.type}</span>
@@ -355,7 +349,6 @@ const App = () => {
             <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-white p-3 rounded-2xl hover:scale-110 active:scale-95 transition-all shadow-xl flex items-center justify-center">
               <GoogleMapsLogo />
             </a>
-            {/* Tombol WA Hijau - Optimasi CTR */}
             <button onClick={() => handleWaClick()} className="bg-[#25D366] p-3 rounded-2xl hover:scale-110 active:scale-95 transition-all shadow-xl shadow-green-900/30">
               <MessageCircle className="text-white" size={24} />
             </button>
