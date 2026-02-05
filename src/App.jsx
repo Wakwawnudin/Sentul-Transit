@@ -4,10 +4,10 @@ import {
   Home, MapPin, Maximize, Bed, Bath, Clock, Calendar, Shield, 
   Building, Phone, ChevronLeft, ChevronRight, CheckCircle2, 
   MessageCircle, Tv, Wind, Coffee, Utensils, Waves, Sparkles, 
-  UtensilsCrossed, Key, Wallet // IMPORT ICONS BARU (Key, Wallet)
+  UtensilsCrossed, Key, Wallet
 } from 'lucide-react';
 
-// --- KOMPONEN IMAGE SLIDER (UPDATED FOR SEO) ---
+// --- KOMPONEN IMAGE SLIDER ---
 const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32px]", altPrefix = "Apartemen Sentul Tower" }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef(null);
@@ -256,11 +256,12 @@ const App = () => {
         </div>
       </nav>
 
-      {/* Hero Header: IMAGE LEBIH TINGGI (h-[450px]) */}
+      {/* Hero Header: HAPUS WARNA BIRU/UNGU */}
       <header className="relative h-[450px] overflow-hidden">
         <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=1000" className="w-full h-full object-cover" alt="Apartemen Sentul Tower View Gunung" />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/40 to-transparent flex flex-col justify-end p-6">
-          <div className="flex items-center gap-1.5 bg-indigo-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full w-fit mb-2">
+          {/* Badge: Hitam & Emas */}
+          <div className="flex items-center gap-1.5 bg-slate-900 border border-slate-800 text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-full w-fit mb-3 shadow-lg">
             <MapPin size={10} /> DEKAT AEON MALL SENTUL
           </div>
           <h1 className="text-2xl font-black text-white leading-tight uppercase tracking-tight">Apartemen Sentul Tower</h1>
@@ -268,29 +269,31 @@ const App = () => {
         </div>
       </header>
 
-      {/* Ringkasan Harga */}
+      {/* Ringkasan Harga: REVISI WARNA (Hitam & Emas) */}
       <section className="px-4 -mt-6 relative z-10">
-        <div className="bg-white rounded-[24px] shadow-2xl shadow-indigo-100/50 border border-slate-100 p-4 grid grid-cols-2 gap-3">
-          <div className="bg-indigo-50/50 p-4 rounded-2xl flex flex-col items-center border border-indigo-100">
-            <Clock className="text-indigo-600 mb-1.5" size={18} />
+        <div className="bg-white rounded-[24px] shadow-2xl shadow-slate-200/50 border border-slate-100 p-4 grid grid-cols-2 gap-3">
+          <div className="bg-slate-50 p-4 rounded-2xl flex flex-col items-center border border-slate-100">
+            {/* Ikon Emas */}
+            <Clock className="text-[#D4AF37] mb-1.5" size={18} />
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Transit</span>
-            <span className="text-sm font-black text-indigo-700 underline decoration-indigo-200 decoration-2 underline-offset-4 tracking-tight">Mulai 150rb</span>
+            <span className="text-sm font-black text-slate-800 underline decoration-[#D4AF37]/50 decoration-2 underline-offset-4 tracking-tight">Mulai 150rb</span>
           </div>
-          <div className="bg-indigo-50/50 p-4 rounded-2xl flex flex-col items-center border border-indigo-100">
-            <Calendar className="text-indigo-600 mb-1.5" size={18} />
+          <div className="bg-slate-50 p-4 rounded-2xl flex flex-col items-center border border-slate-100">
+            {/* Ikon Emas */}
+            <Calendar className="text-[#D4AF37] mb-1.5" size={18} />
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Fullday</span>
-            <span className="text-sm font-black text-indigo-700 underline decoration-indigo-200 decoration-2 underline-offset-4 tracking-tight">Mulai 300rb</span>
+            <span className="text-sm font-black text-slate-800 underline decoration-[#D4AF37]/50 decoration-2 underline-offset-4 tracking-tight">Mulai 300rb</span>
           </div>
         </div>
       </section>
 
-      {/* Katalog & Filter */}
+      {/* Katalog & Filter: REVISI WARNA (Hitam & Emas) */}
       <section className="px-4 py-8">
         <div className="flex flex-col gap-4 mb-6 md:flex-row md:justify-between md:items-center">
           <h2 className="text-lg font-black text-slate-800 uppercase tracking-widest">KATALOG APARTEMEN</h2>
           <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1 md:pb-0">
             {['Semua', 'Studio', '1BR', '2BR'].map(f => (
-              <button key={f} onClick={() => setActiveFilter(f)} className={`text-[9px] font-black px-3.5 py-2 rounded-full border transition-all whitespace-nowrap ${activeFilter === f ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-200' : 'bg-white border-slate-200 text-slate-500 hover:border-indigo-300'}`}>{f}</button>
+              <button key={f} onClick={() => setActiveFilter(f)} className={`text-[9px] font-black px-3.5 py-2 rounded-full border transition-all whitespace-nowrap ${activeFilter === f ? 'bg-slate-900 border-slate-900 text-[#D4AF37] shadow-lg' : 'bg-white border-slate-200 text-slate-500 hover:border-[#D4AF37] hover:text-[#D4AF37]'}`}>{f}</button>
             ))}
           </div>
         </div>
@@ -301,8 +304,8 @@ const App = () => {
               <div className="relative">
                 <ImageSlider images={room.images} heightClass="h-56" roundedClass="rounded-t-[32px]" altPrefix={`Interior ${room.name} Sentul Tower`} />
                 <div className="absolute top-4 left-4 flex gap-2 pointer-events-none z-20">
-                  <span className="bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest">{room.type}</span>
-                  {room.type === '2BR' && <span className="bg-amber-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg">PREMIUM</span>}
+                  <span className="bg-black/70 backdrop-blur-md text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest">{room.type}</span>
+                  {room.type === '2BR' && <span className="bg-[#D4AF37] text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg">PREMIUM</span>}
                 </div>
               </div>
               
@@ -316,9 +319,10 @@ const App = () => {
                 <div className="flex justify-between items-end pt-5 border-t border-slate-50">
                   <div>
                     <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1">Harga Mulai</p>
-                    <p className="text-2xl font-black text-indigo-600 tracking-tight">Rp {room.startFrom}</p>
+                    <p className="text-2xl font-black text-slate-900 tracking-tight">Rp {room.startFrom}</p>
                   </div>
-                  <button className="bg-indigo-600 text-white font-bold px-6 py-3 rounded-2xl text-[11px] uppercase tracking-widest shadow-lg shadow-indigo-100">Detail Kamar</button>
+                  {/* Tombol Detail: Hitam Elegan */}
+                  <button className="bg-slate-900 text-white font-bold px-6 py-3 rounded-2xl text-[11px] uppercase tracking-widest shadow-lg shadow-slate-200">Detail Kamar</button>
                 </div>
               </div>
             </div>
@@ -332,41 +336,35 @@ const App = () => {
           <h3 className="text-2xl font-black mb-3 uppercase tracking-tighter italic">Apartemen Sentul Tower</h3>
           <p className="text-slate-400 text-[11px] leading-relaxed mb-8 font-medium italic">"Privasi dan Kenyamanan Anda Adalah Prioritas Kami"</p>
           
-          {/* --- BAGIAN BARU: INSTRUKSI CARA ORDER --- */}
           <div className="mb-10">
              <h4 className="text-[11px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-5 text-center">Cara Order Mudah</h4>
              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                {/* Step 1 */}
                 <div className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center text-center group hover:bg-slate-800 transition-colors">
                    <MessageCircle className="text-[#D4AF37] mb-2 group-hover:scale-110 transition-transform" size={22} />
                    <span className="text-[10px] font-bold text-slate-200 uppercase tracking-wide">1. Chat WhatsApp</span>
                 </div>
-                {/* Step 2 */}
                 <div className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center text-center group hover:bg-slate-800 transition-colors">
                    <MapPin className="text-[#D4AF37] mb-2 group-hover:scale-110 transition-transform" size={22} />
                    <span className="text-[10px] font-bold text-slate-200 uppercase tracking-wide">2. Datang Lokasi</span>
                 </div>
-                {/* Step 3 */}
                 <div className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center text-center group hover:bg-slate-800 transition-colors">
                    <Key className="text-[#D4AF37] mb-2 group-hover:scale-110 transition-transform" size={22} />
                    <span className="text-[10px] font-bold text-slate-200 uppercase tracking-wide">3. Ambil Kunci</span>
                 </div>
-                {/* Step 4 */}
                 <div className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center text-center group hover:bg-slate-800 transition-colors">
                    <Wallet className="text-[#D4AF37] mb-2 group-hover:scale-110 transition-transform" size={22} />
                    <span className="text-[10px] font-bold text-slate-200 uppercase tracking-wide">4. Bayar di Tempat</span>
                 </div>
              </div>
           </div>
-          {/* ---------------------------------------- */}
 
           <div className="space-y-3 mb-10">
             <div className="flex items-center gap-3 bg-slate-800/60 p-3.5 rounded-2xl border border-slate-700/50 shadow-sm">
-              <CheckCircle2 className="text-indigo-400" size={18} />
+              <CheckCircle2 className="text-[#D4AF37]" size={18} />
               <span className="text-xs font-bold uppercase tracking-widest text-slate-200">Checkout Jam 12 Siang</span>
             </div>
             <div className="flex items-center gap-3 bg-slate-800/60 p-3.5 rounded-2xl border border-slate-700/50 shadow-sm">
-              <UtensilsCrossed className="text-indigo-400" size={18} />
+              <UtensilsCrossed className="text-[#D4AF37]" size={18} />
               <span className="text-xs font-bold uppercase tracking-widest text-slate-200">Resto 24jam Siap Antar</span>
             </div>
           </div>
@@ -379,12 +377,12 @@ const App = () => {
               <MessageCircle className="text-white" size={24} />
             </button>
             <div className="h-6 w-[1px] bg-slate-700"></div>
-            <p className="text-[10px] font-black text-indigo-400 tracking-widest uppercase text-center leading-tight">
+            <p className="text-[10px] font-black text-[#D4AF37] tracking-widest uppercase text-center leading-tight">
               Apartemen<br/>Sentul Tower
             </p>
           </div>
         </div>
-        <div className="absolute top-[-20%] right-[-10%] w-48 h-48 bg-indigo-600/10 rounded-full blur-3xl"></div>
+        <div className="absolute top-[-20%] right-[-10%] w-48 h-48 bg-[#D4AF37]/10 rounded-full blur-3xl"></div>
       </footer>
 
       {/* Modal Detail */}
@@ -395,7 +393,7 @@ const App = () => {
             <div className="flex items-center justify-between mb-6">
               <button 
                 onClick={closeRoomDetail}
-                className="flex items-center gap-1.5 text-indigo-600 font-black text-[11px] uppercase tracking-widest bg-indigo-50 px-4 py-2.5 rounded-2xl active:scale-95 transition-all"
+                className="flex items-center gap-1.5 text-slate-900 font-black text-[11px] uppercase tracking-widest bg-slate-100 px-4 py-2.5 rounded-2xl active:scale-95 transition-all"
               >
                 <ChevronLeft size={18} /> Kembali
               </button>
@@ -406,7 +404,7 @@ const App = () => {
             <div className="relative mb-6">
                <ImageSlider images={selectedRoom.images} heightClass="h-72" roundedClass="rounded-[32px]" altPrefix={`Detail ${selectedRoom.name} Sentul`} />
                <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-xl shadow-sm z-20">
-                  <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Pilihan {selectedRoom.type}</p>
+                  <p className="text-[10px] font-black text-[#D4AF37] uppercase tracking-widest">Pilihan {selectedRoom.type}</p>
                </div>
             </div>
             
@@ -415,24 +413,24 @@ const App = () => {
 
             <div className="space-y-6 mb-8">
               <div className="bg-slate-50 p-5 rounded-[32px] border border-slate-100 shadow-inner">
-                <h4 className="text-[10px] font-black text-slate-400 flex items-center gap-2 mb-5 uppercase tracking-[0.2em]"><Clock size={14} className="text-indigo-600"/> Paket Harga Transit</h4>
+                <h4 className="text-[10px] font-black text-slate-400 flex items-center gap-2 mb-5 uppercase tracking-[0.2em]"><Clock size={14} className="text-[#D4AF37]"/> Paket Harga Transit</h4>
                 <div className="grid grid-cols-2 gap-3">
                   {selectedRoom.transit.map((p, i) => (
                     <div key={i} className="bg-white p-4 rounded-2xl border border-slate-200/50 shadow-sm flex flex-col items-center">
                       <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">{p.label}</p>
-                      <p className="text-sm font-black text-indigo-700 tracking-tight">{p.price}</p>
+                      <p className="text-sm font-black text-slate-800 tracking-tight">{p.price}</p>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="bg-indigo-50/40 p-5 rounded-[32px] border border-indigo-100 shadow-sm">
-                <h4 className="text-[10px] font-black text-indigo-400 flex items-center gap-2 mb-5 uppercase tracking-[0.2em]"><Calendar size={14}/> Paket Harga Fullday</h4>
+              <div className="bg-[#D4AF37]/10 p-5 rounded-[32px] border border-[#D4AF37]/20 shadow-sm">
+                <h4 className="text-[10px] font-black text-[#D4AF37] flex items-center gap-2 mb-5 uppercase tracking-[0.2em]"><Calendar size={14}/> Paket Harga Fullday</h4>
                 <div className="space-y-3">
                   {selectedRoom.fullday.map((p, i) => (
-                    <div key={i} className="flex justify-between items-center bg-white p-4 rounded-2xl border border-indigo-50 shadow-sm">
+                    <div key={i} className="flex justify-between items-center bg-white p-4 rounded-2xl border border-[#D4AF37]/10 shadow-sm">
                       <p className="text-[10px] font-black text-slate-600 uppercase tracking-tight">{p.label}</p>
-                      <p className="text-sm font-black text-indigo-700 tracking-tight">{p.price}</p>
+                      <p className="text-sm font-black text-slate-900 tracking-tight">{p.price}</p>
                     </div>
                   ))}
                   <div className="pt-2">
@@ -454,7 +452,7 @@ const App = () => {
               <div className="grid grid-cols-2 gap-y-5 gap-x-4">
                 {selectedRoom.specs.map((spec, i) => (
                   <div key={i} className="flex items-center gap-3">
-                    <div className="w-9 h-9 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 shadow-sm border border-indigo-100/50">
+                    <div className="w-9 h-9 bg-slate-50 rounded-xl flex items-center justify-center text-[#D4AF37] shadow-sm border border-slate-100">
                       {spec.icon}
                     </div>
                     <span className="text-[11px] font-bold text-slate-700 leading-tight tracking-tight uppercase">{spec.text}</span>
