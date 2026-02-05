@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Analytics } from '@vercel/analytics/react'; // <-- IMPORT YANG BENAR UNTUK VITE
+import { Analytics } from '@vercel/analytics/react';
 import { 
   Home, MapPin, Maximize, Bed, Bath, Clock, Calendar, Shield, 
   Building, Phone, ChevronLeft, ChevronRight, CheckCircle2, 
@@ -7,8 +7,9 @@ import {
   UtensilsCrossed
 } from 'lucide-react';
 
-// --- KOMPONEN IMAGE SLIDER ---
-const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32px]" }) => {
+// --- KOMPONEN IMAGE SLIDER (UPDATED FOR SEO) ---
+// Menambahkan prop 'altPrefix' untuk SEO Alt Text pada gambar
+const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32px]", altPrefix = "Apartemen Sentul Tower" }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef(null);
 
@@ -38,7 +39,6 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
 
   return (
     <div className={`relative w-full ${heightClass} group`}>
-      {/* Scrollable Container */}
       <div 
         ref={scrollRef}
         onScroll={handleScroll}
@@ -50,15 +50,14 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
             key={idx}
             src={img} 
             className="w-full h-full object-cover shrink-0 snap-center" 
-            alt={`Slide ${idx}`} 
+            // SEO UPDATE: Dynamic Alt Text
+            alt={`${altPrefix} - View ${idx + 1} - Fasilitas Lengkap`} 
           />
         ))}
       </div>
 
-      {/* Overlay Gradient */}
       <div className={`absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none ${roundedClass}`}></div>
 
-      {/* Indikator Dots */}
       <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-10">
         {images.map((_, idx) => (
           <div 
@@ -68,7 +67,6 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
         ))}
       </div>
 
-      {/* Tombol Navigasi Desktop */}
       <div className="absolute inset-y-0 left-2 flex items-center opacity-0 group-hover:opacity-100 transition-opacity md:flex hidden">
         <button onClick={scrollPrev} className="bg-white/30 hover:bg-white/50 backdrop-blur text-white p-1 rounded-full"><ChevronLeft size={20}/></button>
       </div>
@@ -79,7 +77,6 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
   );
 };
 
-// Komponen Logo Google Maps
 const GoogleMapsLogo = () => (
   <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#4285F4"/>
@@ -95,7 +92,6 @@ const App = () => {
   const [activeFilter, setActiveFilter] = useState('Semua');
   const [selectedRoom, setSelectedRoom] = useState(null);
 
-  // Konfigurasi
   const waNumber = "6283830033717";
   const mapsLink = "https://share.google/490MII2W8A99899m7";
 
@@ -123,8 +119,8 @@ const App = () => {
 
   const handleWaClick = (roomName = "") => {
     const text = roomName 
-      ? `Halo, saya ingin booking unit ${roomName} di Sentul Tower Apartment.` 
-      : "Halo";
+      ? `Halo, saya tertarik dengan ${roomName} di Apartemen Sentul Tower (Info dari Website).` 
+      : "Halo, saya mau tanya sewa Apartemen Sentul Tower.";
     window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`, '_blank');
   };
 
@@ -150,6 +146,7 @@ const App = () => {
     { label: 'Weekend (Jum-Min)', price: 'Rp 700.000' },
   ];
 
+  // --- DATA KAMAR DENGAN INJEKSI KEYWORD SEO ---
   const rooms = [
     {
       id: 1,
@@ -165,7 +162,8 @@ const App = () => {
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155232.jpg',
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155201.jpg'
       ],
-      description: 'Unit studio minimalis dengan interior modern yang sangat nyaman untuk istirahat sejenak atau staycation harian.',
+      // Keyword: Sewa harian, dekat AEON Mall
+      description: 'Unit studio minimalis yang cocok untuk sewa harian. Lokasi strategis dekat AEON Mall Sentul City, ideal untuk istirahat sejenak setelah berbelanja atau bekerja.',
       startFrom: '150rb',
       transit: defaultTransit,
       fullday: defaultFullday,
@@ -194,7 +192,8 @@ const App = () => {
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155345.jpg',
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155332.jpg'
       ],
-      description: 'Unit dengan kamar tidur terpisah dan ruang tamu yang luas untuk privasi maksimal.',
+      // Keyword: Apartemen murah sentul, privasi maksimal
+      description: 'Pilihan terbaik apartemen murah Sentul dengan ruang tamu terpisah. Menawarkan privasi maksimal untuk pasangan atau profesional yang membutuhkan ketenangan.',
       startFrom: '150rb',
       transit: defaultTransit,
       fullday: defaultFullday,
@@ -221,7 +220,8 @@ const App = () => {
         'https://ik.imagekit.io/x06namgbin/20260125_153129.jpg?updatedAt=1769330366255',
         'https://ik.imagekit.io/x06namgbin/20260125_153156.jpg?updatedAt=1769330366650'
       ],
-      description: 'Unit paling luas dengan 2 kamar tidur, sangat pas untuk keluarga atau grup kecil.',
+      // Keyword: Transit 3 jam, Staycation keluarga
+      description: 'Unit luas untuk staycation keluarga atau grup. Tersedia opsi transit 3 jam Sentul Tower yang fleksibel. Nikmati pemandangan gunung dan fasilitas lengkap.',
       startFrom: '200rb',
       transit: specialTransit2BR,
       fullday: specialFullday2BR,
@@ -242,39 +242,35 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-24">
-      {/* Navbar Updated: Ada Google Maps di sebelah tombol Telepon */}
+      {/* Navbar */}
       <nav className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 py-3 flex justify-between items-center shadow-sm">
-        {/* Kiri: Brand */}
         <div className="flex items-center gap-2">
           <div className="bg-indigo-600 p-1.5 rounded-lg text-white shadow-lg shadow-indigo-200">
             <Building size={20} />
           </div>
-          <span className="font-bold text-lg tracking-tight text-indigo-950 uppercase">Sentul Tower</span>
+          <span className="font-bold text-lg tracking-tight text-indigo-950 uppercase">Apartemen Sentul Tower</span>
         </div>
 
-        {/* Kanan: Actions (Maps & Call) */}
         <div className="flex items-center gap-2">
-          {/* Tombol Maps */}
           <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-white p-2.5 rounded-full border border-slate-200 shadow-sm active:scale-90 transition-transform flex items-center justify-center">
              <GoogleMapsLogo />
           </a>
-          
-          {/* Tombol Call/WA */}
           <button onClick={() => handleWaClick()} className="bg-green-50 text-green-600 p-2.5 rounded-full border border-green-100 active:scale-90 transition-transform">
             <Phone size={18} />
           </button>
         </div>
       </nav>
 
-      {/* Hero */}
+      {/* Hero Header: SEO H1 */}
       <header className="relative h-[220px] overflow-hidden">
-        <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=1000" className="w-full h-full object-cover" alt="Apartemen Sentul Tower" />
+        <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=1000" className="w-full h-full object-cover" alt="Apartemen Sentul Tower View Gunung" />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/40 to-transparent flex flex-col justify-end p-6">
           <div className="flex items-center gap-1.5 bg-indigo-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full w-fit mb-2">
-            <MapPin size={10} /> SENTUL CITY, BOGOR
+            <MapPin size={10} /> DEKAT AEON MALL SENTUL
           </div>
-          <h1 className="text-2xl font-black text-white leading-tight uppercase tracking-tight">Sentul Tower Apartment</h1>
-          <p className="text-slate-200 text-xs italic font-medium">Tempat terbaik untuk Transit & Staycation di Sentul</p>
+          {/* H1 Tag Utama */}
+          <h1 className="text-2xl font-black text-white leading-tight uppercase tracking-tight">Apartemen Sentul Tower</h1>
+          <p className="text-slate-200 text-xs italic font-medium">Solusi Staycation Nyaman di Sentul City</p>
         </div>
       </header>
 
@@ -297,7 +293,8 @@ const App = () => {
       {/* Katalog & Filter */}
       <section className="px-4 py-8">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-lg font-black text-slate-800 uppercase tracking-widest">Katalog Unit</h2>
+          {/* SEO H2: Keyword Targeting */}
+          <h2 className="text-lg font-black text-slate-800 uppercase tracking-widest">Katalog Apartemen Murah Sentul</h2>
           <div className="flex gap-1.5">
             {['Semua', 'Studio', '1BR', '2BR'].map(f => (
               <button key={f} onClick={() => setActiveFilter(f)} className={`text-[9px] font-black px-3.5 py-2 rounded-full border transition-all ${activeFilter === f ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-200' : 'bg-white border-slate-200 text-slate-500 hover:border-indigo-300'}`}>{f}</button>
@@ -309,10 +306,8 @@ const App = () => {
           {filteredRooms.map(room => (
             <div key={room.id} onClick={() => openRoomDetail(room)} className="bg-white rounded-[32px] shadow-sm border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer group">
               <div className="relative">
-                {/* SLIDER DI CARD UTAMA */}
-                <ImageSlider images={room.images} heightClass="h-56" roundedClass="rounded-t-[32px]" />
-                
-                {/* Labels tetap di atas Slider */}
+                {/* Passing room name untuk Alt Text SEO */}
+                <ImageSlider images={room.images} heightClass="h-56" roundedClass="rounded-t-[32px]" altPrefix={`Interior ${room.name} Sentul Tower`} />
                 <div className="absolute top-4 left-4 flex gap-2 pointer-events-none z-20">
                   <span className="bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest">{room.type}</span>
                   {room.type === '2BR' && <span className="bg-amber-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg">PREMIUM</span>}
@@ -342,7 +337,7 @@ const App = () => {
       {/* Footer */}
       <footer className="bg-slate-900 text-white p-8 mx-4 rounded-[40px] mb-8 shadow-2xl relative overflow-hidden">
         <div className="relative z-10">
-          <h3 className="text-2xl font-black mb-3 uppercase tracking-tighter italic">Sentul Tower Apartment</h3>
+          <h3 className="text-2xl font-black mb-3 uppercase tracking-tighter italic">Apartemen Sentul Tower</h3>
           <p className="text-slate-400 text-[11px] leading-relaxed mb-8 font-medium italic">"Privasi dan Kenyamanan Anda Adalah Prioritas Kami"</p>
           
           <div className="space-y-3 mb-10">
@@ -360,12 +355,13 @@ const App = () => {
             <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-white p-3 rounded-2xl hover:scale-110 active:scale-95 transition-all shadow-xl flex items-center justify-center">
               <GoogleMapsLogo />
             </a>
-            <button onClick={() => handleWaClick()} className="bg-green-600 p-3 rounded-2xl hover:scale-110 active:scale-95 transition-all shadow-xl shadow-green-900/30">
+            {/* Tombol WA Hijau - Optimasi CTR */}
+            <button onClick={() => handleWaClick()} className="bg-[#25D366] p-3 rounded-2xl hover:scale-110 active:scale-95 transition-all shadow-xl shadow-green-900/30">
               <MessageCircle className="text-white" size={24} />
             </button>
             <div className="h-6 w-[1px] bg-slate-700"></div>
             <p className="text-[10px] font-black text-indigo-400 tracking-widest uppercase text-center leading-tight">
-              Apartemen<br/>Sentul Transit
+              Apartemen<br/>Sentul Tower
             </p>
           </div>
         </div>
@@ -377,7 +373,6 @@ const App = () => {
         <div className="fixed inset-0 z-50 flex items-end justify-center">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={closeRoomDetail}></div>
           <div className="bg-white w-full max-w-md rounded-t-[40px] relative z-10 p-7 animate-slide-up overflow-y-auto max-h-[95vh] no-scrollbar shadow-2xl">
-            {/* Header dengan Tombol Kembali */}
             <div className="flex items-center justify-between mb-6">
               <button 
                 onClick={closeRoomDetail}
@@ -390,9 +385,7 @@ const App = () => {
             </div>
             
             <div className="relative mb-6">
-               {/* SLIDER DI MODAL DETAIL */}
-               <ImageSlider images={selectedRoom.images} heightClass="h-72" roundedClass="rounded-[32px]" />
-               
+               <ImageSlider images={selectedRoom.images} heightClass="h-72" roundedClass="rounded-[32px]" altPrefix={`Detail ${selectedRoom.name} Sentul`} />
                <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-xl shadow-sm z-20">
                   <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Pilihan {selectedRoom.type}</p>
                </div>
@@ -401,7 +394,6 @@ const App = () => {
             <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-2 tracking-tight">{selectedRoom.name}</h2>
             <p className="text-slate-500 text-sm mb-8 leading-relaxed font-medium">{selectedRoom.description}</p>
 
-            {/* Bagian Harga */}
             <div className="space-y-6 mb-8">
               <div className="bg-slate-50 p-5 rounded-[32px] border border-slate-100 shadow-inner">
                 <h4 className="text-[10px] font-black text-slate-400 flex items-center gap-2 mb-5 uppercase tracking-[0.2em]"><Clock size={14} className="text-indigo-600"/> Paket Harga Transit</h4>
@@ -434,7 +426,6 @@ const App = () => {
               </div>
             </div>
 
-            {/* Seksi Spesifikasi Unit */}
             <div className="mb-10 px-1">
               <div className="flex items-center gap-3 mb-6">
                 <div className="h-[2px] bg-slate-100 flex-1"></div>
@@ -453,7 +444,7 @@ const App = () => {
               </div>
             </div>
 
-            <button onClick={() => handleWaClick(selectedRoom.name)} className="w-full bg-green-600 text-white font-black py-5 rounded-[24px] flex items-center justify-center gap-3 shadow-2xl shadow-green-200 active:scale-95 transition-all uppercase tracking-widest text-xs">
+            <button onClick={() => handleWaClick(selectedRoom.name)} className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-black py-5 rounded-[24px] flex items-center justify-center gap-3 shadow-2xl shadow-green-200 active:scale-95 transition-all uppercase tracking-widest text-xs">
               <MessageCircle size={20} /> Hubungi Lewat WhatsApp
             </button>
           </div>
@@ -463,11 +454,11 @@ const App = () => {
       {/* FAB (Floating Action Button) */}
       {!selectedRoom && (
         <div className="fixed bottom-6 left-0 right-0 px-6 z-40">
-          <div onClick={() => handleWaClick()} className="bg-indigo-600 text-white shadow-2xl rounded-[24px] p-5 flex justify-between items-center max-w-sm mx-auto animate-bounce-subtle cursor-pointer active:scale-95 transition-transform">
+          <div onClick={() => handleWaClick()} className="bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-2xl rounded-[24px] p-5 flex justify-between items-center max-w-sm mx-auto animate-bounce-subtle cursor-pointer active:scale-95 transition-transform">
             <div className="flex items-center gap-4">
               <div className="w-11 h-11 rounded-2xl bg-white/20 flex items-center justify-center backdrop-blur-md shadow-inner"><Clock size={24} /></div>
               <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">Sentul Tower</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">Apartemen Sentul Tower</p>
                 <p className="text-sm font-black tracking-tight">Booking Cepat Via WA</p>
               </div>
             </div>
@@ -483,12 +474,10 @@ const App = () => {
         .animate-bounce-subtle { animation: bounce-subtle 4s infinite ease-in-out; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        /* Smooth Scroll Snap */
         .snap-mandatory { scroll-snap-type: x mandatory; }
         .snap-center { scroll-snap-align: center; }
       `}} />
       
-      {/* VERCEL ANALYTICS COMPONENT */}
       <Analytics />
     </div>
   );
