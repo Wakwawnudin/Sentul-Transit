@@ -4,7 +4,7 @@ import {
   Home, MapPin, Maximize, Bed, Bath, Clock, Calendar, Shield, 
   Building, Phone, ChevronLeft, ChevronRight, CheckCircle2, 
   MessageCircle, Tv, Wind, Coffee, Utensils, Waves, Sparkles, 
-  UtensilsCrossed
+  UtensilsCrossed, Key, Wallet // IMPORT ICONS BARU (Key, Wallet)
 } from 'lucide-react';
 
 // --- KOMPONEN IMAGE SLIDER (UPDATED FOR SEO) ---
@@ -236,14 +236,14 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-24">
-      {/* Navbar: AESTHETIC FIX */}
+      {/* Navbar: LOGO ST EMAS */}
       <nav className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 py-3 flex justify-between items-center shadow-sm">
         <div className="flex items-center gap-2">
-          <div className="bg-indigo-600 p-1.5 rounded-lg text-white shadow-lg shadow-indigo-200">
-            <Building size={20} />
+          {/* Logo ST Emas Premium */}
+          <div className="p-1 rounded-lg">
+            <span className="font-black text-2xl text-[#D4AF37] tracking-tighter drop-shadow-sm leading-none">ST</span>
           </div>
-          {/* FONT SIZE ADJUSTED: text-sm untuk mobile, text-lg untuk desktop */}
-          <span className="font-bold text-sm md:text-lg tracking-tight text-indigo-950 uppercase">Apartemen Sentul Tower</span>
+          <span className="font-bold text-sm md:text-lg tracking-tight text-slate-800 uppercase">Apartemen Sentul Tower</span>
         </div>
 
         <div className="flex items-center gap-2">
@@ -256,8 +256,8 @@ const App = () => {
         </div>
       </nav>
 
-      {/* Hero Header */}
-      <header className="relative h-[220px] overflow-hidden">
+      {/* Hero Header: IMAGE LEBIH TINGGI (h-[450px]) */}
+      <header className="relative h-[450px] overflow-hidden">
         <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=1000" className="w-full h-full object-cover" alt="Apartemen Sentul Tower View Gunung" />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/40 to-transparent flex flex-col justify-end p-6">
           <div className="flex items-center gap-1.5 bg-indigo-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full w-fit mb-2">
@@ -284,11 +284,9 @@ const App = () => {
         </div>
       </section>
 
-      {/* Katalog & Filter: LAYOUT & TEXT FIX */}
+      {/* Katalog & Filter */}
       <section className="px-4 py-8">
-        {/* Layout berubah jadi flex-col (atas bawah) di mobile, flex-row (samping) di desktop */}
         <div className="flex flex-col gap-4 mb-6 md:flex-row md:justify-between md:items-center">
-          {/* Judul diperpendek sesuai request */}
           <h2 className="text-lg font-black text-slate-800 uppercase tracking-widest">KATALOG APARTEMEN</h2>
           <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1 md:pb-0">
             {['Semua', 'Studio', '1BR', '2BR'].map(f => (
@@ -334,6 +332,34 @@ const App = () => {
           <h3 className="text-2xl font-black mb-3 uppercase tracking-tighter italic">Apartemen Sentul Tower</h3>
           <p className="text-slate-400 text-[11px] leading-relaxed mb-8 font-medium italic">"Privasi dan Kenyamanan Anda Adalah Prioritas Kami"</p>
           
+          {/* --- BAGIAN BARU: INSTRUKSI CARA ORDER --- */}
+          <div className="mb-10">
+             <h4 className="text-[11px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-5 text-center">Cara Order Mudah</h4>
+             <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                {/* Step 1 */}
+                <div className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center text-center group hover:bg-slate-800 transition-colors">
+                   <MessageCircle className="text-[#D4AF37] mb-2 group-hover:scale-110 transition-transform" size={22} />
+                   <span className="text-[10px] font-bold text-slate-200 uppercase tracking-wide">1. Chat WhatsApp</span>
+                </div>
+                {/* Step 2 */}
+                <div className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center text-center group hover:bg-slate-800 transition-colors">
+                   <MapPin className="text-[#D4AF37] mb-2 group-hover:scale-110 transition-transform" size={22} />
+                   <span className="text-[10px] font-bold text-slate-200 uppercase tracking-wide">2. Datang Lokasi</span>
+                </div>
+                {/* Step 3 */}
+                <div className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center text-center group hover:bg-slate-800 transition-colors">
+                   <Key className="text-[#D4AF37] mb-2 group-hover:scale-110 transition-transform" size={22} />
+                   <span className="text-[10px] font-bold text-slate-200 uppercase tracking-wide">3. Ambil Kunci</span>
+                </div>
+                {/* Step 4 */}
+                <div className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center text-center group hover:bg-slate-800 transition-colors">
+                   <Wallet className="text-[#D4AF37] mb-2 group-hover:scale-110 transition-transform" size={22} />
+                   <span className="text-[10px] font-bold text-slate-200 uppercase tracking-wide">4. Bayar di Tempat</span>
+                </div>
+             </div>
+          </div>
+          {/* ---------------------------------------- */}
+
           <div className="space-y-3 mb-10">
             <div className="flex items-center gap-3 bg-slate-800/60 p-3.5 rounded-2xl border border-slate-700/50 shadow-sm">
               <CheckCircle2 className="text-indigo-400" size={18} />
