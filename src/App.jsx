@@ -7,10 +7,33 @@ import {
   UtensilsCrossed, Key, Wallet
 } from 'lucide-react';
 
-// --- KOMPONEN IMAGE SLIDER ---
+// --- KOMPONEN IMAGE SLIDER (DENGAN AUTO SLIDE) ---
 const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32px]", altPrefix = "Apartemen Sentul Tower" }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef(null);
+
+  // --- LOGIKA AUTO SLIDE ---
+  useEffect(() => {
+    // Jangan slide kalau gambar cuma 1
+    if (images.length <= 1) return;
+
+    const interval = setInterval(() => {
+      if (scrollRef.current) {
+        const { clientWidth } = scrollRef.current;
+        // Hitung index berikutnya (jika sudah terakhir, balik ke 0)
+        const nextIndex = (activeIndex + 1) % images.length;
+        
+        scrollRef.current.scrollTo({
+          left: nextIndex * clientWidth,
+          behavior: 'smooth'
+        });
+      }
+    }, 3500); // Slide setiap 3.5 detik
+
+    // Bersihkan interval saat komponen di-unmount atau user scroll manual (activeIndex berubah)
+    return () => clearInterval(interval);
+  }, [activeIndex, images.length]);
+  // -------------------------
 
   const handleScroll = () => {
     if (scrollRef.current) {
@@ -168,6 +191,8 @@ const App = () => {
       size: '24m²',
       beds: 1,
       images: [
+        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260206_023946.jpg', 
+        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260206_023934.jpg', 
         'https://images.unsplash.com/photo-1768383550694-adb7ddddad7d?q=80&w=1335&auto=format&fit=crop',
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155132.jpg',
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155244.jpg',
@@ -197,6 +222,7 @@ const App = () => {
       size: '38m²',
       beds: 1,
       images: [
+        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260206_023956.jpg', 
         'https://images.unsplash.com/photo-1768384554121-339e5c56b0e2?q=80&w=1335&auto=format&fit=crop',
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155148.jpg',
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155301.jpg',
