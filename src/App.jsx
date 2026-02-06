@@ -82,24 +82,24 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
   );
 };
 
-// --- KOMPONEN FAQ ITEM (ACCORDION) ---
+// --- KOMPONEN FAQ ITEM (DARK MODE VERSION) ---
 const FaqItem = ({ question, answer }) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="border-b border-slate-100 last:border-0">
+    <div className="border-b border-slate-700/50 last:border-0">
       <button 
         onClick={() => setIsOpen(!isOpen)} 
         className="w-full py-4 flex justify-between items-center text-left focus:outline-none group"
       >
-        <span className={`text-sm font-bold transition-colors ${isOpen ? 'text-[#D4AF37]' : 'text-slate-800'}`}>
+        <span className={`text-sm font-bold transition-colors ${isOpen ? 'text-[#D4AF37]' : 'text-slate-200'}`}>
           {question}
         </span>
-        {isOpen ? <ChevronUp size={18} className="text-[#D4AF37]" /> : <ChevronDown size={18} className="text-slate-400 group-hover:text-[#D4AF37]" />}
+        {isOpen ? <ChevronUp size={18} className="text-[#D4AF37]" /> : <ChevronDown size={18} className="text-slate-500 group-hover:text-[#D4AF37]" />}
       </button>
       <div 
         className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-96 opacity-100 mb-4' : 'max-h-0 opacity-0'}`}
       >
-        <p className="text-xs text-slate-500 leading-relaxed pr-4 font-medium">
+        <p className="text-xs text-slate-400 leading-relaxed pr-4 font-medium">
           {answer}
         </p>
       </div>
@@ -126,7 +126,7 @@ const App = () => {
   const waNumber = "6283830033717";
   const mapsLink = "https://share.google/490MII2W8A99899m7";
 
-  // --- LOGIKA REFERRAL SYSTEM (URL TETAP TERLIHAT) ---
+  // --- LOGIKA REFERRAL SYSTEM ---
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     const ref = queryParams.get('ref');
@@ -235,7 +235,7 @@ const App = () => {
       specs: [
         { icon: <Bed size={16}/>, text: '1 Queen + 1 Single Bed' }, { icon: <Wind size={16}/>, text: 'Full AC di Setiap Kamar' },
         { icon: <Tv size={16}/>, text: 'Smart TV & Home Theater' }, { icon: <UtensilsCrossed size={16}/>, text: 'Resto 24jam Siap Antar' },
-        { icon: <Utensils size={16}/>, text: 'Kitchen Set & Kulkas' }, { icon: <Waves size={16}/>, text: 'Water Heater & Bathup' },
+        { icon: <Utensils size={16}/>, text: 'Kitchen Set' }, { icon: <Waves size={16}/>, text: 'Water Heater & Bathup' },
         { icon: <Building size={16}/>, text: 'Ruang Keluarga Luas' }, { icon: <Maximize size={16}/>, text: 'Balkon Luas View Gunung' }
       ]
     }
@@ -243,58 +243,28 @@ const App = () => {
 
   const filteredRooms = activeFilter === 'Semua' ? rooms : rooms.filter(r => r.type === activeFilter);
 
-  // --- DATA LOKASI SEKITAR (SEO MAGNET) ---
+  // --- DATA UNTUK FOOTER ---
   const nearbyData = [
-    { name: "AEON Mall Sentul City", dist: "2 Menit", icon: <ShoppingBag size={18} className="text-[#D4AF37]"/> },
-    { name: "IKEA Sentul City", dist: "5 Menit", icon: <ShoppingBag size={18} className="text-[#D4AF37]"/> },
-    { name: "SICC (Convention Center)", dist: "7 Menit", icon: <Building size={18} className="text-[#D4AF37]"/> },
-    { name: "RS EMC Sentul", dist: "3 Menit", icon: <Shield size={18} className="text-[#D4AF37]"/> },
-    { name: "JungleLand Adventure", dist: "15 Menit", icon: <Palmtree size={18} className="text-[#D4AF37]"/> },
-    { name: "Pasar Ah Poong", dist: "10 Menit", icon: <Utensils size={18} className="text-[#D4AF37]"/> },
+    { name: "AEON Mall", dist: "2 Mnt", icon: <ShoppingBag size={14}/> },
+    { name: "IKEA Sentul", dist: "5 Mnt", icon: <ShoppingBag size={14}/> },
+    { name: "SICC", dist: "7 Mnt", icon: <Building size={14}/> },
+    { name: "RS EMC", dist: "3 Mnt", icon: <Shield size={14}/> },
+    { name: "JungleLand", dist: "15 Mnt", icon: <Palmtree size={14}/> },
+    { name: "Psr Ah Poong", dist: "10 Mnt", icon: <Utensils size={14}/> },
   ];
 
-  // --- DATA FAQ EXPANDED (SEO BOOSTER) ---
   const faqData = [
-    {
-      q: "Apakah bisa sewa transit per jam di Sentul Tower?",
-      a: "Bisa banget! Kami menyediakan paket transit fleksibel mulai dari 3 jam, 6 jam, hingga 12 jam. Cocok untuk istirahat sejenak, transit kerja, atau menunggu kemacetan Puncak reda."
-    },
-    {
-      q: "Berapa harga sewa apartemen harian & transit?",
-      a: "Harga termurah sewa transit mulai Rp 150.000 (Studio). Untuk sewa harian (Fullday) mulai Rp 300.000 saat weekday. Dapatkan harga promo spesial untuk booking via WhatsApp hari ini."
-    },
-    {
-      q: "Fasilitas apa saja yang didapat?",
-      a: "Unit Full Furnished: AC dingin, Smart TV (Netflix/Youtube), WiFi kencang, Water Heater, Kitchen Set, Kulkas, dan perlengkapan mandi gratis. Siap huni tinggal bawa badan."
-    },
-    {
-      q: "Apakah ada kolam renang di Apartemen Sentul Tower?",
-      a: "Ya, tersedia fasilitas kolam renang luas (Swimming Pool) di lantai podium yang bisa diakses menggunakan kartu akses tamu. Cocok untuk relaksasi atau bermain air bersama keluarga."
-    },
-    {
-      q: "Bagaimana privasi dan keamanannya?",
-      a: "Privasi Anda 100% aman. Akses lift menggunakan kartu akses khusus (Private Access Card). Gedung dijaga security 24 jam dan CCTV. Kami menjamin kerahasiaan data tamu."
-    },
-    {
-      q: "Apakah tersedia parkir mobil dan motor?",
-      a: "Tentu. Tersedia gedung parkir luas (Basement & Outdoor). Tarif parkir resmi pengelola gedung yang terjangkau. Keamanan kendaraan terjamin 24 jam."
-    },
-    {
-      q: "Lokasi dekat mana saja?",
-      a: "Sangat strategis! Seberang AEON Mall Sentul City, 5 menit ke IKEA, dekat SICC, RS EMC, Universitas Trisakti, dan Pintu Tol Sentul Selatan / Jagorawi."
-    },
-    {
-      q: "Cara Check-in dan Pembayaran?",
-      a: "Sangat mudah. Chat admin via WA -> Tentukan Jadwal -> Datang Lokasi. Bisa bayar di tempat (COD) cash atau transfer saat serah terima kunci di Lobi."
-    },
-    {
-      q: "Apakah butuh deposit?",
-      a: "Kebijakan deposit tergantung tipe unit, namun umumnya kami memudahkan tamu dengan syarat fleksibel (KTP Asli disimpan selama menginap). Hubungi admin untuk detailnya."
-    }
+    { q: "Bisa sewa transit?", a: "Bisa! Tersedia paket 3, 6, 12 jam. Cocok untuk istirahat singkat." },
+    { q: "Harga mulai berapa?", a: "Transit mulai 150rb, Fullday weekday mulai 300rb." },
+    { q: "Fasilitas apa saja?", a: "Full AC, Wifi, Netflix, Water Heater, Dapur, Alat Mandi." },
+    { q: "Ada kolam renang?", a: "Ya, kolam renang tersedia di lantai podium untuk tamu." },
+    { q: "Privasi aman?", a: "Sangat aman. Akses lift pakai kartu khusus & security 24 jam." },
+    { q: "Parkir tersedia?", a: "Ada gedung parkir luas (mobil & motor) tarif resmi gedung." },
+    { q: "Cara booking?", a: "Chat WA, pilih jadwal, datang. Bayar bisa Cash/Transfer di lokasi." }
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-24">
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-32"> {/* PADDING BOTTOM DITAMBAH */}
       {/* Navbar */}
       <nav className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 py-3 flex justify-between items-center shadow-sm">
         <div className="flex items-center gap-2">
@@ -382,93 +352,91 @@ const App = () => {
         </div>
       </section>
 
-      {/* --- BAGIAN BARU: JARAK LOKASI (SEO MAGNET) --- */}
-      <section className="px-4 py-4">
-        <div className="bg-slate-900 rounded-[32px] p-6 shadow-xl relative overflow-hidden">
-          <div className="relative z-10">
-             <div className="flex items-center gap-2 mb-6">
-                <MapPin className="text-[#D4AF37]" size={20} />
-                <h2 className="text-lg font-black text-white uppercase tracking-widest">LOKASI STRATEGIS</h2>
+      {/* --- MEGA FOOTER (LOKASI & FAQ PINDAH KESINI) --- */}
+      <footer className="bg-slate-900 text-white p-6 mx-4 rounded-[40px] mb-8 shadow-2xl relative overflow-hidden">
+        <div className="relative z-10">
+          
+          {/* BAGIAN 1: LOKASI (SEO MAGNET) - INTEGRATED */}
+          <div className="mb-10 pb-8 border-b border-slate-800/50">
+             <div className="flex items-center gap-2 mb-4">
+                <MapPin className="text-[#D4AF37]" size={16} />
+                <h3 className="text-xs font-black text-slate-300 uppercase tracking-widest">Lokasi Strategis</h3>
              </div>
-             <div className="grid grid-cols-2 gap-3">
+             <div className="grid grid-cols-2 gap-2">
                {nearbyData.map((item, idx) => (
-                 <div key={idx} className="bg-slate-800/50 p-3 rounded-xl border border-slate-700/50 flex items-center gap-3">
-                    <div className="bg-slate-900 p-2 rounded-lg text-[#D4AF37]">{item.icon}</div>
+                 <div key={idx} className="bg-slate-800/40 p-2.5 rounded-xl border border-slate-700/30 flex items-center gap-2.5">
+                    <div className="text-[#D4AF37]">{item.icon}</div>
                     <div>
-                      <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wide">{item.dist}</p>
-                      <p className="text-xs text-white font-bold leading-tight">{item.name}</p>
+                      <p className="text-[9px] text-slate-500 uppercase font-bold tracking-wider">{item.dist}</p>
+                      <p className="text-[10px] text-slate-200 font-bold leading-tight">{item.name}</p>
                     </div>
                  </div>
                ))}
              </div>
           </div>
-          <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-[#D4AF37]/20 rounded-full blur-3xl"></div>
-        </div>
-      </section>
 
-      {/* --- FAQ SECTION (DISINI POSISINYA SEKARANG) --- */}
-      <section className="px-4 py-8 bg-white/50 mb-8">
-        <div className="flex items-center gap-2 mb-6">
-          <HelpCircle className="text-[#D4AF37]" size={20} />
-          <h2 className="text-lg font-black text-slate-800 uppercase tracking-widest">TANYA JAWAB (FAQ)</h2>
-        </div>
-        <div className="bg-white rounded-[32px] border border-slate-100 shadow-sm p-6">
-          {faqData.map((item, index) => (
-            <FaqItem key={index} question={item.q} answer={item.a} />
-          ))}
-          <div className="mt-6 pt-6 border-t border-slate-100 text-center">
-             <p className="text-xs text-slate-400 mb-3">Masih ada pertanyaan lain?</p>
-             <button onClick={() => handleWaClick("chat")} className="text-xs font-bold text-[#D4AF37] hover:underline uppercase tracking-widest">
-                Chat Tim Kami via WhatsApp
-             </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-slate-900 text-white p-8 mx-4 rounded-[40px] mb-8 shadow-2xl relative overflow-hidden">
-        <div className="relative z-10">
-          <h3 className="text-2xl font-black mb-3 uppercase tracking-tighter italic">Apartemen Sentul Tower</h3>
-          <p className="text-slate-400 text-[11px] leading-relaxed mb-8 font-medium italic">"Privasi dan Kenyamanan Anda Adalah Prioritas Kami"</p>
-          
+          {/* BAGIAN 2: FAQ (SEO CONTENT) - INTEGRATED */}
           <div className="mb-10">
-             <h4 className="text-[11px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-5 text-center">Cara Order Mudah</h4>
-             <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                <div onClick={() => handleWaClick("chat")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center text-center group hover:bg-slate-800 transition-colors cursor-pointer active:scale-95">
-                   <MessageCircle className="text-[#D4AF37] mb-2 group-hover:scale-110 transition-transform" size={22} />
-                   <span className="text-[10px] font-bold text-slate-200 uppercase tracking-wide">1. Chat WhatsApp</span>
+            <div className="flex items-center gap-2 mb-4">
+              <HelpCircle className="text-[#D4AF37]" size={16} />
+              <h3 className="text-xs font-black text-slate-300 uppercase tracking-widest">Tanya Jawab</h3>
+            </div>
+            <div className="bg-slate-800/20 rounded-2xl border border-slate-700/30 p-4">
+              {faqData.map((item, index) => (
+                <FaqItem key={index} question={item.q} answer={item.a} />
+              ))}
+              <div className="mt-4 pt-4 border-t border-slate-700/50 text-center">
+                <button onClick={() => handleWaClick("chat")} className="text-[10px] font-bold text-[#D4AF37] hover:underline uppercase tracking-widest">
+                    Chat Admin via WhatsApp
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* BAGIAN 3: CARA ORDER (FOOTER ASLI) */}
+          <div className="text-center mb-8">
+             <h3 className="text-2xl font-black mb-2 uppercase tracking-tighter italic">Apartemen Sentul Tower</h3>
+             <p className="text-slate-500 text-[10px] mb-8 italic">"Privasi & Kenyamanan Prioritas Kami"</p>
+             
+             <h4 className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-4">Cara Order Mudah</h4>
+             <div className="grid grid-cols-4 gap-2">
+                {/* Icon-icon kecil */}
+                <div onClick={() => handleWaClick("chat")} className="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95">
+                   <MessageCircle className="text-[#D4AF37] mb-1" size={16} />
+                   <span className="text-[8px] font-bold text-slate-300 uppercase">Chat</span>
                 </div>
-                <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center text-center group hover:bg-slate-800 transition-colors cursor-pointer active:scale-95">
-                   <MapPin className="text-[#D4AF37] mb-2 group-hover:scale-110 transition-transform" size={22} />
-                   <span className="text-[10px] font-bold text-slate-200 uppercase tracking-wide">2. Datang Lokasi</span>
+                <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95">
+                   <MapPin className="text-[#D4AF37] mb-1" size={16} />
+                   <span className="text-[8px] font-bold text-slate-300 uppercase">Maps</span>
                 </a>
-                <div onClick={() => handleWaClick("key")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center text-center group hover:bg-slate-800 transition-colors cursor-pointer active:scale-95">
-                   <Key className="text-[#D4AF37] mb-2 group-hover:scale-110 transition-transform" size={22} />
-                   <span className="text-[10px] font-bold text-slate-200 uppercase tracking-wide">3. Ambil Kunci</span>
+                <div onClick={() => handleWaClick("key")} className="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95">
+                   <Key className="text-[#D4AF37] mb-1" size={16} />
+                   <span className="text-[8px] font-bold text-slate-300 uppercase">Kunci</span>
                 </div>
-                <div onClick={() => handleWaClick("payment")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center text-center group hover:bg-slate-800 transition-colors cursor-pointer active:scale-95">
-                   <Wallet className="text-[#D4AF37] mb-2 group-hover:scale-110 transition-transform" size={22} />
-                   <span className="text-[10px] font-bold text-slate-200 uppercase tracking-wide">4. Bayar di Tempat</span>
+                <div onClick={() => handleWaClick("payment")} className="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95">
+                   <Wallet className="text-[#D4AF37] mb-1" size={16} />
+                   <span className="text-[8px] font-bold text-slate-300 uppercase">Bayar</span>
                 </div>
              </div>
           </div>
-          <div className="flex items-center justify-center gap-6 pt-8 border-t border-slate-800">
-            <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-white p-3 rounded-2xl hover:scale-110 active:scale-95 transition-all shadow-xl flex items-center justify-center">
+
+          {/* COPYRIGHT & LINKS */}
+          <div className="flex items-center justify-center gap-6 pt-6 border-t border-slate-800">
+            <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-white p-2 rounded-xl hover:scale-110 active:scale-95 transition-all shadow-xl flex items-center justify-center">
               <GoogleMapsLogo />
             </a>
-            <button onClick={() => handleWaClick("general")} className="bg-[#25D366] p-3 rounded-2xl hover:scale-110 active:scale-95 transition-all shadow-xl shadow-green-900/30">
-              <MessageCircle className="text-white" size={24} />
+            <button onClick={() => handleWaClick("general")} className="bg-[#25D366] p-2 rounded-xl hover:scale-110 active:scale-95 transition-all shadow-xl shadow-green-900/30">
+              <MessageCircle className="text-white" size={20} />
             </button>
-            <div className="h-6 w-[1px] bg-slate-700"></div>
-            <p className="text-[10px] font-black text-[#D4AF37] tracking-widest uppercase text-center leading-tight">
+            <div className="h-5 w-[1px] bg-slate-700"></div>
+            <p className="text-[9px] font-black text-[#D4AF37] tracking-widest uppercase text-center leading-tight">
               Apartemen<br/>Sentul Tower
             </p>
           </div>
-          {/* SEO HIDDEN TEXT (VERY BOTTOM) */}
-          <div className="mt-8 pt-4 border-t border-slate-800/50 text-center">
+          
+          <div className="mt-6 pt-4 border-t border-slate-800/50 text-center">
              <p className="text-[9px] text-slate-600 font-medium leading-relaxed">
-               Melayani sewa apartemen harian Sentul City, transit 3 jam, 6 jam, dekat SICC, IKEA, RS EMC, dan AEON Mall. 
-               Fasilitas kolam renang, gym, parkir aman. Solusi penginapan murah alternatif hotel di Bogor.
+               Melayani sewa apartemen harian Sentul City, transit 3 jam, 6 jam. Solusi penginapan murah alternatif hotel di Bogor.
              </p>
           </div>
         </div>
