@@ -127,14 +127,16 @@ const App = () => {
   const mapsLink = "https://share.google/490MII2W8A99899m7";
 
   useEffect(() => {
-    // --- JURUS BAJAK DOMAIN (LANI) ---
-    // Jika ada yang buka dari domain lama (kartu nama), lempar ke web baru + kode Lani
+    // --- 1. JURUS BAJAK DOMAIN (KHUSUS DOMAIN LAMA) ---
+    // Logika: Jika URL browser mengandung "apartsentul.cloud"
+    // Maka paksa pindah ke "apartemensentultower.com" dan tempel "?ref=Lani"
+    // Syarat: Di Vercel, "apartsentul.cloud" JANGAN di-redirect, tapi jadikan domain biasa.
     if (window.location.hostname.includes('apartsentul.cloud')) {
-      window.location.replace("https://apartemensentultower.com/?ref=Lanny");
+      window.location.replace("https://apartemensentultower.com/?ref=Lani");
       return; 
     }
 
-    // --- LOGIKA REFERRAL NORMAL ---
+    // --- 2. TANGKAP KODE REFERRAL (UNTUK SEMUA LINK) ---
     const queryParams = new URLSearchParams(window.location.search);
     const ref = queryParams.get('ref');
     if (ref) setRefCode(ref);
@@ -160,7 +162,7 @@ const App = () => {
 
   const handleWaClick = (messageType = "general", roomName = "") => {
     let text = "";
-    // --- UPDATED: Menggunakan "Info by" (Sesuai Kartu Nama) ---
+    // --- UPDATE: TEKS "Info by" SESUAI REQUEST ---
     const refTag = refCode ? `\n\n(Info by ${refCode})` : "";
     
     switch (messageType) {
@@ -252,7 +254,7 @@ const App = () => {
 
   const filteredRooms = activeFilter === 'Semua' ? rooms : rooms.filter(r => r.type === activeFilter);
 
-  // --- DATA FOOTER (PASAR BERSIH 1 MNT) ---
+  // --- DATA FOOTER ---
   const nearbyData = [
     { name: "AEON Mall", dist: "2 Mnt", icon: <ShoppingBag size={14}/> },
     { name: "IKEA Sentul", dist: "5 Mnt", icon: <ShoppingBag size={14}/> },
