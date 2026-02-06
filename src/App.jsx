@@ -153,7 +153,9 @@ const App = () => {
 
   const handleWaClick = (messageType = "general", roomName = "") => {
     let text = "";
-    const refTag = refCode ? `\n\n(Info dari: ${refCode})` : "";
+    // --- UPDATE: Menggunakan "Info by" ---
+    const refTag = refCode ? `\n\n(Info by ${refCode})` : "";
+    
     switch (messageType) {
       case "booking": text = `Halo, saya tertarik dengan unit ${roomName} di Apartemen Sentul Tower.${refTag}`; break;
       case "chat": text = `Halo, saya mau tanya-tanya tentang sewa Apartemen Sentul Tower.${refTag}`; break;
@@ -243,7 +245,7 @@ const App = () => {
 
   const filteredRooms = activeFilter === 'Semua' ? rooms : rooms.filter(r => r.type === activeFilter);
 
-  // --- DATA FOOTER (UPDATED: PASAR BERSIH 1 MNT) ---
+  // --- DATA FOOTER (PASAR BERSIH 1 MNT) ---
   const nearbyData = [
     { name: "AEON Mall", dist: "2 Mnt", icon: <ShoppingBag size={14}/> },
     { name: "IKEA Sentul", dist: "5 Mnt", icon: <ShoppingBag size={14}/> },
