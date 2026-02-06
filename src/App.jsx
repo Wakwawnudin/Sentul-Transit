@@ -5,7 +5,7 @@ import {
   Building, ChevronLeft, ChevronRight, CheckCircle2, 
   MessageCircle, Tv, Wind, Coffee, Utensils, Waves, Sparkles, 
   UtensilsCrossed, Key, Wallet, HelpCircle, ChevronDown, ChevronUp,
-  Car, ShoppingBag, Palmtree
+  ShoppingBag, Palmtree
 } from 'lucide-react';
 
 // --- KOMPONEN IMAGE SLIDER ---
@@ -82,7 +82,7 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
   );
 };
 
-// --- KOMPONEN FAQ ITEM (DARK MODE VERSION) ---
+// --- KOMPONEN FAQ ITEM ---
 const FaqItem = ({ question, answer }) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
@@ -126,10 +126,11 @@ const App = () => {
   const waNumber = "6283830033717";
   const mapsLink = "https://share.google/490MII2W8A99899m7";
 
-  // --- LOGIKA REFERRAL SYSTEM ---
+  // --- REFERRAL SYSTEM (NO CLEAN URL - URL TETAP MUNCUL) ---
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     const ref = queryParams.get('ref');
+    // Hanya simpan state, tidak menghapus URL history
     if (ref) setRefCode(ref);
   }, []);
 
@@ -235,7 +236,7 @@ const App = () => {
       specs: [
         { icon: <Bed size={16}/>, text: '1 Queen + 1 Single Bed' }, { icon: <Wind size={16}/>, text: 'Full AC di Setiap Kamar' },
         { icon: <Tv size={16}/>, text: 'Smart TV & Home Theater' }, { icon: <UtensilsCrossed size={16}/>, text: 'Resto 24jam Siap Antar' },
-        { icon: <Utensils size={16}/>, text: 'Kitchen Set' }, { icon: <Waves size={16}/>, text: 'Water Heater & Bathup' },
+        { icon: <Utensils size={16}/>, text: 'Kitchen Set & Kulkas' }, { icon: <Waves size={16}/>, text: 'Water Heater & Bathup' },
         { icon: <Building size={16}/>, text: 'Ruang Keluarga Luas' }, { icon: <Maximize size={16}/>, text: 'Balkon Luas View Gunung' }
       ]
     }
@@ -243,7 +244,7 @@ const App = () => {
 
   const filteredRooms = activeFilter === 'Semua' ? rooms : rooms.filter(r => r.type === activeFilter);
 
-  // --- DATA UNTUK FOOTER ---
+  // --- DATA FOOTER ---
   const nearbyData = [
     { name: "AEON Mall", dist: "2 Mnt", icon: <ShoppingBag size={14}/> },
     { name: "IKEA Sentul", dist: "5 Mnt", icon: <ShoppingBag size={14}/> },
@@ -264,7 +265,7 @@ const App = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-32"> {/* PADDING BOTTOM DITAMBAH */}
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-32">
       {/* Navbar */}
       <nav className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 py-3 flex justify-between items-center shadow-sm">
         <div className="flex items-center gap-2">
@@ -352,31 +353,12 @@ const App = () => {
         </div>
       </section>
 
-      {/* --- MEGA FOOTER (LOKASI & FAQ PINDAH KESINI) --- */}
+      {/* --- MEGA FOOTER --- */}
       <footer className="bg-slate-900 text-white p-6 mx-4 rounded-[40px] mb-8 shadow-2xl relative overflow-hidden">
         <div className="relative z-10">
           
-          {/* BAGIAN 1: LOKASI (SEO MAGNET) - INTEGRATED */}
+          {/* 1. FAQ SECTION (PALING ATAS FOOTER) */}
           <div className="mb-10 pb-8 border-b border-slate-800/50">
-             <div className="flex items-center gap-2 mb-4">
-                <MapPin className="text-[#D4AF37]" size={16} />
-                <h3 className="text-xs font-black text-slate-300 uppercase tracking-widest">Lokasi Strategis</h3>
-             </div>
-             <div className="grid grid-cols-2 gap-2">
-               {nearbyData.map((item, idx) => (
-                 <div key={idx} className="bg-slate-800/40 p-2.5 rounded-xl border border-slate-700/30 flex items-center gap-2.5">
-                    <div className="text-[#D4AF37]">{item.icon}</div>
-                    <div>
-                      <p className="text-[9px] text-slate-500 uppercase font-bold tracking-wider">{item.dist}</p>
-                      <p className="text-[10px] text-slate-200 font-bold leading-tight">{item.name}</p>
-                    </div>
-                 </div>
-               ))}
-             </div>
-          </div>
-
-          {/* BAGIAN 2: FAQ (SEO CONTENT) - INTEGRATED */}
-          <div className="mb-10">
             <div className="flex items-center gap-2 mb-4">
               <HelpCircle className="text-[#D4AF37]" size={16} />
               <h3 className="text-xs font-black text-slate-300 uppercase tracking-widest">Tanya Jawab</h3>
@@ -393,34 +375,49 @@ const App = () => {
             </div>
           </div>
 
-          {/* BAGIAN 3: CARA ORDER (FOOTER ASLI) */}
+          {/* 2. FOOTER UTAMA (JUDUL & TOMBOL) */}
           <div className="text-center mb-8">
              <h3 className="text-2xl font-black mb-2 uppercase tracking-tighter italic">Apartemen Sentul Tower</h3>
              <p className="text-slate-500 text-[10px] mb-8 italic">"Privasi & Kenyamanan Prioritas Kami"</p>
              
              <h4 className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-4">Cara Order Mudah</h4>
              <div className="grid grid-cols-4 gap-2">
-                {/* Icon-icon kecil */}
-                <div onClick={() => handleWaClick("chat")} className="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95">
+                <div onClick={() => handleWaClick("chat")} className="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all">
                    <MessageCircle className="text-[#D4AF37] mb-1" size={16} />
                    <span className="text-[8px] font-bold text-slate-300 uppercase">Chat</span>
                 </div>
-                <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95">
+                <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all">
                    <MapPin className="text-[#D4AF37] mb-1" size={16} />
                    <span className="text-[8px] font-bold text-slate-300 uppercase">Maps</span>
                 </a>
-                <div onClick={() => handleWaClick("key")} className="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95">
+                <div onClick={() => handleWaClick("key")} className="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all">
                    <Key className="text-[#D4AF37] mb-1" size={16} />
                    <span className="text-[8px] font-bold text-slate-300 uppercase">Kunci</span>
                 </div>
-                <div onClick={() => handleWaClick("payment")} className="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95">
+                <div onClick={() => handleWaClick("payment")} className="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all">
                    <Wallet className="text-[#D4AF37] mb-1" size={16} />
                    <span className="text-[8px] font-bold text-slate-300 uppercase">Bayar</span>
                 </div>
              </div>
+
+             {/* 3. LOKASI STRATEGIS (DIMASUKKAN DI BAWAH TOMBOL - SESUAI REQUEST) */}
+             <div className="mt-8 pt-8 border-t border-slate-800/50">
+                 <h4 className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-4">Lokasi Strategis</h4>
+                 <div className="grid grid-cols-2 gap-2 text-left">
+                   {nearbyData.map((item, idx) => (
+                     <div key={idx} className="bg-slate-800/40 p-2.5 rounded-xl border border-slate-700/30 flex items-center gap-2.5">
+                        <div className="text-[#D4AF37]">{item.icon}</div>
+                        <div>
+                          <p className="text-[9px] text-slate-500 uppercase font-bold tracking-wider">{item.dist}</p>
+                          <p className="text-[10px] text-slate-200 font-bold leading-tight">{item.name}</p>
+                        </div>
+                     </div>
+                   ))}
+                 </div>
+             </div>
           </div>
 
-          {/* COPYRIGHT & LINKS */}
+          {/* 4. COPYRIGHT */}
           <div className="flex items-center justify-center gap-6 pt-6 border-t border-slate-800">
             <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-white p-2 rounded-xl hover:scale-110 active:scale-95 transition-all shadow-xl flex items-center justify-center">
               <GoogleMapsLogo />
