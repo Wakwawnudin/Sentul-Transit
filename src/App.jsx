@@ -126,8 +126,15 @@ const App = () => {
   const waNumber = "6283830033717";
   const mapsLink = "https://share.google/490MII2W8A99899m7";
 
-  // --- REFERRAL SYSTEM (NO CLEAN URL - URL TETAP MUNCUL) ---
   useEffect(() => {
+    // --- JURUS BAJAK DOMAIN (LANI) ---
+    // Jika ada yang buka dari domain lama (kartu nama), lempar ke web baru + kode Lani
+    if (window.location.hostname.includes('apartsentul.cloud')) {
+      window.location.replace("https://apartemensentultower.com/?ref=Lani");
+      return; 
+    }
+
+    // --- LOGIKA REFERRAL NORMAL ---
     const queryParams = new URLSearchParams(window.location.search);
     const ref = queryParams.get('ref');
     if (ref) setRefCode(ref);
@@ -153,7 +160,7 @@ const App = () => {
 
   const handleWaClick = (messageType = "general", roomName = "") => {
     let text = "";
-    // --- UPDATE: Menggunakan "Info by" ---
+    // --- UPDATED: Menggunakan "Info by" (Sesuai Kartu Nama) ---
     const refTag = refCode ? `\n\n(Info by ${refCode})` : "";
     
     switch (messageType) {
