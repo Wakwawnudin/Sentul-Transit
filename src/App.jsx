@@ -256,10 +256,11 @@ const App = () => {
   const faqData = [
     { q: "Bisa sewa transit?", a: "Bisa! Tersedia paket 3, 6, 12 jam. Cocok untuk istirahat singkat." },
     { q: "Harga mulai berapa?", a: "Transit mulai 150rb, Fullday weekday mulai 300rb." },
-    { q: "Fasilitas apa saja?", a: "Full AC, Wifi, Netflix, Water Heater, Dapur, Alat Mandi." },
+    { q: "Fasilitas apa saja?", a: "Full AC, Netflix, Water Heater, Alat Mandi." },
     { q: "Ada kolam renang?", a: "Ya, kolam renang tersedia di lantai podium untuk tamu." },
     { q: "Privasi aman?", a: "Sangat aman. Akses lift pakai kartu khusus & security 24 jam." },
     { q: "Parkir tersedia?", a: "Ada gedung parkir luas (mobil & motor) tarif resmi gedung." },
+    { q: "Apa Perlu Jaminan?", a: "Cukup foto KTP atau SIM saja cukup. KTP & SIM tidak ditahan" },
     { q: "Cara booking?", a: "Chat WA, pilih jadwal, datang. Bayar bisa Cash/Transfer di lokasi." }
   ];
 
