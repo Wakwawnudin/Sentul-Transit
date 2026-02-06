@@ -126,11 +126,10 @@ const App = () => {
   const waNumber = "6283830033717";
   const mapsLink = "https://share.google/490MII2W8A99899m7";
 
-  // --- REFERRAL SYSTEM (NO CLEAN URL - URL TETAP MUNCUL) ---
+  // --- REFERRAL SYSTEM ---
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     const ref = queryParams.get('ref');
-    // Hanya simpan state, tidak menghapus URL history
     if (ref) setRefCode(ref);
   }, []);
 
@@ -244,14 +243,14 @@ const App = () => {
 
   const filteredRooms = activeFilter === 'Semua' ? rooms : rooms.filter(r => r.type === activeFilter);
 
-  // --- DATA FOOTER ---
+  // --- DATA FOOTER (UPDATED: PASAR BERSIH) ---
   const nearbyData = [
     { name: "AEON Mall", dist: "2 Mnt", icon: <ShoppingBag size={14}/> },
     { name: "IKEA Sentul", dist: "5 Mnt", icon: <ShoppingBag size={14}/> },
     { name: "SICC", dist: "7 Mnt", icon: <Building size={14}/> },
     { name: "RS EMC", dist: "3 Mnt", icon: <Shield size={14}/> },
     { name: "JungleLand", dist: "15 Mnt", icon: <Palmtree size={14}/> },
-    { name: "Psr Ah Poong", dist: "10 Mnt", icon: <Utensils size={14}/> },
+    { name: "Pasar Bersih", dist: "1 Mnt", icon: <Utensils size={14}/> },
   ];
 
   const faqData = [
@@ -357,7 +356,7 @@ const App = () => {
       <footer className="bg-slate-900 text-white p-6 mx-4 rounded-[40px] mb-8 shadow-2xl relative overflow-hidden">
         <div className="relative z-10">
           
-          {/* 1. FAQ SECTION (PALING ATAS FOOTER) */}
+          {/* 1. FAQ SECTION */}
           <div className="mb-10 pb-8 border-b border-slate-800/50">
             <div className="flex items-center gap-2 mb-4">
               <HelpCircle className="text-[#D4AF37]" size={16} />
@@ -375,32 +374,34 @@ const App = () => {
             </div>
           </div>
 
-          {/* 2. FOOTER UTAMA (JUDUL & TOMBOL) */}
+          {/* 2. MAIN FOOTER */}
           <div className="text-center mb-8">
              <h3 className="text-2xl font-black mb-2 uppercase tracking-tighter italic">Apartemen Sentul Tower</h3>
              <p className="text-slate-500 text-[10px] mb-8 italic">"Privasi & Kenyamanan Prioritas Kami"</p>
              
              <h4 className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-4">Cara Order Mudah</h4>
-             <div className="grid grid-cols-4 gap-2">
-                <div onClick={() => handleWaClick("chat")} className="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all">
-                   <MessageCircle className="text-[#D4AF37] mb-1" size={16} />
-                   <span className="text-[8px] font-bold text-slate-300 uppercase">Chat</span>
+             
+             {/* TOMBOL BESAR (2x2) */}
+             <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                <div onClick={() => handleWaClick("chat")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all">
+                   <MessageCircle className="text-[#D4AF37] mb-2" size={24} />
+                   <span className="text-[10px] font-bold text-slate-300 uppercase">Chat</span>
                 </div>
-                <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all">
-                   <MapPin className="text-[#D4AF37] mb-1" size={16} />
-                   <span className="text-[8px] font-bold text-slate-300 uppercase">Maps</span>
+                <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all">
+                   <MapPin className="text-[#D4AF37] mb-2" size={24} />
+                   <span className="text-[10px] font-bold text-slate-300 uppercase">Maps</span>
                 </a>
-                <div onClick={() => handleWaClick("key")} className="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all">
-                   <Key className="text-[#D4AF37] mb-1" size={16} />
-                   <span className="text-[8px] font-bold text-slate-300 uppercase">Kunci</span>
+                <div onClick={() => handleWaClick("key")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all">
+                   <Key className="text-[#D4AF37] mb-2" size={24} />
+                   <span className="text-[10px] font-bold text-slate-300 uppercase">Kunci</span>
                 </div>
-                <div onClick={() => handleWaClick("payment")} className="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all">
-                   <Wallet className="text-[#D4AF37] mb-1" size={16} />
-                   <span className="text-[8px] font-bold text-slate-300 uppercase">Bayar</span>
+                <div onClick={() => handleWaClick("payment")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all">
+                   <Wallet className="text-[#D4AF37] mb-2" size={24} />
+                   <span className="text-[10px] font-bold text-slate-300 uppercase">Bayar</span>
                 </div>
              </div>
 
-             {/* 3. LOKASI STRATEGIS (DIMASUKKAN DI BAWAH TOMBOL - SESUAI REQUEST) */}
+             {/* 3. LOKASI STRATEGIS (RAPI DI BAWAH) */}
              <div className="mt-8 pt-8 border-t border-slate-800/50">
                  <h4 className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-4">Lokasi Strategis</h4>
                  <div className="grid grid-cols-2 gap-2 text-left">
