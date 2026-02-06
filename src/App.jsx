@@ -126,7 +126,7 @@ const App = () => {
   const waNumber = "6283830033717";
   const mapsLink = "https://share.google/490MII2W8A99899m7";
 
-  // --- REFERRAL SYSTEM ---
+  // --- REFERRAL SYSTEM (NO CLEAN URL - URL TETAP MUNCUL) ---
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     const ref = queryParams.get('ref');
@@ -243,7 +243,7 @@ const App = () => {
 
   const filteredRooms = activeFilter === 'Semua' ? rooms : rooms.filter(r => r.type === activeFilter);
 
-  // --- DATA FOOTER (UPDATED: PASAR BERSIH) ---
+  // --- DATA FOOTER (UPDATED: PASAR BERSIH 1 MNT) ---
   const nearbyData = [
     { name: "AEON Mall", dist: "2 Mnt", icon: <ShoppingBag size={14}/> },
     { name: "IKEA Sentul", dist: "5 Mnt", icon: <ShoppingBag size={14}/> },
@@ -381,23 +381,23 @@ const App = () => {
              
              <h4 className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-4">Cara Order Mudah</h4>
              
-             {/* TOMBOL BESAR (2x2) */}
+             {/* TOMBOL BESAR (2x2) DENGAN TEKS INSTRUKSI */}
              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                 <div onClick={() => handleWaClick("chat")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all">
                    <MessageCircle className="text-[#D4AF37] mb-2" size={24} />
-                   <span className="text-[10px] font-bold text-slate-300 uppercase">Chat</span>
+                   <span className="text-[10px] font-bold text-slate-300 uppercase">1. Chat WhatsApp</span>
                 </div>
                 <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all">
                    <MapPin className="text-[#D4AF37] mb-2" size={24} />
-                   <span className="text-[10px] font-bold text-slate-300 uppercase">Maps</span>
+                   <span className="text-[10px] font-bold text-slate-300 uppercase">2. Datang Lokasi</span>
                 </a>
                 <div onClick={() => handleWaClick("key")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all">
                    <Key className="text-[#D4AF37] mb-2" size={24} />
-                   <span className="text-[10px] font-bold text-slate-300 uppercase">Kunci</span>
+                   <span className="text-[10px] font-bold text-slate-300 uppercase">3. Ambil Kunci</span>
                 </div>
                 <div onClick={() => handleWaClick("payment")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all">
                    <Wallet className="text-[#D4AF37] mb-2" size={24} />
-                   <span className="text-[10px] font-bold text-slate-300 uppercase">Bayar</span>
+                   <span className="text-[10px] font-bold text-slate-300 uppercase">4. Bayar di Tempat</span>
                 </div>
              </div>
 
