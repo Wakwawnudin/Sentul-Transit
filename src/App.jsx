@@ -4,7 +4,7 @@ import {
   Home, MapPin, Maximize, Bed, Bath, Clock, Calendar, Shield, 
   Building, ChevronLeft, ChevronRight, CheckCircle2, 
   MessageCircle, Tv, Wind, Coffee, Utensils, Waves, Sparkles, 
-  UtensilsCrossed, Key, Wallet
+  UtensilsCrossed, Key, Wallet, HelpCircle, ChevronDown, ChevronUp
 } from 'lucide-react';
 
 // --- KOMPONEN IMAGE SLIDER ---
@@ -81,6 +81,31 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
   );
 };
 
+// --- KOMPONEN FAQ ITEM (ACCORDION) ---
+const FaqItem = ({ question, answer }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div className="border-b border-slate-100 last:border-0">
+      <button 
+        onClick={() => setIsOpen(!isOpen)} 
+        className="w-full py-4 flex justify-between items-center text-left focus:outline-none group"
+      >
+        <span className={`text-sm font-bold transition-colors ${isOpen ? 'text-[#D4AF37]' : 'text-slate-800'}`}>
+          {question}
+        </span>
+        {isOpen ? <ChevronUp size={18} className="text-[#D4AF37]" /> : <ChevronDown size={18} className="text-slate-400 group-hover:text-[#D4AF37]" />}
+      </button>
+      <div 
+        className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-96 opacity-100 mb-4' : 'max-h-0 opacity-0'}`}
+      >
+        <p className="text-xs text-slate-500 leading-relaxed pr-4 font-medium">
+          {answer}
+        </p>
+      </div>
+    </div>
+  );
+};
+
 const GoogleMapsLogo = () => (
   <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#4285F4"/>
@@ -98,17 +123,17 @@ const App = () => {
   const [refCode, setRefCode] = useState("");
 
   const waNumber = "6283830033717";
+  // Link Maps sesuai kesepakatan terakhir
   const mapsLink = "https://share.google/490MII2W8A99899m7";
 
-  // --- LOGIKA REFERRAL SYSTEM (DENGAN URL CLEANING) ---
+  // --- LOGIKA REFERRAL SYSTEM (URL TETAP TERLIHAT) ---
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     const ref = queryParams.get('ref');
     
+    // Hanya simpan ref, TIDAK MENGHAPUS URL
     if (ref) {
       setRefCode(ref);
-      const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-      window.history.replaceState({}, document.title, cleanUrl);
     }
   }, []);
 
@@ -273,6 +298,34 @@ const App = () => {
 
   const filteredRooms = activeFilter === 'Semua' ? rooms : rooms.filter(r => r.type === activeFilter);
 
+  // --- DATA FAQ (SEO FRIENDLY) ---
+  const faqData = [
+    {
+      q: "Apakah bisa sewa transit per jam di Sentul Tower?",
+      a: "Bisa banget! Kami menyediakan paket transit fleksibel mulai dari 3 jam, 6 jam, hingga 12 jam. Cocok untuk istirahat sejenak setelah belanja di AEON Mall Sentul City atau menunggu jadwal meeting."
+    },
+    {
+      q: "Berapa harga sewa apartemen harian di sini?",
+      a: "Harga sewa transit mulai Rp 150.000 (Studio). Untuk sewa harian (Fullday) mulai Rp 300.000 saat weekday. Dapatkan harga spesial promo untuk booking via WhatsApp."
+    },
+    {
+      q: "Bagaimana privasi dan keamanannya?",
+      a: "Privasi Anda adalah prioritas kami. Akses lift menggunakan kartu akses khusus (access card) dan unit kami dikelola secara profesional. Keamanan gedung 24 jam dengan CCTV."
+    },
+    {
+      q: "Lokasinya dekat mana saja?",
+      a: "Apartemen Sentul Tower berada di lokasi strategis Sentul City. Tepat di seberang AEON Mall Sentul, 5 menit dari IKEA Sentul, RS EMC, dan pintu tol Sentul Selatan."
+    },
+    {
+      q: "Apakah tersedia parkir kendaraan?",
+      a: "Ya, tersedia area parkir luas di gedung apartemen (basement & outdoor) dengan tarif resmi pengelola gedung yang terjangkau. Aman untuk mobil maupun motor."
+    },
+    {
+      q: "Bagaimana cara check-in dan pembayarannya?",
+      a: "Sangat mudah! Hubungi kami via WhatsApp, tentukan jadwal, lalu datang ke lokasi. Kami menerima pembayaran di tempat (COD/Cash) atau transfer. Kunci akan diserahkan langsung di lobi."
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-24">
       {/* Navbar: LOGO ST EMAS */}
@@ -361,6 +414,25 @@ const App = () => {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* --- FAQ SECTION (SEO BOOSTER) --- */}
+      <section className="px-4 py-8 bg-white/50 mb-8">
+        <div className="flex items-center gap-2 mb-6">
+          <HelpCircle className="text-[#D4AF37]" size={20} />
+          <h2 className="text-lg font-black text-slate-800 uppercase tracking-widest">TANYA JAWAB (FAQ)</h2>
+        </div>
+        <div className="bg-white rounded-[32px] border border-slate-100 shadow-sm p-6">
+          {faqData.map((item, index) => (
+            <FaqItem key={index} question={item.q} answer={item.a} />
+          ))}
+          <div className="mt-6 pt-6 border-t border-slate-100 text-center">
+             <p className="text-xs text-slate-400 mb-3">Masih ada pertanyaan lain?</p>
+             <button onClick={() => handleWaClick("chat")} className="text-xs font-bold text-[#D4AF37] hover:underline uppercase tracking-widest">
+                Chat Tim Kami via WhatsApp
+             </button>
+          </div>
         </div>
       </section>
 
