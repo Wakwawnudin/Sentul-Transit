@@ -130,7 +130,7 @@ const App = () => {
     // --- JURUS BAJAK DOMAIN (LANI) ---
     // Jika ada yang buka dari domain lama (kartu nama), lempar ke web baru + kode Lani
     if (window.location.hostname.includes('apartsentul.cloud')) {
-      window.location.replace("https://apartemensentultower.com/?ref=Lani");
+      window.location.replace("https://apartemensentultower.com/?ref=Lanny");
       return; 
     }
 
