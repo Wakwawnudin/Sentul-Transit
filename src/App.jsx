@@ -4,7 +4,8 @@ import {
   Home, MapPin, Maximize, Bed, Bath, Clock, Calendar, Shield, 
   Building, ChevronLeft, ChevronRight, CheckCircle2, 
   MessageCircle, Tv, Wind, Coffee, Utensils, Waves, Sparkles, 
-  UtensilsCrossed, Key, Wallet, HelpCircle, ChevronDown, ChevronUp
+  UtensilsCrossed, Key, Wallet, HelpCircle, ChevronDown, ChevronUp,
+  Car, ShoppingBag, Palmtree
 } from 'lucide-react';
 
 // --- KOMPONEN IMAGE SLIDER ---
@@ -123,25 +124,18 @@ const App = () => {
   const [refCode, setRefCode] = useState("");
 
   const waNumber = "6283830033717";
-  // Link Maps sesuai kesepakatan terakhir
   const mapsLink = "https://share.google/490MII2W8A99899m7";
 
   // --- LOGIKA REFERRAL SYSTEM (URL TETAP TERLIHAT) ---
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     const ref = queryParams.get('ref');
-    
-    // Hanya simpan ref, TIDAK MENGHAPUS URL
-    if (ref) {
-      setRefCode(ref);
-    }
+    if (ref) setRefCode(ref);
   }, []);
 
   useEffect(() => {
     const handlePopState = () => {
-      if (selectedRoom) {
-        setSelectedRoom(null);
-      }
+      if (selectedRoom) setSelectedRoom(null);
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
@@ -154,32 +148,19 @@ const App = () => {
 
   const closeRoomDetail = () => {
     setSelectedRoom(null);
-    if (window.history.state?.modalOpen) {
-      window.history.back();
-    }
+    if (window.history.state?.modalOpen) window.history.back();
   };
 
   const handleWaClick = (messageType = "general", roomName = "") => {
     let text = "";
     const refTag = refCode ? `\n\n(Info dari: ${refCode})` : "";
-
     switch (messageType) {
-      case "booking":
-        text = `Halo, saya tertarik dengan unit ${roomName} di Apartemen Sentul Tower.${refTag}`;
-        break;
-      case "chat":
-        text = `Halo, saya mau tanya-tanya tentang sewa Apartemen Sentul Tower.${refTag}`;
-        break;
-      case "key":
-        text = `Halo, saya sudah sampai di lokasi dan ingin AMBIL KUNCI.${refTag}`;
-        break;
-      case "payment":
-        text = `Halo, saya ingin melakukan PEMBAYARAN DI TEMPAT.${refTag}`;
-        break;
-      default:
-        text = `Halo, saya mau tanya sewa Apartemen Sentul Tower.${refTag}`;
+      case "booking": text = `Halo, saya tertarik dengan unit ${roomName} di Apartemen Sentul Tower.${refTag}`; break;
+      case "chat": text = `Halo, saya mau tanya-tanya tentang sewa Apartemen Sentul Tower.${refTag}`; break;
+      case "key": text = `Halo, saya sudah sampai di lokasi dan ingin AMBIL KUNCI.${refTag}`; break;
+      case "payment": text = `Halo, saya ingin melakukan PEMBAYARAN DI TEMPAT.${refTag}`; break;
+      default: text = `Halo, saya mau tanya sewa Apartemen Sentul Tower.${refTag}`;
     }
-
     window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`, '_blank');
   };
 
@@ -193,7 +174,6 @@ const App = () => {
     { label: 'Weekday (Sen-Kam)', price: 'Rp 300.000' },
     { label: 'Weekend (Jum-Min)', price: 'Rp 350.000' },
   ];
-
   const specialTransit2BR = [
     { label: '3 Jam', price: 'Rp 200.000' },
     { label: '6 Jam', price: 'Rp 250.000' },
@@ -207,72 +187,43 @@ const App = () => {
 
   const rooms = [
     {
-      id: 1,
-      name: 'STUDIO',
-      type: 'Studio',
-      size: '24m²',
-      beds: 1,
+      id: 1, name: 'STUDIO', type: 'Studio', size: '24m²', beds: 1,
       images: [
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260206_023946.jpg', 
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260206_023934.jpg', 
         'https://images.unsplash.com/photo-1768383550694-adb7ddddad7d?q=80&w=1335&auto=format&fit=crop',
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155132.jpg',
-        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155244.jpg',
-        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155214.jpg',
-        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155232.jpg',
-        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155201.jpg'
+        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155244.jpg'
       ],
       description: 'Unit studio minimalis yang cocok untuk sewa harian. Lokasi strategis dekat AEON Mall Sentul City, ideal untuk istirahat sejenak setelah berbelanja atau bekerja.',
-      startFrom: '150rb',
-      transit: defaultTransit,
-      fullday: defaultFullday,
+      startFrom: '150rb', transit: defaultTransit, fullday: defaultFullday,
       specs: [
-        { icon: <Bed size={16}/>, text: 'Queen Size Bed' },
-        { icon: <Wind size={16}/>, text: 'Full AC' },
-        { icon: <Tv size={16}/>, text: 'Smart TV (Netflix)' },
-        { icon: <UtensilsCrossed size={16}/>, text: 'Resto 24jam Siap Antar' },
-        { icon: <Utensils size={16}/>, text: 'Kitchen Set' },
-        { icon: <Waves size={16}/>, text: 'Water Heater' },
-        { icon: <Sparkles size={16}/>, text: 'Peralatan Mandi' },
-        { icon: <Coffee size={16}/>, text: 'Complimentary Coffee' }
+        { icon: <Bed size={16}/>, text: 'Queen Size Bed' }, { icon: <Wind size={16}/>, text: 'Full AC' },
+        { icon: <Tv size={16}/>, text: 'Smart TV (Netflix)' }, { icon: <UtensilsCrossed size={16}/>, text: 'Resto 24jam Siap Antar' },
+        { icon: <Utensils size={16}/>, text: 'Kitchen Set' }, { icon: <Waves size={16}/>, text: 'Water Heater' },
+        { icon: <Sparkles size={16}/>, text: 'Peralatan Mandi' }, { icon: <Coffee size={16}/>, text: 'Complimentary Coffee' }
       ]
     },
     {
-      id: 2,
-      name: '1 Bedroom',
-      type: '1BR',
-      size: '38m²',
-      beds: 1,
+      id: 2, name: '1 Bedroom', type: '1BR', size: '38m²', beds: 1,
       images: [
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260206_023956.jpg', 
         'https://images.unsplash.com/photo-1768384554121-339e5c56b0e2?q=80&w=1335&auto=format&fit=crop',
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155148.jpg',
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155301.jpg',
-        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155318.jpg',
-        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155345.jpg',
-        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155332.jpg'
+        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155318.jpg'
       ],
       description: 'Pilihan terbaik apartemen murah Sentul dengan ruang tamu terpisah. Menawarkan privasi maksimal untuk pasangan atau profesional yang membutuhkan ketenangan.',
-      startFrom: '150rb',
-      transit: defaultTransit,
-      fullday: defaultFullday,
+      startFrom: '150rb', transit: defaultTransit, fullday: defaultFullday,
       specs: [
-        { icon: <Bed size={16}/>, text: 'King Size Bed' },
-        { icon: <Wind size={16}/>, text: 'Full AC (Kamar & Ruang Tamu)' },
-        { icon: <Tv size={16}/>, text: 'Smart TV 42" & Netflix' },
-        { icon: <Building size={16}/>, text: 'Ruang Tamu Terpisah' },
-        { icon: <UtensilsCrossed size={16}/>, text: 'Resto 24jam Siap Antar' },
-        { icon: <Waves size={16}/>, text: 'Water Heater' },
-        { icon: <Utensils size={16}/>, text: 'Peralatan Masak' },
-        { icon: <Maximize size={16}/>, text: 'Balkon View Gunung' }
+        { icon: <Bed size={16}/>, text: 'King Size Bed' }, { icon: <Wind size={16}/>, text: 'Full AC (Kamar & Ruang Tamu)' },
+        { icon: <Tv size={16}/>, text: 'Smart TV 42" & Netflix' }, { icon: <Building size={16}/>, text: 'Ruang Tamu Terpisah' },
+        { icon: <UtensilsCrossed size={16}/>, text: 'Resto 24jam Siap Antar' }, { icon: <Waves size={16}/>, text: 'Water Heater' },
+        { icon: <Utensils size={16}/>, text: 'Peralatan Masak' }, { icon: <Maximize size={16}/>, text: 'Balkon View Gunung' }
       ]
     },
     {
-      id: 3,
-      name: 'Family 2 Bedroom',
-      type: '2BR',
-      size: '56m²',
-      beds: 2,
+      id: 3, name: 'Family 2 Bedroom', type: '2BR', size: '56m²', beds: 2,
       images: [
         'https://images.unsplash.com/photo-1768383550621-89197b8b9705?q=80&w=1335&auto=format&fit=crop',
         'https://ik.imagekit.io/x06namgbin/20260125_153112.jpg?updatedAt=1769330366470',
@@ -280,55 +231,71 @@ const App = () => {
         'https://ik.imagekit.io/x06namgbin/20260125_153156.jpg?updatedAt=1769330366650'
       ],
       description: 'Unit luas untuk staycation keluarga atau grup. Tersedia opsi transit 3 jam Sentul Tower yang fleksibel. Nikmati pemandangan gunung dan fasilitas lengkap.',
-      startFrom: '200rb',
-      transit: specialTransit2BR,
-      fullday: specialFullday2BR,
+      startFrom: '200rb', transit: specialTransit2BR, fullday: specialFullday2BR,
       specs: [
-        { icon: <Bed size={16}/>, text: '1 Queen + 1 Single Bed' },
-        { icon: <Wind size={16}/>, text: 'Full AC di Setiap Kamar' },
-        { icon: <Tv size={16}/>, text: 'Smart TV & Home Theater' },
-        { icon: <UtensilsCrossed size={16}/>, text: 'Resto 24jam Siap Antar' },
-        { icon: <Utensils size={16}/>, text: 'Kitchen Set & Kulkas' },
-        { icon: <Waves size={16}/>, text: 'Water Heater & Bathup' },
-        { icon: <Building size={16}/>, text: 'Ruang Keluarga Luas' },
-        { icon: <Maximize size={16}/>, text: 'Balkon Luas View Gunung' }
+        { icon: <Bed size={16}/>, text: '1 Queen + 1 Single Bed' }, { icon: <Wind size={16}/>, text: 'Full AC di Setiap Kamar' },
+        { icon: <Tv size={16}/>, text: 'Smart TV & Home Theater' }, { icon: <UtensilsCrossed size={16}/>, text: 'Resto 24jam Siap Antar' },
+        { icon: <Utensils size={16}/>, text: 'Kitchen Set & Kulkas' }, { icon: <Waves size={16}/>, text: 'Water Heater & Bathup' },
+        { icon: <Building size={16}/>, text: 'Ruang Keluarga Luas' }, { icon: <Maximize size={16}/>, text: 'Balkon Luas View Gunung' }
       ]
     }
   ];
 
   const filteredRooms = activeFilter === 'Semua' ? rooms : rooms.filter(r => r.type === activeFilter);
 
-  // --- DATA FAQ (SEO FRIENDLY) ---
+  // --- DATA LOKASI SEKITAR (SEO MAGNET) ---
+  const nearbyData = [
+    { name: "AEON Mall Sentul City", dist: "2 Menit", icon: <ShoppingBag size={18} className="text-[#D4AF37]"/> },
+    { name: "IKEA Sentul City", dist: "5 Menit", icon: <ShoppingBag size={18} className="text-[#D4AF37]"/> },
+    { name: "SICC (Convention Center)", dist: "7 Menit", icon: <Building size={18} className="text-[#D4AF37]"/> },
+    { name: "RS EMC Sentul", dist: "3 Menit", icon: <Shield size={18} className="text-[#D4AF37]"/> },
+    { name: "JungleLand Adventure", dist: "15 Menit", icon: <Palmtree size={18} className="text-[#D4AF37]"/> },
+    { name: "Pasar Ah Poong", dist: "10 Menit", icon: <Utensils size={18} className="text-[#D4AF37]"/> },
+  ];
+
+  // --- DATA FAQ EXPANDED (SEO BOOSTER) ---
   const faqData = [
     {
       q: "Apakah bisa sewa transit per jam di Sentul Tower?",
-      a: "Bisa banget! Kami menyediakan paket transit fleksibel mulai dari 3 jam, 6 jam, hingga 12 jam. Cocok untuk istirahat sejenak setelah belanja di AEON Mall Sentul City atau menunggu jadwal meeting."
+      a: "Bisa banget! Kami menyediakan paket transit fleksibel mulai dari 3 jam, 6 jam, hingga 12 jam. Cocok untuk istirahat sejenak, transit kerja, atau menunggu kemacetan Puncak reda."
     },
     {
-      q: "Berapa harga sewa apartemen harian di sini?",
-      a: "Harga sewa transit mulai Rp 150.000 (Studio). Untuk sewa harian (Fullday) mulai Rp 300.000 saat weekday. Dapatkan harga spesial promo untuk booking via WhatsApp."
+      q: "Berapa harga sewa apartemen harian & transit?",
+      a: "Harga termurah sewa transit mulai Rp 150.000 (Studio). Untuk sewa harian (Fullday) mulai Rp 300.000 saat weekday. Dapatkan harga promo spesial untuk booking via WhatsApp hari ini."
+    },
+    {
+      q: "Fasilitas apa saja yang didapat?",
+      a: "Unit Full Furnished: AC dingin, Smart TV (Netflix/Youtube), WiFi kencang, Water Heater, Kitchen Set, Kulkas, dan perlengkapan mandi gratis. Siap huni tinggal bawa badan."
+    },
+    {
+      q: "Apakah ada kolam renang di Apartemen Sentul Tower?",
+      a: "Ya, tersedia fasilitas kolam renang luas (Swimming Pool) di lantai podium yang bisa diakses menggunakan kartu akses tamu. Cocok untuk relaksasi atau bermain air bersama keluarga."
     },
     {
       q: "Bagaimana privasi dan keamanannya?",
-      a: "Privasi Anda adalah prioritas kami. Akses lift menggunakan kartu akses khusus (access card) dan unit kami dikelola secara profesional. Keamanan gedung 24 jam dengan CCTV."
+      a: "Privasi Anda 100% aman. Akses lift menggunakan kartu akses khusus (Private Access Card). Gedung dijaga security 24 jam dan CCTV. Kami menjamin kerahasiaan data tamu."
     },
     {
-      q: "Lokasinya dekat mana saja?",
-      a: "Apartemen Sentul Tower berada di lokasi strategis Sentul City. Tepat di seberang AEON Mall Sentul, 5 menit dari IKEA Sentul, RS EMC, dan pintu tol Sentul Selatan."
+      q: "Apakah tersedia parkir mobil dan motor?",
+      a: "Tentu. Tersedia gedung parkir luas (Basement & Outdoor). Tarif parkir resmi pengelola gedung yang terjangkau. Keamanan kendaraan terjamin 24 jam."
     },
     {
-      q: "Apakah tersedia parkir kendaraan?",
-      a: "Ya, tersedia area parkir luas di gedung apartemen (basement & outdoor) dengan tarif resmi pengelola gedung yang terjangkau. Aman untuk mobil maupun motor."
+      q: "Lokasi dekat mana saja?",
+      a: "Sangat strategis! Seberang AEON Mall Sentul City, 5 menit ke IKEA, dekat SICC, RS EMC, Universitas Trisakti, dan Pintu Tol Sentul Selatan / Jagorawi."
     },
     {
-      q: "Bagaimana cara check-in dan pembayarannya?",
-      a: "Sangat mudah! Hubungi kami via WhatsApp, tentukan jadwal, lalu datang ke lokasi. Kami menerima pembayaran di tempat (COD/Cash) atau transfer. Kunci akan diserahkan langsung di lobi."
+      q: "Cara Check-in dan Pembayaran?",
+      a: "Sangat mudah. Chat admin via WA -> Tentukan Jadwal -> Datang Lokasi. Bisa bayar di tempat (COD) cash atau transfer saat serah terima kunci di Lobi."
+    },
+    {
+      q: "Apakah butuh deposit?",
+      a: "Kebijakan deposit tergantung tipe unit, namun umumnya kami memudahkan tamu dengan syarat fleksibel (KTP Asli disimpan selama menginap). Hubungi admin untuk detailnya."
     }
   ];
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-24">
-      {/* Navbar: LOGO ST EMAS */}
+      {/* Navbar */}
       <nav className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 py-3 flex justify-between items-center shadow-sm">
         <div className="flex items-center gap-2">
           <div className="p-1 rounded-lg">
@@ -336,7 +303,6 @@ const App = () => {
           </div>
           <span className="font-bold text-sm md:text-lg tracking-tight text-slate-800 uppercase">Apartemen Sentul Tower</span>
         </div>
-
         <div className="flex items-center gap-2">
           <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-white p-2.5 rounded-full border border-slate-200 shadow-sm active:scale-90 transition-transform flex items-center justify-center">
              <GoogleMapsLogo />
@@ -347,7 +313,7 @@ const App = () => {
         </div>
       </nav>
 
-      {/* Hero Header: GAMBAR UTAMA BARU (AI ENHANCED) */}
+      {/* Hero Header */}
       <header className="relative h-[450px] overflow-hidden">
         <img src="https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/AIEnhancer_20260206_022711.png" className="w-full h-full object-cover" alt="Apartemen Sentul Tower View Gunung" />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/40 to-transparent flex flex-col justify-end p-6">
@@ -375,7 +341,7 @@ const App = () => {
         </div>
       </section>
 
-      {/* Katalog & Filter */}
+      {/* Katalog */}
       <section className="px-4 py-8">
         <div className="flex flex-col gap-4 mb-6 md:flex-row md:justify-between md:items-center">
           <h2 className="text-lg font-black text-slate-800 uppercase tracking-widest">KATALOG APARTEMEN</h2>
@@ -396,7 +362,6 @@ const App = () => {
                   {room.type === '2BR' && <span className="bg-[#D4AF37] text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg">PREMIUM</span>}
                 </div>
               </div>
-              
               <div className="pt-5 px-3 pb-3">
                 <h3 className="text-xl font-black text-slate-900 mb-1.5 uppercase tracking-tight">{room.name}</h3>
                 <div className="flex items-center gap-4 text-slate-400 text-[11px] font-bold mb-5 uppercase tracking-wide">
@@ -417,7 +382,31 @@ const App = () => {
         </div>
       </section>
 
-      {/* --- FAQ SECTION (SEO BOOSTER) --- */}
+      {/* --- BAGIAN BARU: JARAK LOKASI (SEO MAGNET) --- */}
+      <section className="px-4 py-4">
+        <div className="bg-slate-900 rounded-[32px] p-6 shadow-xl relative overflow-hidden">
+          <div className="relative z-10">
+             <div className="flex items-center gap-2 mb-6">
+                <MapPin className="text-[#D4AF37]" size={20} />
+                <h2 className="text-lg font-black text-white uppercase tracking-widest">LOKASI STRATEGIS</h2>
+             </div>
+             <div className="grid grid-cols-2 gap-3">
+               {nearbyData.map((item, idx) => (
+                 <div key={idx} className="bg-slate-800/50 p-3 rounded-xl border border-slate-700/50 flex items-center gap-3">
+                    <div className="bg-slate-900 p-2 rounded-lg text-[#D4AF37]">{item.icon}</div>
+                    <div>
+                      <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wide">{item.dist}</p>
+                      <p className="text-xs text-white font-bold leading-tight">{item.name}</p>
+                    </div>
+                 </div>
+               ))}
+             </div>
+          </div>
+          <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-[#D4AF37]/20 rounded-full blur-3xl"></div>
+        </div>
+      </section>
+
+      {/* --- FAQ SECTION (DISINI POSISINYA SEKARANG) --- */}
       <section className="px-4 py-8 bg-white/50 mb-8">
         <div className="flex items-center gap-2 mb-6">
           <HelpCircle className="text-[#D4AF37]" size={20} />
@@ -445,50 +434,24 @@ const App = () => {
           <div className="mb-10">
              <h4 className="text-[11px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-5 text-center">Cara Order Mudah</h4>
              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                <div 
-                  onClick={() => handleWaClick("chat")}
-                  className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center text-center group hover:bg-slate-800 transition-colors cursor-pointer active:scale-95"
-                >
+                <div onClick={() => handleWaClick("chat")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center text-center group hover:bg-slate-800 transition-colors cursor-pointer active:scale-95">
                    <MessageCircle className="text-[#D4AF37] mb-2 group-hover:scale-110 transition-transform" size={22} />
                    <span className="text-[10px] font-bold text-slate-200 uppercase tracking-wide">1. Chat WhatsApp</span>
                 </div>
-                <a 
-                  href={mapsLink} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center text-center group hover:bg-slate-800 transition-colors cursor-pointer active:scale-95"
-                >
+                <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center text-center group hover:bg-slate-800 transition-colors cursor-pointer active:scale-95">
                    <MapPin className="text-[#D4AF37] mb-2 group-hover:scale-110 transition-transform" size={22} />
                    <span className="text-[10px] font-bold text-slate-200 uppercase tracking-wide">2. Datang Lokasi</span>
                 </a>
-                <div 
-                  onClick={() => handleWaClick("key")}
-                  className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center text-center group hover:bg-slate-800 transition-colors cursor-pointer active:scale-95"
-                >
+                <div onClick={() => handleWaClick("key")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center text-center group hover:bg-slate-800 transition-colors cursor-pointer active:scale-95">
                    <Key className="text-[#D4AF37] mb-2 group-hover:scale-110 transition-transform" size={22} />
                    <span className="text-[10px] font-bold text-slate-200 uppercase tracking-wide">3. Ambil Kunci</span>
                 </div>
-                <div 
-                  onClick={() => handleWaClick("payment")}
-                  className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center text-center group hover:bg-slate-800 transition-colors cursor-pointer active:scale-95"
-                >
+                <div onClick={() => handleWaClick("payment")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center text-center group hover:bg-slate-800 transition-colors cursor-pointer active:scale-95">
                    <Wallet className="text-[#D4AF37] mb-2 group-hover:scale-110 transition-transform" size={22} />
                    <span className="text-[10px] font-bold text-slate-200 uppercase tracking-wide">4. Bayar di Tempat</span>
                 </div>
              </div>
           </div>
-
-          <div className="space-y-3 mb-10">
-            <div className="flex items-center gap-3 bg-slate-800/60 p-3.5 rounded-2xl border border-slate-700/50 shadow-sm">
-              <CheckCircle2 className="text-[#D4AF37]" size={18} />
-              <span className="text-xs font-bold uppercase tracking-widest text-slate-200">Checkout Fullday jam 12 Siang</span>
-            </div>
-            <div className="flex items-center gap-3 bg-slate-800/60 p-3.5 rounded-2xl border border-slate-700/50 shadow-sm">
-              <UtensilsCrossed className="text-[#D4AF37]" size={18} />
-              <span className="text-xs font-bold uppercase tracking-widest text-slate-200">Resto 24jam Siap Antar</span>
-            </div>
-          </div>
-
           <div className="flex items-center justify-center gap-6 pt-8 border-t border-slate-800">
             <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-white p-3 rounded-2xl hover:scale-110 active:scale-95 transition-all shadow-xl flex items-center justify-center">
               <GoogleMapsLogo />
@@ -500,6 +463,13 @@ const App = () => {
             <p className="text-[10px] font-black text-[#D4AF37] tracking-widest uppercase text-center leading-tight">
               Apartemen<br/>Sentul Tower
             </p>
+          </div>
+          {/* SEO HIDDEN TEXT (VERY BOTTOM) */}
+          <div className="mt-8 pt-4 border-t border-slate-800/50 text-center">
+             <p className="text-[9px] text-slate-600 font-medium leading-relaxed">
+               Melayani sewa apartemen harian Sentul City, transit 3 jam, 6 jam, dekat SICC, IKEA, RS EMC, dan AEON Mall. 
+               Fasilitas kolam renang, gym, parkir aman. Solusi penginapan murah alternatif hotel di Bogor.
+             </p>
           </div>
         </div>
         <div className="absolute top-[-20%] right-[-10%] w-48 h-48 bg-[#D4AF37]/10 rounded-full blur-3xl"></div>
