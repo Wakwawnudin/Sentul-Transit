@@ -5,8 +5,16 @@ import {
   Building, ChevronLeft, ChevronRight, CheckCircle2, 
   MessageCircle, Tv, Wind, Coffee, Utensils, Waves, Sparkles, 
   UtensilsCrossed, Key, Wallet, HelpCircle, ChevronDown, ChevronUp,
-  ShoppingBag, Palmtree
+  ShoppingBag, Palmtree, BadgeCheck // <--- UPDATE: Nambah Icon BadgeCheck
 } from 'lucide-react';
+
+// --- KOMPONEN BARU: TRUST BADGE ---
+const TrustBadge = () => (
+  <div className="flex items-center gap-1.5 bg-blue-50/90 backdrop-blur border border-blue-200 px-2.5 py-1.5 rounded-lg shadow-sm">
+    <BadgeCheck size={14} className="text-blue-600 fill-blue-50" />
+    <span className="text-[9px] font-black text-blue-800 uppercase tracking-wider">Verified Unit</span>
+  </div>
+);
 
 // --- KOMPONEN IMAGE SLIDER ---
 const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32px]", altPrefix = "Apartemen Sentul Tower" }) => {
@@ -127,16 +135,10 @@ const App = () => {
   const mapsLink = "https://share.google/490MII2W8A99899m7";
 
   useEffect(() => {
-    // --- 1. JURUS BAJAK DOMAIN (KHUSUS DOMAIN LAMA) ---
-    // Logika: Jika URL browser mengandung "apartsentul.cloud"
-    // Maka paksa pindah ke "apartemensentultower.com" dan tempel "?ref=Lani"
-    // Syarat: Di Vercel, "apartsentul.cloud" JANGAN di-redirect, tapi jadikan domain biasa.
     if (window.location.hostname.includes('apartsentul.cloud')) {
       window.location.replace("https://apartemensentultower.com/?ref=Lani");
       return; 
     }
-
-    // --- 2. TANGKAP KODE REFERRAL (UNTUK SEMUA LINK) ---
     const queryParams = new URLSearchParams(window.location.search);
     const ref = queryParams.get('ref');
     if (ref) setRefCode(ref);
@@ -160,13 +162,14 @@ const App = () => {
     if (window.history.state?.modalOpen) window.history.back();
   };
 
-  const handleWaClick = (messageType = "general", roomName = "") => {
+  const handleWaClick = (messageType = "general", roomName = "", roomNumber = "") => {
     let text = "";
-    // --- UPDATE: TEKS "Info by" SESUAI REQUEST ---
     const refTag = refCode ? `\n\n(Info by ${refCode})` : "";
+    // UPDATE: Menambahkan Nomor Kamar ke Pesan WA
+    const roomInfo = roomNumber ? ` (${roomNumber})` : "";
     
     switch (messageType) {
-      case "booking": text = `Halo, saya tertarik dengan unit ${roomName} di Apartemen Sentul Tower.${refTag}`; break;
+      case "booking": text = `Halo, saya tertarik dengan unit ${roomName}${roomInfo} di Apartemen Sentul Tower.${refTag}`; break;
       case "chat": text = `Halo, saya mau tanya-tanya tentang sewa Apartemen Sentul Tower.${refTag}`; break;
       case "key": text = `Halo, saya sudah sampai di lokasi dan ingin AMBIL KUNCI.${refTag}`; break;
       case "payment": text = `Halo, saya ingin melakukan PEMBAYARAN DI TEMPAT.${refTag}`; break;
@@ -196,9 +199,11 @@ const App = () => {
     { label: 'Weekend (Jum-Min)', price: 'Rp 700.000' },
   ];
 
+  // --- UPDATE: DATA ROOMS DENGAN NOMOR KAMAR (DUMMY) ---
   const rooms = [
     {
       id: 1, name: 'STUDIO', type: 'Studio', size: '24m²', beds: 1,
+      roomNumber: 'Unit A-0812', // <--- DUMMY DATA
       images: [
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260206_023946.jpg', 
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260206_023934.jpg', 
@@ -217,6 +222,7 @@ const App = () => {
     },
     {
       id: 2, name: '1 Bedroom', type: '1BR', size: '38m²', beds: 1,
+      roomNumber: 'Unit B-1505', // <--- DUMMY DATA
       images: [
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260206_023956.jpg', 
         'https://images.unsplash.com/photo-1768384554121-339e5c56b0e2?q=80&w=1335&auto=format&fit=crop',
@@ -235,6 +241,7 @@ const App = () => {
     },
     {
       id: 3, name: 'Family 2 Bedroom', type: '2BR', size: '56m²', beds: 2,
+      roomNumber: 'Unit A-2101', // <--- DUMMY DATA
       images: [
         'https://images.unsplash.com/photo-1768383550621-89197b8b9705?q=80&w=1335&auto=format&fit=crop',
         'https://ik.imagekit.io/x06namgbin/20260125_153112.jpg?updatedAt=1769330366470',
@@ -254,7 +261,6 @@ const App = () => {
 
   const filteredRooms = activeFilter === 'Semua' ? rooms : rooms.filter(r => r.type === activeFilter);
 
-  // --- DATA FOOTER ---
   const nearbyData = [
     { name: "AEON Mall", dist: "2 Mnt", icon: <ShoppingBag size={14}/> },
     { name: "IKEA Sentul", dist: "5 Mnt", icon: <ShoppingBag size={14}/> },
@@ -339,13 +345,32 @@ const App = () => {
             <div key={room.id} onClick={() => openRoomDetail(room)} className="bg-white rounded-[32px] p-3 shadow-sm border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer group">
               <div className="relative">
                 <ImageSlider images={room.images} heightClass="h-72" roundedClass="rounded-[24px]" altPrefix={`Interior ${room.name} Sentul Tower`} />
-                <div className="absolute top-4 left-4 flex gap-2 pointer-events-none z-20">
-                  <span className="bg-black/70 backdrop-blur-md text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest">{room.type}</span>
-                  {room.type === '2BR' && <span className="bg-[#D4AF37] text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg">PREMIUM</span>}
+                
+                {/* UPDATE: Trust Badge & Room Type di atas Gambar */}
+                <div className="absolute top-4 left-4 right-4 flex justify-between items-start pointer-events-none z-20">
+                  <div className="flex gap-2">
+                     <span className="bg-black/70 backdrop-blur-md text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest">{room.type}</span>
+                     {room.type === '2BR' && <span className="bg-[#D4AF37] text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg">PREMIUM</span>}
+                  </div>
+                  {/* TRUST BADGE OVERLAY */}
+                  <div className="bg-white/90 backdrop-blur-md p-1.5 rounded-full shadow-lg">
+                      <CheckCircle2 size={16} className="text-blue-500 fill-blue-100"/>
+                  </div>
                 </div>
               </div>
+              
               <div className="pt-5 px-3 pb-3">
-                <h3 className="text-xl font-black text-slate-900 mb-1.5 uppercase tracking-tight">{room.name}</h3>
+                <div className="flex justify-between items-start mb-2">
+                   <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight">{room.name}</h3>
+                   {/* UPDATE: Nomor Kamar Kecil */}
+                   <span className="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded-lg">{room.roomNumber}</span>
+                </div>
+                
+                {/* UPDATE: Trust Badge Component di List */}
+                <div className="mb-4">
+                  <TrustBadge />
+                </div>
+
                 <div className="flex items-center gap-4 text-slate-400 text-[11px] font-bold mb-5 uppercase tracking-wide">
                   <div className="flex items-center gap-1.5"><Maximize size={14}/> {room.size}</div>
                   <div className="flex items-center gap-1.5"><Bed size={14}/> {room.beds} Bed</div>
@@ -393,7 +418,6 @@ const App = () => {
              
              <h4 className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-4">Cara Order Mudah</h4>
              
-             {/* TOMBOL BESAR (2x2) DENGAN TEKS INSTRUKSI */}
              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                 <div onClick={() => handleWaClick("chat")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all">
                    <MessageCircle className="text-[#D4AF37] mb-2" size={24} />
@@ -413,7 +437,6 @@ const App = () => {
                 </div>
              </div>
 
-             {/* 3. LOKASI STRATEGIS (RAPI DI BAWAH) */}
              <div className="mt-8 pt-8 border-t border-slate-800/50">
                  <h4 className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-4">Lokasi Strategis</h4>
                  <div className="grid grid-cols-2 gap-2 text-left">
@@ -476,7 +499,20 @@ const App = () => {
                </div>
             </div>
             
-            <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-2 tracking-tight">{selectedRoom.name}</h2>
+            <div className="flex justify-between items-start mb-2">
+               <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter tracking-tight">{selectedRoom.name}</h2>
+               {/* UPDATE: Nomor Kamar di Detail */}
+               <div className="text-right">
+                  <span className="block text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Kode Unit</span>
+                  <span className="block text-sm font-black text-slate-800">{selectedRoom.roomNumber}</span>
+               </div>
+            </div>
+            
+            {/* UPDATE: Trust Badge di Modal */}
+            <div className="mb-6 flex">
+               <TrustBadge />
+            </div>
+
             <p className="text-slate-500 text-sm mb-8 leading-relaxed font-medium">{selectedRoom.description}</p>
 
             <div className="space-y-6 mb-8">
@@ -529,7 +565,8 @@ const App = () => {
               </div>
             </div>
 
-            <button onClick={() => handleWaClick("booking", selectedRoom.name)} className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-black py-5 rounded-[24px] flex items-center justify-center gap-3 shadow-2xl shadow-green-200 active:scale-95 transition-all uppercase tracking-widest text-xs">
+            {/* UPDATE: Passing roomName dan roomNumber ke WhatsApp */}
+            <button onClick={() => handleWaClick("booking", selectedRoom.name, selectedRoom.roomNumber)} className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-black py-5 rounded-[24px] flex items-center justify-center gap-3 shadow-2xl shadow-green-200 active:scale-95 transition-all uppercase tracking-widest text-xs">
               <MessageCircle size={20} /> Hubungi Lewat WhatsApp
             </button>
           </div>
