@@ -618,15 +618,14 @@ const App = () => {
            />
         </div>
 
-        {/* Overlay Content (TEXT NAIK KE ATAS) */}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent flex flex-col justify-end p-6 pb-36 pointer-events-none z-20">
+        {/* Overlay Content */}
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent flex flex-col justify-end p-6 pb-20 pointer-events-none z-20">
           <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-md border border-white/10 text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-full w-fit mb-3 shadow-lg">
             <MapPin size={10} /> DEKAT AEON MALL SENTUL
           </div>
           <h1 className="text-3xl font-black text-white leading-tight uppercase tracking-tight drop-shadow-lg mb-1">Apartemen Sentul Tower</h1>
           <p className="text-slate-200 text-sm italic font-medium drop-shadow-md">Solusi Staycation Mewah & Nyaman</p>
         </div>
-
       </header>
 
       {/* Ringkasan Harga */}
