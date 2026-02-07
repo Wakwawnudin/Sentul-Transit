@@ -566,17 +566,22 @@ const App = () => {
     { q: "Apa Perlu Jaminan?", a: "Foto KTP atau SIM saja cukup. KTP & SIM tidak ditahan" },
     { q: "Cara booking?", a: "Chat WA, pilih jadwal, datang. Bayar bisa Cash/Transfer di lokasi." }
   ];
+  // ... (kode faqData sebelumnya) ...
 
+  // >>>>> [BAGIAN 1] PASTE LINK GAMBAR SLIDER MAIN HOME DI SINI <<<<<
+  const heroImages = [
+    "https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/_apartemenharian%20_apartemenmurah%20_apartemenmewah%20_apartemenpenginapan%20Wa-__+62%C2%A0812_2042_3774_%20(3).jpg?tr=w-1200,q-85",
+    "https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/_apartemenharian%20_apartemenmurah%20_apartemenmewah%20_apartemenpenginapan%20Wa-__+62%C2%A0812_2042_3774_%20(1).jpg?tr=w-1200,q-85",
+    "https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/_apartemenharian%20_apartemenmurah%20_apartemenmewah%20_apartemenpenginapan%20Wa-__+62%C2%A0812_2042_3774_%20(2).jpg?tr=w-1200,q-85",
+    "https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/_apartemenharian%20_apartemenmurah%20_apartemenmewah%20_apartemenpenginapan%20Wa-__+62%C2%A0812_2042_3774_.jpg?tr=w-1200,q-85"
+  ];
+  
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-32">
       {/* Navbar */}
       <nav className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 py-3 flex justify-between items-center shadow-sm">
         <div className="flex items-center gap-2">
-          <img 
-            src="https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/1770491932595.png" 
-            alt="Logo Sentul Tower" 
-            className="h-16 w-auto object-contain" 
-          />
+          <img              src="https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/1770491932595.png"              alt="Logo Sentul Tower"              className="h-16 w-auto object-contain"            />
           <span className="font-bold text-sm md:text-lg tracking-tight text-slate-800 uppercase">Apartemen Sentul Tower</span>
         </div>
         <div className="flex items-center gap-2">
@@ -589,10 +594,19 @@ const App = () => {
         </div>
       </nav>
 
-      {/* Hero Header */}
+      {/* Hero Header (Dengan Slider Otomatis) */}
       <header className="relative h-[450px] overflow-hidden">
-        <img src="https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/AIEnhancer_20260206_022711.png?tr=w-1200,q-85" className="w-full h-full object-cover" alt="Apartemen Sentul Tower View Gunung" loading="eager" />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/40 to-transparent flex flex-col justify-end p-6">
+        <div className="absolute inset-0 w-full h-full">
+           <ImageSlider 
+             images={heroImages} 
+             heightClass="h-full" 
+             roundedClass="rounded-none" 
+             altPrefix="Suasana Apartemen Sentul Tower" 
+           />
+        </div>
+
+        {/* Overlay Content */}
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/40 to-transparent flex flex-col justify-end p-6 pointer-events-none z-20">
           <div className="flex items-center gap-1.5 bg-slate-900 border border-slate-800 text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-full w-fit mb-3 shadow-lg">
             <MapPin size={10} /> DEKAT AEON MALL SENTUL
           </div>
@@ -600,6 +614,7 @@ const App = () => {
           <p className="text-slate-200 text-xs italic font-medium">Solusi Staycation Nyaman di Sentul City</p>
         </div>
       </header>
+
 
       {/* Ringkasan Harga */}
       <section className="px-4 -mt-6 relative z-10">
