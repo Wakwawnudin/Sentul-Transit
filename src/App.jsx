@@ -8,9 +8,8 @@ import {
   ShoppingBag, Palmtree, ShieldCheck
 } from 'lucide-react';
 
-// --- KOMPONEN BARU: UNIT BADGE (MODIFIKASI UNTUK DI ATAS GAMBAR) ---
+// --- KOMPONEN UNIT BADGE (DI ATAS FOTO) ---
 const UnitBadge = ({ unit }) => (
-  // Update style: Background putih/blur agar jelas di atas foto
   <div className="flex items-center gap-1.5 bg-white/90 backdrop-blur-md border border-slate-200/50 px-2.5 py-1.5 rounded-xl shadow-lg w-fit">
     <Key size={12} className="text-[#D4AF37]" />
     <span className="text-[9px] font-black text-slate-800 uppercase tracking-widest">{unit}</span>
@@ -345,15 +344,14 @@ const App = () => {
               <div className="relative">
                 <ImageSlider images={room.images} heightClass="h-72" roundedClass="rounded-[24px]" altPrefix={`Interior ${room.name} Sentul Tower`} />
                 
-                {/* --- UPDATE POSISI UNIT BADGE --- */}
-                {/* Container ini sekarang memegang Badge Tipe Kamar (kiri) dan Badge Unit (kanan) di atas foto */}
+                {/* --- UPDATE POSISI UNIT BADGE (TOP RIGHT FOTO) --- */}
                 <div className="absolute top-4 left-4 right-4 flex justify-between items-start pointer-events-none z-20">
                   <div className="flex gap-2">
                      <span className="bg-black/70 backdrop-blur-md text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest">{room.type}</span>
                      {room.type === '2BR' && <span className="bg-[#D4AF37] text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg">PREMIUM</span>}
                   </div>
                   
-                  {/* Unit Badge dipindahkan ke sini (Pojok Kanan Atas Foto) */}
+                  {/* Unit Badge (Pojok Kanan Atas Foto) */}
                   <UnitBadge unit={room.roomNumber} />
                 </div>
               </div>
@@ -361,7 +359,6 @@ const App = () => {
               <div className="pt-5 px-3 pb-3">
                 <div className="flex justify-between items-start mb-4">
                    <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight">{room.name}</h3>
-                   {/* Unit Badge di bawah judul dihapus */}
                 </div>
 
                 <div className="flex items-center gap-4 text-slate-400 text-[11px] font-bold mb-5 uppercase tracking-wide">
@@ -369,6 +366,13 @@ const App = () => {
                   <div className="flex items-center gap-1.5"><Bed size={14}/> {room.beds} Bed</div>
                   <div className="flex items-center gap-1.5"><Shield size={14}/> 24/7 Aman</div>
                 </div>
+
+                {/* --- UPDATE: BADGE KEAMANAN VERIFIED (DI ATAS HARGA) --- */}
+                <div className="w-fit flex items-center gap-1.5 bg-blue-50/70 border border-blue-100/50 px-2.5 py-1.5 rounded-lg mb-4">
+                   <ShieldCheck size={14} className="text-blue-500" />
+                   <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">Verified • Higienis • Aman</span>
+                </div>
+
                 <div className="flex justify-between items-end pt-5 border-t border-slate-50">
                   <div>
                     <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1">Harga Mulai</p>
