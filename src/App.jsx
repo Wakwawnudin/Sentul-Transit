@@ -5,7 +5,7 @@ import {
   Building, ChevronLeft, ChevronRight, CheckCircle2, 
   MessageCircle, Tv, Wind, Coffee, Utensils, Waves, Sparkles, 
   UtensilsCrossed, Key, Wallet, HelpCircle, ChevronDown, ChevronUp,
-  ShoppingBag, Palmtree
+  ShoppingBag, Palmtree, Verified, Star
 } from 'lucide-react';
 
 // --- KOMPONEN IMAGE SLIDER ---
@@ -61,8 +61,9 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
           <img 
             key={idx}
             src={img} 
+            loading="lazy" // Optimasi Lazy Loading
             className="w-full h-full object-cover shrink-0 snap-center" 
-            alt={`${altPrefix} - View ${idx + 1} - Fasilitas Lengkap`} 
+            alt={`${altPrefix} - View ${idx + 1}`} 
           />
         ))}
       </div>
@@ -122,15 +123,16 @@ const App = () => {
   const [activeFilter, setActiveFilter] = useState('Semua');
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [refCode, setRefCode] = useState("");
+  
+  // State untuk Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6; 
 
   const waNumber = "6283830033717";
   const mapsLink = "https://share.google/490MII2W8A99899m7";
 
   useEffect(() => {
     // --- 1. JURUS BAJAK DOMAIN (KHUSUS DOMAIN LAMA) ---
-    // Logika: Jika URL browser mengandung "apartsentul.cloud"
-    // Maka paksa pindah ke "apartemensentultower.com" dan tempel "?ref=Lani"
-    // Syarat: Di Vercel, "apartsentul.cloud" JANGAN di-redirect, tapi jadikan domain biasa.
     if (window.location.hostname.includes('apartsentul.cloud')) {
       window.location.replace("https://apartemensentultower.com/?ref=Lani");
       return; 
@@ -150,6 +152,11 @@ const App = () => {
     return () => window.removeEventListener('popstate', handlePopState);
   }, [selectedRoom]);
 
+  // Reset pagination saat filter berubah
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeFilter]);
+
   const openRoomDetail = (room) => {
     setSelectedRoom(room);
     window.history.pushState({ modalOpen: true }, "");
@@ -162,7 +169,6 @@ const App = () => {
 
   const handleWaClick = (messageType = "general", roomName = "") => {
     let text = "";
-    // --- UPDATE: TEKS "Info by" SESUAI REQUEST ---
     const refTag = refCode ? `\n\n(Info by ${refCode})` : "";
     
     switch (messageType) {
@@ -196,15 +202,17 @@ const App = () => {
     { label: 'Weekend (Jum-Min)', price: 'Rp 700.000' },
   ];
 
-  const rooms = [
+  // --- DATA TEMPLATES ---
+  const roomTemplates = [
     {
-      id: 1, name: 'STUDIO', type: 'Studio', size: '24m²', beds: 1,
+      type: 'Studio',
+      baseName: 'STUDIO', // Nama disederhanakan
+      size: '24m²', beds: 1,
       images: [
-        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260206_023946.jpg', 
-        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260206_023934.jpg', 
-        'https://images.unsplash.com/photo-1768383550694-adb7ddddad7d?q=80&w=1335&auto=format&fit=crop',
-        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155132.jpg',
-        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155244.jpg'
+        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260206_023946.jpg?tr=w-800,q-80', // Auto compress param
+        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260206_023934.jpg?tr=w-800,q-80', 
+        'https://images.unsplash.com/photo-1768383550694-adb7ddddad7d?q=80&w=800&auto=format&fit=crop',
+        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155132.jpg?tr=w-800,q-80'
       ],
       description: 'Unit studio minimalis yang cocok untuk sewa harian. Lokasi strategis dekat AEON Mall Sentul City, ideal untuk istirahat sejenak setelah berbelanja atau bekerja.',
       startFrom: '150rb', transit: defaultTransit, fullday: defaultFullday,
@@ -216,13 +224,13 @@ const App = () => {
       ]
     },
     {
-      id: 2, name: '1 Bedroom', type: '1BR', size: '38m²', beds: 1,
+      type: '1BR',
+      baseName: '1 BEDROOM', // Nama disederhanakan
+      size: '38m²', beds: 1,
       images: [
-        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260206_023956.jpg', 
-        'https://images.unsplash.com/photo-1768384554121-339e5c56b0e2?q=80&w=1335&auto=format&fit=crop',
-        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155148.jpg',
-        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155301.jpg',
-        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155318.jpg'
+        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260206_023956.jpg?tr=w-800,q-80', 
+        'https://images.unsplash.com/photo-1768384554121-339e5c56b0e2?q=80&w=800&auto=format&fit=crop',
+        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155148.jpg?tr=w-800,q-80'
       ],
       description: 'Pilihan terbaik apartemen murah Sentul dengan ruang tamu terpisah. Menawarkan privasi maksimal untuk pasangan atau profesional yang membutuhkan ketenangan.',
       startFrom: '150rb', transit: defaultTransit, fullday: defaultFullday,
@@ -234,12 +242,13 @@ const App = () => {
       ]
     },
     {
-      id: 3, name: 'Family 2 Bedroom', type: '2BR', size: '56m²', beds: 2,
+      type: '2BR',
+      baseName: '2 BEDROOM', // Nama disederhanakan
+      size: '56m²', beds: 2,
       images: [
-        'https://images.unsplash.com/photo-1768383550621-89197b8b9705?q=80&w=1335&auto=format&fit=crop',
-        'https://ik.imagekit.io/x06namgbin/20260125_153112.jpg?updatedAt=1769330366470',
-        'https://ik.imagekit.io/x06namgbin/20260125_153129.jpg?updatedAt=1769330366255',
-        'https://ik.imagekit.io/x06namgbin/20260125_153156.jpg?updatedAt=1769330366650'
+        'https://images.unsplash.com/photo-1768383550621-89197b8b9705?q=80&w=800&auto=format&fit=crop',
+        'https://ik.imagekit.io/x06namgbin/20260125_153112.jpg?tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/20260125_153129.jpg?tr=w-800,q-80'
       ],
       description: 'Unit luas untuk staycation keluarga atau grup. Tersedia opsi transit 3 jam Sentul Tower yang fleksibel. Nikmati pemandangan gunung dan fasilitas lengkap.',
       startFrom: '200rb', transit: specialTransit2BR, fullday: specialFullday2BR,
@@ -252,7 +261,35 @@ const App = () => {
     }
   ];
 
+  // --- GENERATE 24 DUMMY UNITS ---
+  const rooms = Array.from({ length: 24 }).map((_, index) => {
+    // Rotasi template: Studio, 1BR, 2BR, Studio, dst...
+    const template = roomTemplates[index % 3];
+    // Generate Lantai Acak (Antara 3 sampai 32)
+    const randomFloor = Math.floor(Math.random() * 29) + 3; 
+    
+    return {
+      ...template,
+      id: index + 1,
+      name: template.baseName, // Menggunakan nama simpel
+      floorLevel: `Lantai ${randomFloor < 10 ? '0'+randomFloor : randomFloor}` // Format: Lantai 05
+    };
+  });
+
+  // --- LOGIC FILTER & PAGINATION ---
   const filteredRooms = activeFilter === 'Semua' ? rooms : rooms.filter(r => r.type === activeFilter);
+  
+  // Hitung Pagination
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredRooms.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredRooms.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    // Scroll sedikit ke atas agar user sadar halaman berubah
+    window.scrollTo({ top: 500, behavior: 'smooth' });
+  };
 
   // --- DATA FOOTER ---
   const nearbyData = [
@@ -297,7 +334,7 @@ const App = () => {
 
       {/* Hero Header */}
       <header className="relative h-[450px] overflow-hidden">
-        <img src="https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/AIEnhancer_20260206_022711.png" className="w-full h-full object-cover" alt="Apartemen Sentul Tower View Gunung" />
+        <img src="https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/AIEnhancer_20260206_022711.png?tr=w-1200,q-85" className="w-full h-full object-cover" alt="Apartemen Sentul Tower View Gunung" loading="eager" />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/40 to-transparent flex flex-col justify-end p-6">
           <div className="flex items-center gap-1.5 bg-slate-900 border border-slate-800 text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-full w-fit mb-3 shadow-lg">
             <MapPin size={10} /> DEKAT AEON MALL SENTUL
@@ -335,33 +372,108 @@ const App = () => {
         </div>
 
         <div className="space-y-6">
-          {filteredRooms.map(room => (
+          {currentItems.map(room => (
             <div key={room.id} onClick={() => openRoomDetail(room)} className="bg-white rounded-[32px] p-3 shadow-sm border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer group">
               <div className="relative">
                 <ImageSlider images={room.images} heightClass="h-72" roundedClass="rounded-[24px]" altPrefix={`Interior ${room.name} Sentul Tower`} />
+                
+                {/* Badge Type (Kiri Atas) */}
                 <div className="absolute top-4 left-4 flex gap-2 pointer-events-none z-20">
                   <span className="bg-black/70 backdrop-blur-md text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest">{room.type}</span>
                   {room.type === '2BR' && <span className="bg-[#D4AF37] text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg">PREMIUM</span>}
                 </div>
+
+                {/* Badge Lantai (Kanan Atas) - REVISI: Hanya Lantai, Tanpa Nomor Unit */}
+                <div className="absolute top-4 right-4 pointer-events-none z-20">
+                  <span className="bg-white/90 backdrop-blur text-slate-800 text-[10px] font-black px-3 py-1.5 rounded-xl shadow-lg border border-slate-100 uppercase tracking-wider">
+                    {room.floorLevel}
+                  </span>
+                </div>
               </div>
+
               <div className="pt-5 px-3 pb-3">
                 <h3 className="text-xl font-black text-slate-900 mb-1.5 uppercase tracking-tight">{room.name}</h3>
-                <div className="flex items-center gap-4 text-slate-400 text-[11px] font-bold mb-5 uppercase tracking-wide">
+                
+                <div className="flex items-center gap-4 text-slate-400 text-[11px] font-bold mb-4 uppercase tracking-wide">
                   <div className="flex items-center gap-1.5"><Maximize size={14}/> {room.size}</div>
                   <div className="flex items-center gap-1.5"><Bed size={14}/> {room.beds} Bed</div>
                   <div className="flex items-center gap-1.5"><Shield size={14}/> 24/7 Aman</div>
                 </div>
-                <div className="flex justify-between items-end pt-5 border-t border-slate-50">
+
+                {/* Badge Security & Hygiene (Baru) */}
+                <div className="flex items-center gap-1.5 mb-3">
+                   <CheckCircle2 size={12} className="text-green-500" fill="currentColor" color="white" />
+                   <span className="text-[10px] font-bold text-slate-500 tracking-tight">Verified • Higienis • Aman</span>
+                </div>
+
+                <div className="flex justify-between items-end pt-4 border-t border-slate-50">
                   <div>
                     <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1">Harga Mulai</p>
                     <p className="text-2xl font-black text-slate-900 tracking-tight">Rp {room.startFrom}</p>
                   </div>
-                  <button className="bg-slate-900 text-white font-bold px-6 py-3 rounded-2xl text-[11px] uppercase tracking-widest shadow-lg shadow-slate-200">Detail Kamar</button>
+                  <button className="bg-slate-900 text-white font-bold px-6 py-3 rounded-2xl text-[11px] uppercase tracking-widest shadow-lg shadow-slate-200">Detail</button>
                 </div>
               </div>
             </div>
           ))}
         </div>
+
+        {/* --- PAGINATION CONTROLS --- */}
+        {totalPages > 1 && (
+          <div className="mt-8 flex flex-col items-center gap-4">
+             {/* Info Halaman */}
+             <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                Menampilkan {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, filteredRooms.length)} dari {filteredRooms.length} Unit
+             </div>
+
+             <div className="flex items-center gap-2">
+                {/* Tombol Previous */}
+                <button 
+                  onClick={() => handlePageChange(currentPage - 1)} 
+                  disabled={currentPage === 1}
+                  className={`p-3 rounded-xl border transition-all ${currentPage === 1 ? 'bg-slate-50 border-slate-100 text-slate-300' : 'bg-white border-slate-200 text-slate-800 hover:border-[#D4AF37] shadow-sm'}`}
+                >
+                   <ChevronLeft size={16} />
+                </button>
+
+                {/* Nomor Halaman */}
+                <div className="flex gap-1">
+                   {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+                      <button
+                        key={number}
+                        onClick={() => handlePageChange(number)}
+                        className={`w-10 h-10 flex items-center justify-center rounded-xl text-xs font-black transition-all ${currentPage === number ? 'bg-slate-900 text-[#D4AF37] shadow-lg scale-110' : 'bg-white border border-slate-200 text-slate-500 hover:bg-slate-50'}`}
+                      >
+                         {number}
+                      </button>
+                   ))}
+                </div>
+
+                {/* Tombol Next */}
+                <button 
+                  onClick={() => handlePageChange(currentPage + 1)} 
+                  disabled={currentPage === totalPages}
+                  className={`p-3 rounded-xl border transition-all ${currentPage === totalPages ? 'bg-slate-50 border-slate-100 text-slate-300' : 'bg-white border-slate-200 text-slate-800 hover:border-[#D4AF37] shadow-sm'}`}
+                >
+                   <ChevronRight size={16} />
+                </button>
+             </div>
+
+             {/* Lompat ke Halaman (Dropdown Sederhana) */}
+             <div className="relative">
+                <select 
+                  value={currentPage} 
+                  onChange={(e) => handlePageChange(Number(e.target.value))}
+                  className="appearance-none bg-white pl-4 pr-8 py-2 rounded-xl border border-slate-200 text-[10px] font-bold text-slate-600 uppercase tracking-widest focus:outline-none focus:border-[#D4AF37]"
+                >
+                   {Array.from({ length: totalPages }, (_, i) => i + 1).map(n => (
+                      <option key={n} value={n}>Lompat ke Hal {n}</option>
+                   ))}
+                </select>
+                <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"/>
+             </div>
+          </div>
+        )}
       </section>
 
       {/* --- MEGA FOOTER --- */}
