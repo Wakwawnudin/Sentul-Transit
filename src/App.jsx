@@ -38,10 +38,13 @@ const generateDummyRooms = () => {
   for (let i = 1; i <= 24; i++) {
     const type = types[Math.floor(Math.random() * types.length)];
     const floor = Math.floor(Math.random() * 16) + 1; // Lantai 1 - 16
-    const unitNum = Math.floor(Math.random() * 50) + 1; // Nomor Pintu Acak
     const formattedFloor = floor < 10 ? `0${floor}` : floor;
-    const formattedUnit = unitNum < 10 ? `0${unitNum}` : unitNum;
     
+    // UPDATE 1: JUDUL SIMPEL (Studio, 1 Bedroom, 2 Bedroom)
+    let name = type;
+    if (type === '1BR') name = '1 Bedroom';
+    else if (type === '2BR') name = '2 Bedroom';
+
     // Ambil 3 foto acak
     const shuffledImgs = [...baseImages].sort(() => 0.5 - Math.random());
     const selectedImgs = shuffledImgs.slice(0, 3);
@@ -56,12 +59,12 @@ const generateDummyRooms = () => {
 
     rooms.push({
       id: i,
-      name: `${type} - VIEW GUNUNG`,
+      name: name, // Gunakan nama yang sudah disimpelkan
       type: type,
       size: size,
       beds: beds,
-      // FORMAT BARU: LANTAI - UNIT
-      roomNumber: `Lantai ${formattedFloor} - Unit ${formattedUnit}`, 
+      // UPDATE 2: DATA ROOMNUMBER HANYA LANTAI SAJA
+      roomNumber: `Lantai ${formattedFloor}`, 
       images: selectedImgs,
       description: desc,
       startFrom: price,
@@ -84,7 +87,7 @@ const generateDummyRooms = () => {
   return rooms;
 };
 
-// --- KOMPONEN UNIT BADGE ---
+// --- KOMPONEN UNIT BADGE (LANTAI ONLY) ---
 const UnitBadge = ({ unit }) => (
   <div className="flex items-center gap-1.5 bg-white/90 backdrop-blur-md border border-slate-200/50 px-2.5 py-1.5 rounded-xl shadow-lg w-fit">
     <Key size={12} className="text-[#D4AF37]" />
@@ -212,7 +215,6 @@ const App = () => {
   const itemsPerPage = 6; 
 
   // GENERATE ROOMS (Hanya sekali saat load)
-  // Menggunakan useState agar data tidak berubah-ubah saat re-render
   const [rooms] = useState(generateDummyRooms());
 
   const waNumber = "6283830033717";
@@ -253,6 +255,7 @@ const App = () => {
   const handleWaClick = (messageType = "general", roomName = "", roomNumber = "") => {
     let text = "";
     const refTag = refCode ? `\n\n(Info by ${refCode})` : "";
+    // Hanya kirim info lantai
     const roomInfo = roomNumber ? ` (${roomNumber})` : "";
     
     switch (messageType) {
@@ -367,12 +370,14 @@ const App = () => {
               <div className="relative">
                 <ImageSlider images={room.images} heightClass="h-72" roundedClass="rounded-[24px]" altPrefix={`Interior ${room.name} Sentul Tower`} />
                 
+                {/* --- UNIT BADGE (TOP RIGHT FOTO) --- */}
                 <div className="absolute top-4 left-4 right-4 flex justify-between items-start pointer-events-none z-20">
                   <div className="flex gap-2">
                      <span className="bg-black/70 backdrop-blur-md text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest">{room.type}</span>
                      {room.type === '2BR' && <span className="bg-[#D4AF37] text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg">PREMIUM</span>}
                   </div>
                   
+                  {/* Unit Badge (HANYA LANTAI) */}
                   <UnitBadge unit={room.roomNumber} />
                 </div>
               </div>
@@ -388,6 +393,7 @@ const App = () => {
                   <div className="flex items-center gap-1.5"><Shield size={14}/> 24/7 Aman</div>
                 </div>
 
+                {/* --- BADGE KEAMANAN VERIFIED (DI ATAS HARGA) --- */}
                 <div className="w-fit flex items-center gap-1.5 bg-blue-50/70 border border-blue-100/50 px-2.5 py-1.5 rounded-lg mb-4">
                    <ShieldCheck size={14} className="text-blue-500" />
                    <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">Verified • Higienis • Aman</span>
@@ -570,6 +576,7 @@ const App = () => {
                <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter tracking-tight">{selectedRoom.name}</h2>
             </div>
             
+            {/* Unit Badge di Modal Detail (HANYA LANTAI) */}
             <div className="mb-6 flex">
                <UnitBadge unit={selectedRoom.roomNumber} />
             </div>
