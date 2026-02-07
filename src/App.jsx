@@ -5,15 +5,14 @@ import {
   Building, ChevronLeft, ChevronRight, CheckCircle2, 
   MessageCircle, Tv, Wind, Coffee, Utensils, Waves, Sparkles, 
   UtensilsCrossed, Key, Wallet, HelpCircle, ChevronDown, ChevronUp,
-  ShoppingBag, Palmtree, ShieldCheck // <--- UPDATE: Menggunakan ShieldCheck
+  ShoppingBag, Palmtree, ShieldCheck
 } from 'lucide-react';
 
-// --- KOMPONEN BARU: TRUST BADGE (PERISAI) ---
-const TrustBadge = () => (
-  <div className="flex items-center gap-1.5 bg-blue-50/90 backdrop-blur border border-blue-200 px-2.5 py-1.5 rounded-lg shadow-sm">
-    {/* UPDATE: Icon diganti jadi ShieldCheck (Perisai) */}
-    <ShieldCheck size={14} className="text-blue-600 fill-blue-50" />
-    <span className="text-[9px] font-black text-blue-800 uppercase tracking-wider">Verified Unit</span>
+// --- KOMPONEN BARU: UNIT BADGE (PENGGANTI SHIELD) ---
+const UnitBadge = ({ unit }) => (
+  <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl shadow-sm w-fit">
+    <Key size={14} className="text-[#D4AF37]" />
+    <span className="text-[10px] font-black text-slate-700 uppercase tracking-widest">{unit}</span>
   </div>
 );
 
@@ -350,21 +349,19 @@ const App = () => {
                      <span className="bg-black/70 backdrop-blur-md text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest">{room.type}</span>
                      {room.type === '2BR' && <span className="bg-[#D4AF37] text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg">PREMIUM</span>}
                   </div>
-                  {/* TRUST BADGE OVERLAY - UPDATE ICON */}
-                  <div className="bg-white/90 backdrop-blur-md p-1.5 rounded-full shadow-lg">
-                      <ShieldCheck size={16} className="text-blue-500 fill-blue-100"/>
-                  </div>
+                  {/* TRUST BADGE HILANG, DIGANTI UNIT BADGE DI BAWAH */}
                 </div>
               </div>
               
               <div className="pt-5 px-3 pb-3">
                 <div className="flex justify-between items-start mb-2">
                    <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight">{room.name}</h3>
-                   <span className="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded-lg">{room.roomNumber}</span>
+                   {/* NOMOR UNIT DI KANAN ATAS HILANG, PINDAH KE BAWAH */}
                 </div>
                 
+                {/* POSISI BEKAS TRUST BADGE SEKARANG JADI UNIT BADGE */}
                 <div className="mb-4">
-                  <TrustBadge />
+                   <UnitBadge unit={room.roomNumber} />
                 </div>
 
                 <div className="flex items-center gap-4 text-slate-400 text-[11px] font-bold mb-5 uppercase tracking-wide">
@@ -497,14 +494,11 @@ const App = () => {
             
             <div className="flex justify-between items-start mb-2">
                <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter tracking-tight">{selectedRoom.name}</h2>
-               <div className="text-right">
-                  <span className="block text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Kode Unit</span>
-                  <span className="block text-sm font-black text-slate-800">{selectedRoom.roomNumber}</span>
-               </div>
             </div>
             
+            {/* POSISI BEKAS TRUST BADGE JADI UNIT BADGE */}
             <div className="mb-6 flex">
-               <TrustBadge />
+               <UnitBadge unit={selectedRoom.roomNumber} />
             </div>
 
             <p className="text-slate-500 text-sm mb-8 leading-relaxed font-medium">{selectedRoom.description}</p>
