@@ -5,13 +5,14 @@ import {
   Building, ChevronLeft, ChevronRight, CheckCircle2, 
   MessageCircle, Tv, Wind, Coffee, Utensils, Waves, Sparkles, 
   UtensilsCrossed, Key, Wallet, HelpCircle, ChevronDown, ChevronUp,
-  ShoppingBag, Palmtree, BadgeCheck // <--- UPDATE: Nambah Icon BadgeCheck
+  ShoppingBag, Palmtree, ShieldCheck // <--- UPDATE: Menggunakan ShieldCheck
 } from 'lucide-react';
 
-// --- KOMPONEN BARU: TRUST BADGE ---
+// --- KOMPONEN BARU: TRUST BADGE (PERISAI) ---
 const TrustBadge = () => (
   <div className="flex items-center gap-1.5 bg-blue-50/90 backdrop-blur border border-blue-200 px-2.5 py-1.5 rounded-lg shadow-sm">
-    <BadgeCheck size={14} className="text-blue-600 fill-blue-50" />
+    {/* UPDATE: Icon diganti jadi ShieldCheck (Perisai) */}
+    <ShieldCheck size={14} className="text-blue-600 fill-blue-50" />
     <span className="text-[9px] font-black text-blue-800 uppercase tracking-wider">Verified Unit</span>
   </div>
 );
@@ -165,7 +166,6 @@ const App = () => {
   const handleWaClick = (messageType = "general", roomName = "", roomNumber = "") => {
     let text = "";
     const refTag = refCode ? `\n\n(Info by ${refCode})` : "";
-    // UPDATE: Menambahkan Nomor Kamar ke Pesan WA
     const roomInfo = roomNumber ? ` (${roomNumber})` : "";
     
     switch (messageType) {
@@ -199,11 +199,10 @@ const App = () => {
     { label: 'Weekend (Jum-Min)', price: 'Rp 700.000' },
   ];
 
-  // --- UPDATE: DATA ROOMS DENGAN NOMOR KAMAR (DUMMY) ---
   const rooms = [
     {
       id: 1, name: 'STUDIO', type: 'Studio', size: '24m²', beds: 1,
-      roomNumber: 'Unit A-0812', // <--- DUMMY DATA
+      roomNumber: 'Unit A-0812',
       images: [
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260206_023946.jpg', 
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260206_023934.jpg', 
@@ -222,7 +221,7 @@ const App = () => {
     },
     {
       id: 2, name: '1 Bedroom', type: '1BR', size: '38m²', beds: 1,
-      roomNumber: 'Unit B-1505', // <--- DUMMY DATA
+      roomNumber: 'Unit B-1505',
       images: [
         'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260206_023956.jpg', 
         'https://images.unsplash.com/photo-1768384554121-339e5c56b0e2?q=80&w=1335&auto=format&fit=crop',
@@ -241,7 +240,7 @@ const App = () => {
     },
     {
       id: 3, name: 'Family 2 Bedroom', type: '2BR', size: '56m²', beds: 2,
-      roomNumber: 'Unit A-2101', // <--- DUMMY DATA
+      roomNumber: 'Unit A-2101',
       images: [
         'https://images.unsplash.com/photo-1768383550621-89197b8b9705?q=80&w=1335&auto=format&fit=crop',
         'https://ik.imagekit.io/x06namgbin/20260125_153112.jpg?updatedAt=1769330366470',
@@ -346,15 +345,14 @@ const App = () => {
               <div className="relative">
                 <ImageSlider images={room.images} heightClass="h-72" roundedClass="rounded-[24px]" altPrefix={`Interior ${room.name} Sentul Tower`} />
                 
-                {/* UPDATE: Trust Badge & Room Type di atas Gambar */}
                 <div className="absolute top-4 left-4 right-4 flex justify-between items-start pointer-events-none z-20">
                   <div className="flex gap-2">
                      <span className="bg-black/70 backdrop-blur-md text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest">{room.type}</span>
                      {room.type === '2BR' && <span className="bg-[#D4AF37] text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg">PREMIUM</span>}
                   </div>
-                  {/* TRUST BADGE OVERLAY */}
+                  {/* TRUST BADGE OVERLAY - UPDATE ICON */}
                   <div className="bg-white/90 backdrop-blur-md p-1.5 rounded-full shadow-lg">
-                      <CheckCircle2 size={16} className="text-blue-500 fill-blue-100"/>
+                      <ShieldCheck size={16} className="text-blue-500 fill-blue-100"/>
                   </div>
                 </div>
               </div>
@@ -362,11 +360,9 @@ const App = () => {
               <div className="pt-5 px-3 pb-3">
                 <div className="flex justify-between items-start mb-2">
                    <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight">{room.name}</h3>
-                   {/* UPDATE: Nomor Kamar Kecil */}
                    <span className="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded-lg">{room.roomNumber}</span>
                 </div>
                 
-                {/* UPDATE: Trust Badge Component di List */}
                 <div className="mb-4">
                   <TrustBadge />
                 </div>
@@ -501,14 +497,12 @@ const App = () => {
             
             <div className="flex justify-between items-start mb-2">
                <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter tracking-tight">{selectedRoom.name}</h2>
-               {/* UPDATE: Nomor Kamar di Detail */}
                <div className="text-right">
                   <span className="block text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Kode Unit</span>
                   <span className="block text-sm font-black text-slate-800">{selectedRoom.roomNumber}</span>
                </div>
             </div>
             
-            {/* UPDATE: Trust Badge di Modal */}
             <div className="mb-6 flex">
                <TrustBadge />
             </div>
@@ -565,7 +559,6 @@ const App = () => {
               </div>
             </div>
 
-            {/* UPDATE: Passing roomName dan roomNumber ke WhatsApp */}
             <button onClick={() => handleWaClick("booking", selectedRoom.name, selectedRoom.roomNumber)} className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-black py-5 rounded-[24px] flex items-center justify-center gap-3 shadow-2xl shadow-green-200 active:scale-95 transition-all uppercase tracking-widest text-xs">
               <MessageCircle size={20} /> Hubungi Lewat WhatsApp
             </button>
