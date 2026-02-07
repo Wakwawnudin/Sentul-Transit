@@ -578,27 +578,37 @@ const App = () => {
   
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-32">
-      {/* Navbar */}
-      <nav className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 py-3 flex justify-between items-center shadow-sm">
-        <div className="flex items-center gap-2">
-          <img              src="https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/1770491932595.png"              alt="Logo Sentul Tower"              className="h-16 w-auto object-contain"            />
-          <div className="flex flex-col justify-center leading-none pl-2">
-            <span className="font-black text-xs md:text-lg text-slate-900 tracking-widest uppercase">APARTEMEN</span>
-            <span className="font-black text-xs md:text-lg text-[#D4AF37] tracking-widest uppercase">SENTUL TOWER</span>
+            {/* Navbar Transparan (Style Bali Rentals) */}
+      <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex justify-between items-center transition-all duration-300 bg-gradient-to-b from-black/80 to-transparent">
+        <div className="flex items-center gap-3">
+          {/* Logo */}
+          <img 
+            src="https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/1770491932595.png" 
+            alt="Logo Sentul Tower" 
+            className="h-14 w-auto object-contain drop-shadow-md" 
+          />
+          
+          {/* Teks Brand */}
+          <div className="flex flex-col justify-center pl-1">
+            <span className="font-black text-[10px] md:text-sm text-white tracking-[0.2em] leading-tight uppercase drop-shadow-md">APARTEMEN</span>
+            <span className="font-black text-[11px] md:text-base text-[#D4AF37] tracking-widest leading-tight uppercase -mt-0.5 drop-shadow-md">SENTUL TOWER</span>
           </div>
         </div>
+
+        {/* Tombol Kanan (Glassmorphism) */}
         <div className="flex items-center gap-2">
-          <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-white p-2.5 rounded-full border border-slate-200 shadow-sm active:scale-90 transition-transform flex items-center justify-center">
+          <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-white/20 backdrop-blur-md p-2.5 rounded-full border border-white/30 text-white shadow-lg active:scale-90 transition-transform flex items-center justify-center hover:bg-white/30">
              <GoogleMapsLogo />
           </a>
-          <button onClick={() => handleWaClick("general")} className="bg-green-50 text-green-600 p-2.5 rounded-full border border-green-100 active:scale-90 transition-transform">
-            <MessageCircle size={18} />
+          <button onClick={() => handleWaClick("general")} className="bg-white/20 backdrop-blur-md text-white p-2.5 rounded-full border border-white/30 shadow-lg active:scale-90 transition-transform hover:bg-green-500/80 hover:border-green-500">
+            <MessageCircle size={20} />
           </button>
         </div>
       </nav>
 
-      {/* Hero Header (Dengan Slider Otomatis) */}
-      <header className="relative h-[450px] overflow-hidden">
+
+      {/* Hero Header (Full Height & Slider) */}
+      <header className="relative h-[600px] w-full overflow-hidden">
         <div className="absolute inset-0 w-full h-full">
            <ImageSlider 
              images={heroImages} 
@@ -609,15 +619,14 @@ const App = () => {
         </div>
 
         {/* Overlay Content */}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/40 to-transparent flex flex-col justify-end p-6 pointer-events-none z-20">
-          <div className="flex items-center gap-1.5 bg-slate-900 border border-slate-800 text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-full w-fit mb-3 shadow-lg">
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent flex flex-col justify-end p-6 pb-20 pointer-events-none z-20">
+          <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-md border border-white/10 text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-full w-fit mb-3 shadow-lg">
             <MapPin size={10} /> DEKAT AEON MALL SENTUL
           </div>
-          <h1 className="text-2xl font-black text-white leading-tight uppercase tracking-tight">Apartemen Sentul Tower</h1>
-          <p className="text-slate-200 text-xs italic font-medium">Solusi Staycation Nyaman di Sentul City</p>
+          <h1 className="text-3xl font-black text-white leading-tight uppercase tracking-tight drop-shadow-lg mb-1">Apartemen Sentul Tower</h1>
+          <p className="text-slate-200 text-sm italic font-medium drop-shadow-md">Solusi Staycation Mewah & Nyaman</p>
         </div>
       </header>
-
 
       {/* Ringkasan Harga */}
       <section className="px-4 -mt-6 relative z-10">
