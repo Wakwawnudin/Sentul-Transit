@@ -265,6 +265,30 @@ const App = () => {
         'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2012/20260207_215139.jpg?updatedAt=1770485467195&tr=w-800,q-80'
       ]
     },
+          {
+      type: '1BR', floor: 'Lantai 01',
+      images: [
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215859.jpg?updatedAt=1770486566474&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215257.jpg?updatedAt=1770482875988&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215850.jpg?updatedAt=1770486566548&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215235.jpg?updatedAt=1770482875980&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215839.jpg?updatedAt=1770486566575&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215246.jpg?updatedAt=1770482875917&tr=w-800,q-80'
+      ]
+    },
+        {
+      type: '2BR', floor: 'Deluxe', // Deluxe.
+      images: [
+        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215405.jpg?updatedAt=1770484520183&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215415.jpg?updatedAt=1770484520177&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215453.jpg?updatedAt=1770484520224&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215430.jpg?updatedAt=1770484520216&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215503.jpg?updatedAt=1770484520210&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215522.jpg?updatedAt=1770484520303&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215443.jpg?updatedAt=1770484520229&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215541.jpg?updatedAt=1770484519539&tr=w-800,q-80'
+      ]
+    },
     {
       type: 'Studio', floor: 'Lantai 08', // 8.
       images: [
@@ -358,17 +382,6 @@ const App = () => {
     },
 
     // --- 1 BEDROOM ---
-    {
-      type: '1BR', floor: 'Lantai 01',
-      images: [
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215859.jpg?updatedAt=1770486566474&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215257.jpg?updatedAt=1770482875988&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215850.jpg?updatedAt=1770486566548&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215235.jpg?updatedAt=1770482875980&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215839.jpg?updatedAt=1770486566575&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215246.jpg?updatedAt=1770482875917&tr=w-800,q-80'
-      ]
-    },
     {
       type: '1BR', floor: 'Lantai 16', // 16..
       images: [
@@ -490,19 +503,6 @@ const App = () => {
         'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20LANTAI%2011/20260207_220059.jpg?updatedAt=1770484583340&tr=w-800,q-80',
         'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20LANTAI%2011/20260207_220018.jpg?updatedAt=1770484582827&tr=w-800,q-80',
         'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20LANTAI%2011/20260207_220029.jpg?updatedAt=1770484582846&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: '2BR', floor: 'Deluxe', // Deluxe.
-      images: [
-        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215405.jpg?updatedAt=1770484520183&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215415.jpg?updatedAt=1770484520177&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215453.jpg?updatedAt=1770484520224&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215430.jpg?updatedAt=1770484520216&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215503.jpg?updatedAt=1770484520210&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215522.jpg?updatedAt=1770484520303&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215443.jpg?updatedAt=1770484520229&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215541.jpg?updatedAt=1770484519539&tr=w-800,q-80'
       ]
     },
     {
