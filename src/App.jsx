@@ -257,35 +257,6 @@ const App = () => {
   const realUnits = [
     // --- STUDIO ---
     {
-      type: 'Studio', floor: 'Lantai 15', // 15.
-      images: [
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213645.jpg?updatedAt=1770485614631&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213729.jpg?updatedAt=1770485614606&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213656.jpg?updatedAt=1770485614544&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213751.jpg?updatedAt=1770485614628&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213741.jpg?updatedAt=1770485614649&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: 'Studio', floor: 'Lantai 16',
-      images: [
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214320.jpg?updatedAt=1770485568667&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214310.jpg?updatedAt=1770485568572&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214340.jpg?updatedAt=1770485568084&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214330.jpg?updatedAt=1770485568115&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214352.jpg?updatedAt=1770485568137&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: 'Studio', floor: 'Lantai 15', // 15 Polos
-      images: [
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015/20260207_213517.jpg?updatedAt=1770485516707&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015/20260207_213504.jpg?updatedAt=1770485516705&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015/20260207_213451.jpg?updatedAt=1770485516706&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015/20260207_213531.jpg?updatedAt=1770485516417&tr=w-800,q-80'
-      ]
-    },
-    {
       type: 'Studio', floor: 'Lantai 12',
       images: [
         'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2012/20260207_215054.jpg?updatedAt=1770485467769&tr=w-800,q-80',
@@ -354,6 +325,35 @@ const App = () => {
         'https://ik.imagekit.io/x06namgbin/STUDIO%20DELUXE/20260207_222151.jpg?updatedAt=1770484633210&tr=w-800,q-80',
         'https://ik.imagekit.io/x06namgbin/STUDIO%20DELUXE/20260207_222142.jpg?updatedAt=1770484633288&tr=w-800,q-80',
         'https://ik.imagekit.io/x06namgbin/STUDIO%20DELUXE/20260207_222117.jpg?updatedAt=1770484633201&tr=w-800,q-80'
+      ]
+    },
+        {
+      type: 'Studio', floor: 'Lantai 15', // 15.
+      images: [
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213645.jpg?updatedAt=1770485614631&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213729.jpg?updatedAt=1770485614606&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213656.jpg?updatedAt=1770485614544&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213751.jpg?updatedAt=1770485614628&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213741.jpg?updatedAt=1770485614649&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: 'Studio', floor: 'Lantai 16',
+      images: [
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214320.jpg?updatedAt=1770485568667&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214310.jpg?updatedAt=1770485568572&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214340.jpg?updatedAt=1770485568084&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214330.jpg?updatedAt=1770485568115&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214352.jpg?updatedAt=1770485568137&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: 'Studio', floor: 'Lantai 15', // 15 Polos
+      images: [
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015/20260207_213517.jpg?updatedAt=1770485516707&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015/20260207_213504.jpg?updatedAt=1770485516705&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015/20260207_213451.jpg?updatedAt=1770485516706&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015/20260207_213531.jpg?updatedAt=1770485516417&tr=w-800,q-80'
       ]
     },
 
