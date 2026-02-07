@@ -9,10 +9,12 @@ import {
 } from 'lucide-react';
 
 // --- HELPER: AUTO IMAGE OPTIMIZER (IMAGEKIT) ---
+// Mengubah ukuran dan kualitas gambar secara otomatis agar ringan
 const getOptimizedUrl = (url, width = 600) => {
   if (!url) return "";
   if (url.includes('ik.imagekit.io')) {
     const separator = url.includes('?') ? '&' : '?';
+    // Resize ke 600px, Quality 80%, Format Auto (WebP)
     return `${url}${separator}tr=w-${width},q-80,f-auto`;
   }
   return url; 
@@ -40,12 +42,12 @@ const generateDummyRooms = () => {
     const floor = Math.floor(Math.random() * 16) + 1; // Lantai 1 - 16
     const formattedFloor = floor < 10 ? `0${floor}` : floor;
     
-    // UPDATE 1: JUDUL SIMPEL (Studio, 1 Bedroom, 2 Bedroom)
-    let name = type;
-    if (type === '1BR') name = '1 Bedroom';
-    else if (type === '2BR') name = '2 Bedroom';
+    // UPDATE: Penamaan Simpel (Sesuai Request)
+    let displayName = "Studio";
+    if (type === '1BR') displayName = "1 Bedroom";
+    if (type === '2BR') displayName = "2 Bedroom";
 
-    // Ambil 3 foto acak
+    // Ambil 3 foto acak untuk slider
     const shuffledImgs = [...baseImages].sort(() => 0.5 - Math.random());
     const selectedImgs = shuffledImgs.slice(0, 3);
 
@@ -59,12 +61,12 @@ const generateDummyRooms = () => {
 
     rooms.push({
       id: i,
-      name: name, // Gunakan nama yang sudah disimpelkan
+      name: displayName, // Nama sudah disederhanakan
       type: type,
       size: size,
       beds: beds,
-      // UPDATE 2: DATA ROOMNUMBER HANYA LANTAI SAJA
-      roomNumber: `Lantai ${formattedFloor}`, 
+      // UPDATE: Badge hanya menampilkan Lantai (Unit dihapus)
+      floorBadge: `Lantai ${formattedFloor}`, 
       images: selectedImgs,
       description: desc,
       startFrom: price,
@@ -87,15 +89,15 @@ const generateDummyRooms = () => {
   return rooms;
 };
 
-// --- KOMPONEN UNIT BADGE (LANTAI ONLY) ---
-const UnitBadge = ({ unit }) => (
+// --- KOMPONEN UNIT BADGE (HANYA LANTAI) ---
+const UnitBadge = ({ text }) => (
   <div className="flex items-center gap-1.5 bg-white/90 backdrop-blur-md border border-slate-200/50 px-2.5 py-1.5 rounded-xl shadow-lg w-fit">
     <Key size={12} className="text-[#D4AF37]" />
-    <span className="text-[9px] font-black text-slate-800 uppercase tracking-widest">{unit}</span>
+    <span className="text-[9px] font-black text-slate-800 uppercase tracking-widest">{text}</span>
   </div>
 );
 
-// --- KOMPONEN IMAGE SLIDER ---
+// --- KOMPONEN IMAGE SLIDER (OPTIMIZED) ---
 const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32px]", altPrefix = "Apartemen Sentul Tower" }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef(null);
@@ -147,9 +149,9 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
         {images.map((img, idx) => (
           <img 
             key={idx}
-            src={getOptimizedUrl(img)} 
-            loading="lazy"      
-            decoding="async"    
+            src={getOptimizedUrl(img)} // Auto Compress
+            loading="lazy"             // Lazy Loading
+            decoding="async"           // Async Decoding
             className="w-full h-full object-cover shrink-0 snap-center" 
             alt={`${altPrefix} - View ${idx + 1}`} 
           />
@@ -211,10 +213,12 @@ const App = () => {
   const [activeFilter, setActiveFilter] = useState('Semua');
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [refCode, setRefCode] = useState("");
+  
+  // --- STATE PAGINATION ---
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6; 
 
-  // GENERATE ROOMS (Hanya sekali saat load)
+  // GENERATE ROOMS (Sekali saat load)
   const [rooms] = useState(generateDummyRooms());
 
   const waNumber = "6283830033717";
@@ -230,6 +234,7 @@ const App = () => {
     if (ref) setRefCode(ref);
   }, []);
 
+  // Reset Halaman ke 1 jika Filter Berubah
   useEffect(() => {
     setCurrentPage(1);
   }, [activeFilter]);
@@ -252,11 +257,10 @@ const App = () => {
     if (window.history.state?.modalOpen) window.history.back();
   };
 
-  const handleWaClick = (messageType = "general", roomName = "", roomNumber = "") => {
+  const handleWaClick = (messageType = "general", roomName = "", roomBadge = "") => {
     let text = "";
     const refTag = refCode ? `\n\n(Info by ${refCode})` : "";
-    // Hanya kirim info lantai
-    const roomInfo = roomNumber ? ` (${roomNumber})` : "";
+    const roomInfo = roomBadge ? ` (${roomBadge})` : "";
     
     switch (messageType) {
       case "booking": text = `Halo, saya tertarik dengan unit ${roomName}${roomInfo} di Apartemen Sentul Tower.${refTag}`; break;
@@ -290,6 +294,7 @@ const App = () => {
 
   // --- LOGIC PAGINATION & FILTER ---
   const allFilteredRooms = activeFilter === 'Semua' ? rooms : rooms.filter(r => r.type === activeFilter);
+  
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentRooms = allFilteredRooms.slice(indexOfFirstItem, indexOfLastItem);
@@ -297,6 +302,7 @@ const App = () => {
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
+    // Scroll halus ke atas katalog
     document.getElementById('katalog-section')?.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -365,24 +371,26 @@ const App = () => {
         </div>
 
         <div className="space-y-6">
+          {/* Mapping Data per Halaman */}
           {currentRooms.map(room => (
             <div key={room.id} onClick={() => openRoomDetail(room)} className="bg-white rounded-[32px] p-3 shadow-sm border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer group">
               <div className="relative">
                 <ImageSlider images={room.images} heightClass="h-72" roundedClass="rounded-[24px]" altPrefix={`Interior ${room.name} Sentul Tower`} />
                 
-                {/* --- UNIT BADGE (TOP RIGHT FOTO) --- */}
+                {/* --- HEADER KARTU (Type & Lantai) --- */}
                 <div className="absolute top-4 left-4 right-4 flex justify-between items-start pointer-events-none z-20">
                   <div className="flex gap-2">
                      <span className="bg-black/70 backdrop-blur-md text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest">{room.type}</span>
                      {room.type === '2BR' && <span className="bg-[#D4AF37] text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg">PREMIUM</span>}
                   </div>
                   
-                  {/* Unit Badge (HANYA LANTAI) */}
-                  <UnitBadge unit={room.roomNumber} />
+                  {/* Badge Lantai (Tanpa Unit) */}
+                  <UnitBadge text={room.floorBadge} />
                 </div>
               </div>
               
               <div className="pt-5 px-3 pb-3">
+                {/* Judul Simpel */}
                 <div className="flex justify-between items-start mb-4">
                    <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight">{room.name}</h3>
                 </div>
@@ -393,7 +401,7 @@ const App = () => {
                   <div className="flex items-center gap-1.5"><Shield size={14}/> 24/7 Aman</div>
                 </div>
 
-                {/* --- BADGE KEAMANAN VERIFIED (DI ATAS HARGA) --- */}
+                {/* Badge Verified (Di Atas Harga) */}
                 <div className="w-fit flex items-center gap-1.5 bg-blue-50/70 border border-blue-100/50 px-2.5 py-1.5 rounded-lg mb-4">
                    <ShieldCheck size={14} className="text-blue-500" />
                    <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">Verified • Higienis • Aman</span>
@@ -411,8 +419,10 @@ const App = () => {
           ))}
         </div>
 
+        {/* --- PAGINATION LENGKAP --- */}
         {allFilteredRooms.length > itemsPerPage && (
           <div className="flex flex-col items-center gap-4 mt-10">
+            {/* Tombol Angka */}
             <div className="flex justify-center items-center gap-2">
               <button 
                 onClick={() => paginate(currentPage - 1)}
@@ -447,6 +457,7 @@ const App = () => {
               </button>
             </div>
 
+            {/* Dropdown Lompat Halaman (Muncul jika halaman > 3) */}
             {totalPages > 3 && (
                <div className="flex items-center gap-2 bg-white border border-slate-200 px-4 py-2 rounded-full shadow-sm">
                   <span className="text-[10px] font-bold text-slate-400 uppercase">Lompat ke Hal</span>
@@ -578,7 +589,7 @@ const App = () => {
             
             {/* Unit Badge di Modal Detail (HANYA LANTAI) */}
             <div className="mb-6 flex">
-               <UnitBadge unit={selectedRoom.roomNumber} />
+               <UnitBadge text={selectedRoom.floorBadge} />
             </div>
 
             <p className="text-slate-500 text-sm mb-8 leading-relaxed font-medium">{selectedRoom.description}</p>
@@ -633,13 +644,14 @@ const App = () => {
               </div>
             </div>
 
-            <button onClick={() => handleWaClick("booking", selectedRoom.name, selectedRoom.roomNumber)} className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-black py-5 rounded-[24px] flex items-center justify-center gap-3 shadow-2xl shadow-green-200 active:scale-95 transition-all uppercase tracking-widest text-xs">
+            <button onClick={() => handleWaClick("booking", selectedRoom.name, selectedRoom.floorBadge)} className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-black py-5 rounded-[24px] flex items-center justify-center gap-3 shadow-2xl shadow-green-200 active:scale-95 transition-all uppercase tracking-widest text-xs">
               <MessageCircle size={20} /> Hubungi Lewat WhatsApp
             </button>
           </div>
         </div>
       )}
 
+      {/* FAB (Floating Action Button) */}
       {!selectedRoom && (
         <div className="fixed bottom-6 left-0 right-0 px-6 z-40">
           <div onClick={() => handleWaClick("general")} className="bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-2xl rounded-[24px] p-5 flex justify-between items-center max-w-sm mx-auto animate-bounce-subtle cursor-pointer active:scale-95 transition-transform">
