@@ -573,9 +573,9 @@ const App = () => {
       <nav className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 py-3 flex justify-between items-center shadow-sm">
         <div className="flex items-center gap-2">
           <img 
-            src="https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/1768335904016.jpg" 
+            src="https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/1770491932595.png" 
             alt="Logo Sentul Tower" 
-            className="h-10 w-auto object-contain" 
+            className="h-16 w-auto object-contain" 
           />
           <span className="font-bold text-sm md:text-lg tracking-tight text-slate-800 uppercase">Apartemen Sentul Tower</span>
         </div>
