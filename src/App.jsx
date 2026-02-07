@@ -8,11 +8,12 @@ import {
   ShoppingBag, Palmtree, ShieldCheck
 } from 'lucide-react';
 
-// --- KOMPONEN BARU: UNIT BADGE (PENGGANTI SHIELD) ---
+// --- KOMPONEN BARU: UNIT BADGE (MODIFIKASI UNTUK DI ATAS GAMBAR) ---
 const UnitBadge = ({ unit }) => (
-  <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl shadow-sm w-fit">
-    <Key size={14} className="text-[#D4AF37]" />
-    <span className="text-[10px] font-black text-slate-700 uppercase tracking-widest">{unit}</span>
+  // Update style: Background putih/blur agar jelas di atas foto
+  <div className="flex items-center gap-1.5 bg-white/90 backdrop-blur-md border border-slate-200/50 px-2.5 py-1.5 rounded-xl shadow-lg w-fit">
+    <Key size={12} className="text-[#D4AF37]" />
+    <span className="text-[9px] font-black text-slate-800 uppercase tracking-widest">{unit}</span>
   </div>
 );
 
@@ -344,24 +345,23 @@ const App = () => {
               <div className="relative">
                 <ImageSlider images={room.images} heightClass="h-72" roundedClass="rounded-[24px]" altPrefix={`Interior ${room.name} Sentul Tower`} />
                 
+                {/* --- UPDATE POSISI UNIT BADGE --- */}
+                {/* Container ini sekarang memegang Badge Tipe Kamar (kiri) dan Badge Unit (kanan) di atas foto */}
                 <div className="absolute top-4 left-4 right-4 flex justify-between items-start pointer-events-none z-20">
                   <div className="flex gap-2">
                      <span className="bg-black/70 backdrop-blur-md text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest">{room.type}</span>
                      {room.type === '2BR' && <span className="bg-[#D4AF37] text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg">PREMIUM</span>}
                   </div>
-                  {/* TRUST BADGE HILANG, DIGANTI UNIT BADGE DI BAWAH */}
+                  
+                  {/* Unit Badge dipindahkan ke sini (Pojok Kanan Atas Foto) */}
+                  <UnitBadge unit={room.roomNumber} />
                 </div>
               </div>
               
               <div className="pt-5 px-3 pb-3">
-                <div className="flex justify-between items-start mb-2">
+                <div className="flex justify-between items-start mb-4">
                    <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight">{room.name}</h3>
-                   {/* NOMOR UNIT DI KANAN ATAS HILANG, PINDAH KE BAWAH */}
-                </div>
-                
-                {/* POSISI BEKAS TRUST BADGE SEKARANG JADI UNIT BADGE */}
-                <div className="mb-4">
-                   <UnitBadge unit={room.roomNumber} />
+                   {/* Unit Badge di bawah judul dihapus */}
                 </div>
 
                 <div className="flex items-center gap-4 text-slate-400 text-[11px] font-bold mb-5 uppercase tracking-wide">
@@ -496,7 +496,7 @@ const App = () => {
                <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter tracking-tight">{selectedRoom.name}</h2>
             </div>
             
-            {/* POSISI BEKAS TRUST BADGE JADI UNIT BADGE */}
+            {/* Unit Badge di Modal Detail (TETAP DI POSISI LAMA, HANYA CARD YANG DIUBAH) */}
             <div className="mb-6 flex">
                <UnitBadge unit={selectedRoom.roomNumber} />
             </div>
