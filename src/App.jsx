@@ -61,7 +61,7 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
           <img 
             key={idx}
             src={img} 
-            loading="lazy" // Optimasi Lazy Loading
+            loading="lazy" 
             className="w-full h-full object-cover shrink-0 snap-center" 
             alt={`${altPrefix} - View ${idx + 1}`} 
           />
@@ -202,20 +202,18 @@ const App = () => {
     { label: 'Weekend (Jum-Min)', price: 'Rp 700.000' },
   ];
 
-  // --- DATA TEMPLATES ---
-  const roomTemplates = [
-    {
+  // ==================================================================================
+  // >>>>>>>>>> PASTE KODINGAN BARU (baseTemplates, realUnits, rooms) DI SINI <<<<<<<<<<
+    // --- DATA TEMPLATES (BASE DATA) ---
+  const baseTemplates = {
+    'Studio': {
       type: 'Studio',
-      baseName: 'STUDIO', // Nama disederhanakan
+      baseName: 'STUDIO',
       size: '24m²', beds: 1,
-      images: [
-        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260206_023946.jpg?tr=w-800,q-80', // Auto compress param
-        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260206_023934.jpg?tr=w-800,q-80', 
-        'https://images.unsplash.com/photo-1768383550694-adb7ddddad7d?q=80&w=800&auto=format&fit=crop',
-        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155132.jpg?tr=w-800,q-80'
-      ],
       description: 'Unit studio minimalis yang cocok untuk sewa harian. Lokasi strategis dekat AEON Mall Sentul City, ideal untuk istirahat sejenak setelah berbelanja atau bekerja.',
-      startFrom: '150rb', transit: defaultTransit, fullday: defaultFullday,
+      startFrom: '150rb', 
+      transit: defaultTransit, 
+      fullday: defaultFullday,
       specs: [
         { icon: <Bed size={16}/>, text: 'Queen Size Bed' }, { icon: <Wind size={16}/>, text: 'Full AC' },
         { icon: <Tv size={16}/>, text: 'Smart TV (Netflix)' }, { icon: <UtensilsCrossed size={16}/>, text: 'Resto 24jam Siap Antar' },
@@ -223,17 +221,14 @@ const App = () => {
         { icon: <Sparkles size={16}/>, text: 'Peralatan Mandi' }, { icon: <Coffee size={16}/>, text: 'Complimentary Coffee' }
       ]
     },
-    {
+    '1BR': {
       type: '1BR',
-      baseName: '1 BEDROOM', // Nama disederhanakan
+      baseName: '1 BEDROOM',
       size: '38m²', beds: 1,
-      images: [
-        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260206_023956.jpg?tr=w-800,q-80', 
-        'https://images.unsplash.com/photo-1768384554121-339e5c56b0e2?q=80&w=800&auto=format&fit=crop',
-        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155148.jpg?tr=w-800,q-80'
-      ],
       description: 'Pilihan terbaik apartemen murah Sentul dengan ruang tamu terpisah. Menawarkan privasi maksimal untuk pasangan atau profesional yang membutuhkan ketenangan.',
-      startFrom: '150rb', transit: defaultTransit, fullday: defaultFullday,
+      startFrom: '150rb', 
+      transit: defaultTransit, 
+      fullday: defaultFullday,
       specs: [
         { icon: <Bed size={16}/>, text: 'King Size Bed' }, { icon: <Wind size={16}/>, text: 'Full AC (Kamar & Ruang Tamu)' },
         { icon: <Tv size={16}/>, text: 'Smart TV 42" & Netflix' }, { icon: <Building size={16}/>, text: 'Ruang Tamu Terpisah' },
@@ -241,17 +236,14 @@ const App = () => {
         { icon: <Utensils size={16}/>, text: 'Peralatan Masak' }, { icon: <Maximize size={16}/>, text: 'Balkon View Gunung' }
       ]
     },
-    {
+    '2BR': {
       type: '2BR',
-      baseName: '2 BEDROOM', // Nama disederhanakan
+      baseName: '2 BEDROOM',
       size: '56m²', beds: 2,
-      images: [
-        'https://images.unsplash.com/photo-1768383550621-89197b8b9705?q=80&w=800&auto=format&fit=crop',
-        'https://ik.imagekit.io/x06namgbin/20260125_153112.jpg?tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/20260125_153129.jpg?tr=w-800,q-80'
-      ],
       description: 'Unit luas untuk staycation keluarga atau grup. Tersedia opsi transit 3 jam Sentul Tower yang fleksibel. Nikmati pemandangan gunung dan fasilitas lengkap.',
-      startFrom: '200rb', transit: specialTransit2BR, fullday: specialFullday2BR,
+      startFrom: '200rb', 
+      transit: specialTransit2BR, 
+      fullday: specialFullday2BR,
       specs: [
         { icon: <Bed size={16}/>, text: '1 Queen + 1 Single Bed' }, { icon: <Wind size={16}/>, text: 'Full AC di Setiap Kamar' },
         { icon: <Tv size={16}/>, text: 'Smart TV & Home Theater' }, { icon: <UtensilsCrossed size={16}/>, text: 'Resto 24jam Siap Antar' },
@@ -259,22 +251,285 @@ const App = () => {
         { icon: <Building size={16}/>, text: 'Ruang Keluarga Luas' }, { icon: <Maximize size={16}/>, text: 'Balkon Luas View Gunung' }
       ]
     }
+  };
+
+  // --- REAL UNIT DATA (IMAGES & FLOORS) ---
+  const realUnits = [
+    // --- STUDIO ---
+    {
+      type: 'Studio', floor: 'Lantai 15', // 15.
+      images: [
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213645.jpg?updatedAt=1770485614631&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213729.jpg?updatedAt=1770485614606&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213656.jpg?updatedAt=1770485614544&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213751.jpg?updatedAt=1770485614628&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213741.jpg?updatedAt=1770485614649&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: 'Studio', floor: 'Lantai 16',
+      images: [
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214320.jpg?updatedAt=1770485568667&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214310.jpg?updatedAt=1770485568572&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214340.jpg?updatedAt=1770485568084&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214330.jpg?updatedAt=1770485568115&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214352.jpg?updatedAt=1770485568137&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: 'Studio', floor: 'Lantai 15', // 15 Polos
+      images: [
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015/20260207_213517.jpg?updatedAt=1770485516707&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015/20260207_213504.jpg?updatedAt=1770485516705&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015/20260207_213451.jpg?updatedAt=1770485516706&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015/20260207_213531.jpg?updatedAt=1770485516417&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: 'Studio', floor: 'Lantai 12',
+      images: [
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2012/20260207_215054.jpg?updatedAt=1770485467769&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2012/20260207_215107.jpg?updatedAt=1770485467865&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2012/20260207_215120.jpg?updatedAt=1770485467711&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2012/20260207_215139.jpg?updatedAt=1770485467195&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: 'Studio', floor: 'Lantai 08', // 8.
+      images: [
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%208./20260207_221354.jpg?updatedAt=1770485422626&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%208./20260207_221346.jpg?updatedAt=1770485422484&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%208./20260207_221529.jpg?updatedAt=1770485422625&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: 'Studio', floor: 'Lantai 05', // 5.
+      images: [
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%205./20260207_220617.jpg?updatedAt=1770485360161&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%205./20260207_220625.jpg?updatedAt=1770485359580&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%205./20260207_220633.jpg?updatedAt=1770485359615&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: 'Studio', floor: 'Lantai 08', // 8 Polos
+      images: [
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%208/20260208_002742.jpg?updatedAt=1770485302195&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%208/20260207_213928.jpg?updatedAt=1770485181235&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%208/20260207_213917.jpg?updatedAt=1770485180684&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%208/20260207_213938.jpg?updatedAt=1770485181252&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: 'Studio', floor: 'Lantai 07',
+      images: [
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%207/20260207_214112.jpg?updatedAt=1770485053971&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%207/20260207_214051.jpg?updatedAt=1770485053251&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%207/20260207_214102.jpg?updatedAt=1770485053897&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%207/20260207_214156.jpg?updatedAt=1770485053912&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%207/20260207_214122.jpg?updatedAt=1770485053936&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: 'Studio', floor: 'Lantai 06',
+      images: [
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%206/20260207_220838.jpg?updatedAt=1770484963369&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%206/20260207_220828.jpg?updatedAt=1770484963299&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%206/20260207_220811.jpg?updatedAt=1770484963447&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: 'Studio', floor: 'Lantai 05', // 5 Polos
+      images: [
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%205/20260207_205748.jpg?updatedAt=1770484692778&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%205/20260207_205822.jpg?updatedAt=1770484693527&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%205/20260207_205809.jpg?updatedAt=1770484693522&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%205/20260207_205836.jpg?updatedAt=1770484693623&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: 'Studio', floor: 'Deluxe',
+      images: [
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20DELUXE/20260207_222133.jpg?updatedAt=1770484633281&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20DELUXE/20260207_222106.jpg?updatedAt=1770484633266&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20DELUXE/20260207_222151.jpg?updatedAt=1770484633210&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20DELUXE/20260207_222142.jpg?updatedAt=1770484633288&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20DELUXE/20260207_222117.jpg?updatedAt=1770484633201&tr=w-800,q-80'
+      ]
+    },
+
+    // --- 1 BEDROOM ---
+    {
+      type: '1BR', floor: 'Lantai 01',
+      images: [
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215859.jpg?updatedAt=1770486566474&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215257.jpg?updatedAt=1770482875988&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215850.jpg?updatedAt=1770486566548&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215235.jpg?updatedAt=1770482875980&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215839.jpg?updatedAt=1770486566575&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215246.jpg?updatedAt=1770482875917&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: '1BR', floor: 'Lantai 16', // 16..
+      images: [
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016../20260207_220359.jpg?updatedAt=1770484409294&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016../20260207_220351.jpg?updatedAt=1770484409497&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016../20260207_220407.jpg?updatedAt=1770484409298&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016../20260207_220328.jpg?updatedAt=1770484409800&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016../20260207_220341.jpg?updatedAt=1770484409684&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: '1BR', floor: 'Lantai 16', // 16.
+      images: [
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016./20260207_214621.jpg?updatedAt=1770484357104&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016./20260207_214633.jpg?updatedAt=1770484357117&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016./20260207_214644.jpg?updatedAt=1770484357077&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016./20260207_214653.jpg?updatedAt=1770484357159&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: '1BR', floor: 'Lantai 11', // 11.
+      images: [
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2011./20260207_220956.jpg?updatedAt=1770484300643&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2011./20260207_220947.jpg?updatedAt=1770484300066&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2011./20260207_221007.jpg?updatedAt=1770484300714&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2011./20260207_220933.jpg?updatedAt=1770484300717&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: '1BR', floor: 'Lantai 10', // 10....
+      images: [
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010..../20260207_221705.jpg?updatedAt=1770484226369&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010..../20260207_221655.jpg?updatedAt=1770484225920&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010..../20260207_221716.jpg?updatedAt=1770484225952&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: '1BR', floor: 'Lantai 10', // 10...
+      images: [
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010.../20260207_221428.jpg?updatedAt=1770484171374&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010.../20260207_221416.jpg?updatedAt=1770484171449&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010.../20260207_221510.jpg?updatedAt=1770484171433&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010.../20260207_221519.jpg?updatedAt=1770484171382&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010.../20260207_221407.jpg?updatedAt=1770484170661&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: '1BR', floor: 'Lantai 10', // 10.
+      images: [
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010./20260207_214940.jpg?updatedAt=1770484049832&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010./20260207_214922.jpg?updatedAt=1770484049834&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010./20260207_214951.jpg?updatedAt=1770484049895&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010./20260207_215001.jpg?updatedAt=1770484049844&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: '1BR', floor: 'Lantai 10', // 10..
+      images: [
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010../20260207_220608.jpg?updatedAt=1770484117276&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010../20260207_220553.jpg?updatedAt=1770484117339&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010../20260207_220544.jpg?updatedAt=1770484117288&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010../20260207_220530.jpg?updatedAt=1770484116675&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: '1BR', floor: 'Lantai 16', // 16 Polos
+      images: [
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016/20260207_214320.jpg?updatedAt=1770483991109&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016/20260207_214310.jpg?updatedAt=1770483990874&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016/20260207_214340.jpg?updatedAt=1770483991088&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016/20260207_214330.jpg?updatedAt=1770483990905&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016/20260207_214352.jpg?updatedAt=1770483991124&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: '1BR', floor: 'Lantai 11', // 11 Polos
+      images: [
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2011/20260207_215651.jpg?updatedAt=1770483947194&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2011/20260207_215640.jpg?updatedAt=1770483947170&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2011/20260207_215701.jpg?updatedAt=1770483946714&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2011/20260207_215715.jpg?updatedAt=1770483946842&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2011/20260207_215727.jpg?updatedAt=1770483946699&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2011/20260207_215737.jpg?updatedAt=1770483946756&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: '1BR', floor: 'Lantai 10', // 10 Polos
+      images: [
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010/20260207_214455.jpg?updatedAt=1770483868598&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010/20260207_214506.jpg?updatedAt=1770483870805&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010/20260207_214517.jpg?updatedAt=1770483868606&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010/20260207_214527.jpg?updatedAt=1770483872672&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: '1BR', floor: 'Lantai 05',
+      images: [
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%205/20260207_214812.jpg?updatedAt=1770483708565&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%205/20260207_214825.jpg?updatedAt=1770483707875&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%205/20260207_214758.jpg?updatedAt=1770483707887&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: '1BR', floor: 'Lantai 03',
+      images: [
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%203/20260207_221146.jpg?updatedAt=1770483439986&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%203/20260207_221117.jpg?updatedAt=1770483439884&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%203/20260207_221127.jpg?updatedAt=1770483439891&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%203/20260207_221136.jpg?updatedAt=1770483439781&tr=w-800,q-80'
+      ]
+    },
+
+    // --- 2 BEDROOM ---
+    {
+      type: '2BR', floor: 'Lantai 11',
+      images: [
+        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20LANTAI%2011/20260207_220039.jpg?updatedAt=1770484583428&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20LANTAI%2011/20260207_220049.jpg?updatedAt=1770484583352&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20LANTAI%2011/20260207_220059.jpg?updatedAt=1770484583340&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20LANTAI%2011/20260207_220018.jpg?updatedAt=1770484582827&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20LANTAI%2011/20260207_220029.jpg?updatedAt=1770484582846&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: '2BR', floor: 'Deluxe', // Deluxe.
+      images: [
+        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215405.jpg?updatedAt=1770484520183&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215415.jpg?updatedAt=1770484520177&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215453.jpg?updatedAt=1770484520224&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215430.jpg?updatedAt=1770484520216&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215503.jpg?updatedAt=1770484520210&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215522.jpg?updatedAt=1770484520303&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215443.jpg?updatedAt=1770484520229&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215541.jpg?updatedAt=1770484519539&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: '2BR', floor: 'Deluxe', // Deluxe Polos
+      images: [
+        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE/20260207_213310.jpg?updatedAt=1770484473278&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE/20260207_213255.jpg?updatedAt=1770484473060&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE/20260207_213334.jpg?updatedAt=1770484473214&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE/20260207_213321.jpg?updatedAt=1770484473185&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE/20260207_213345.jpg?updatedAt=1770484472834&tr=w-800,q-80'
+      ]
+    }
   ];
 
-  // --- GENERATE 24 DUMMY UNITS ---
-  const rooms = Array.from({ length: 24 }).map((_, index) => {
-    // Rotasi template: Studio, 1BR, 2BR, Studio, dst...
-    const template = roomTemplates[index % 3];
-    // Generate Lantai Acak (Antara 3 sampai 32)
-    const randomFloor = Math.floor(Math.random() * 29) + 3; 
-    
+  // --- GENERATE FINAL ROOMS LIST ---
+  const rooms = realUnits.map((unit, index) => {
+    const template = baseTemplates[unit.type];
     return {
       ...template,
       id: index + 1,
-      name: template.baseName, // Menggunakan nama simpel
-      floorLevel: `Lantai ${randomFloor < 10 ? '0'+randomFloor : randomFloor}` // Format: Lantai 05
+      name: template.baseName,
+      floorLevel: unit.floor,
+      images: unit.images
     };
   });
+
+  // ==================================================================================
 
   // --- LOGIC FILTER & PAGINATION ---
   const filteredRooms = activeFilter === 'Semua' ? rooms : rooms.filter(r => r.type === activeFilter);
@@ -383,7 +638,7 @@ const App = () => {
                   {room.type === '2BR' && <span className="bg-[#D4AF37] text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg">PREMIUM</span>}
                 </div>
 
-                {/* Badge Lantai (Kanan Atas) - REVISI: Hanya Lantai, Tanpa Nomor Unit */}
+                {/* Badge Lantai (Kanan Atas) */}
                 <div className="absolute top-4 right-4 pointer-events-none z-20">
                   <span className="bg-white/90 backdrop-blur text-slate-800 text-[10px] font-black px-3 py-1.5 rounded-xl shadow-lg border border-slate-100 uppercase tracking-wider">
                     {room.floorLevel}
