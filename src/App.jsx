@@ -583,8 +583,8 @@ const App = () => {
         <div className="flex items-center gap-2">
           <img              src="https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/1770491932595.png"              alt="Logo Sentul Tower"              className="h-16 w-auto object-contain"            />
           <div className="flex items-center gap-1.5 leading-none">
-  <span className="font-black text-lg md:text-xl text-slate-900 tracking-tighter uppercase">APARTEMEN</span>
-  <span className="font-black text-lg md:text-xl text-[#D4AF37] tracking-tighter uppercase">SENTUL TOWER</span>
+  <span className="font-black text-lg md:text-sm text-slate-900 tracking-tighter uppercase">APARTEMEN</span>
+  <span className="font-black text-lg md:text-sm text-[#D4AF37] tracking-tighter uppercase">SENTUL TOWER</span>
 </div>
         </div>
         <div className="flex items-center gap-2">
