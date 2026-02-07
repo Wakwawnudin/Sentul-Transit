@@ -5,10 +5,10 @@ import {
   Building, ChevronLeft, ChevronRight, CheckCircle2, 
   MessageCircle, Tv, Wind, Coffee, Utensils, Waves, Sparkles, 
   UtensilsCrossed, Key, Wallet, HelpCircle, ChevronDown, ChevronUp,
-  ShoppingBag, Palmtree, Verified
+  ShoppingBag, Palmtree, Verified, Star
 } from 'lucide-react';
 
-// --- KOMPONEN IMAGE SLIDER (Tetap Sama & Teroptimasi) ---
+// --- KOMPONEN IMAGE SLIDER ---
 const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32px]", altPrefix = "Apartemen Sentul Tower" }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef(null);
@@ -61,7 +61,7 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
           <img 
             key={idx}
             src={img} 
-            loading="lazy" 
+            loading="lazy" // Optimasi Lazy Loading
             className="w-full h-full object-cover shrink-0 snap-center" 
             alt={`${altPrefix} - View ${idx + 1}`} 
           />
@@ -83,30 +83,48 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
   );
 };
 
-// --- KOMPONEN LAINNYA ---
+// --- KOMPONEN FAQ ITEM ---
 const FaqItem = ({ question, answer }) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="border-b border-slate-700/50 last:border-0">
-      <button onClick={() => setIsOpen(!isOpen)} className="w-full py-4 flex justify-between items-center text-left focus:outline-none group">
-        <span className={`text-sm font-bold transition-colors ${isOpen ? 'text-[#D4AF37]' : 'text-slate-200'}`}>{question}</span>
+      <button 
+        onClick={() => setIsOpen(!isOpen)} 
+        className="w-full py-4 flex justify-between items-center text-left focus:outline-none group"
+      >
+        <span className={`text-sm font-bold transition-colors ${isOpen ? 'text-[#D4AF37]' : 'text-slate-200'}`}>
+          {question}
+        </span>
         {isOpen ? <ChevronUp size={18} className="text-[#D4AF37]" /> : <ChevronDown size={18} className="text-slate-500 group-hover:text-[#D4AF37]" />}
       </button>
-      <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-96 opacity-100 mb-4' : 'max-h-0 opacity-0'}`}>
-        <p className="text-xs text-slate-400 leading-relaxed pr-4 font-medium">{answer}</p>
+      <div 
+        className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-96 opacity-100 mb-4' : 'max-h-0 opacity-0'}`}
+      >
+        <p className="text-xs text-slate-400 leading-relaxed pr-4 font-medium">
+          {answer}
+        </p>
       </div>
     </div>
   );
 };
 
 const GoogleMapsLogo = () => (
-  <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#4285F4"/><path d="M12 7c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" fill="#FFFFFF"/><path d="M12 2c-3.87 0-7 3.13-7 7 0 1.61.41 3.09 1.13 4.43L12 22l5.87-8.57C18.59 12.09 19 10.61 19 9c0-3.87-3.13-7-7-7z" fill="none" stroke="#FFFFFF" strokeWidth="0.5"/><path d="M7.13 13.43c.72 1.34 3.87 5.57 4.87 8.57.1-.3.1-.3 0 0z" fill="#34A853"/><path d="M16.87 13.43c-.72 1.34-3.87 5.57-4.87 8.57-.1-.3-.1-.3 0 0z" fill="#FBBC05"/><path d="M12 2c-.34 0-.67.02-1 .07V9h1V2z" fill="#EA4335"/></svg>
+  <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#4285F4"/>
+    <path d="M12 7c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" fill="#FFFFFF"/>
+    <path d="M12 2c-3.87 0-7 3.13-7 7 0 1.61.41 3.09 1.13 4.43L12 22l5.87-8.57C18.59 12.09 19 10.61 19 9c0-3.87-3.13-7-7-7z" fill="none" stroke="#FFFFFF" strokeWidth="0.5"/>
+    <path d="M7.13 13.43c.72 1.34 3.87 5.57 4.87 8.57.1-.3.1-.3 0 0z" fill="#34A853"/>
+    <path d="M16.87 13.43c-.72 1.34-3.87 5.57-4.87 8.57-.1-.3-.1-.3 0 0z" fill="#FBBC05"/>
+    <path d="M12 2c-.34 0-.67.02-1 .07V9h1V2z" fill="#EA4335"/>
+  </svg>
 );
 
 const App = () => {
   const [activeFilter, setActiveFilter] = useState('Semua');
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [refCode, setRefCode] = useState("");
+  
+  // State untuk Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6; 
 
@@ -114,22 +132,30 @@ const App = () => {
   const mapsLink = "https://share.google/490MII2W8A99899m7";
 
   useEffect(() => {
+    // --- 1. JURUS BAJAK DOMAIN (KHUSUS DOMAIN LAMA) ---
     if (window.location.hostname.includes('apartsentul.cloud')) {
       window.location.replace("https://apartemensentultower.com/?ref=Lani");
       return; 
     }
+
+    // --- 2. TANGKAP KODE REFERRAL (UNTUK SEMUA LINK) ---
     const queryParams = new URLSearchParams(window.location.search);
     const ref = queryParams.get('ref');
     if (ref) setRefCode(ref);
   }, []);
 
   useEffect(() => {
-    const handlePopState = () => { if (selectedRoom) setSelectedRoom(null); };
+    const handlePopState = () => {
+      if (selectedRoom) setSelectedRoom(null);
+    };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, [selectedRoom]);
 
-  useEffect(() => { setCurrentPage(1); }, [activeFilter]);
+  // Reset pagination saat filter berubah
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeFilter]);
 
   const openRoomDetail = (room) => {
     setSelectedRoom(room);
@@ -155,125 +181,105 @@ const App = () => {
     window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`, '_blank');
   };
 
-  // --- DATA HARGA & SPECS STANDARD ---
-  const standardTransit = [
+  const defaultTransit = [
     { label: '3 Jam', price: 'Rp 150.000' },
     { label: '6 Jam', price: 'Rp 200.000' },
     { label: '9 Jam', price: 'Rp 250.000' },
     { label: '12 Jam', price: 'Rp 300.000' },
   ];
-  const standardFullday = [
+  const defaultFullday = [
     { label: 'Weekday (Sen-Kam)', price: 'Rp 300.000' },
     { label: 'Weekend (Jum-Min)', price: 'Rp 350.000' },
   ];
-  const specs1BR = [
-    { icon: <Bed size={16}/>, text: 'King Size Bed' }, { icon: <Wind size={16}/>, text: 'Full AC (Kamar & Ruang Tamu)' },
-    { icon: <Tv size={16}/>, text: 'Smart TV 42" & Netflix' }, { icon: <Building size={16}/>, text: 'Ruang Tamu Terpisah' },
-    { icon: <UtensilsCrossed size={16}/>, text: 'Resto 24jam Siap Antar' }, { icon: <Waves size={16}/>, text: 'Water Heater' },
-    { icon: <Utensils size={16}/>, text: 'Peralatan Masak' }, { icon: <Maximize size={16}/>, text: 'Balkon View Gunung' }
+  const specialTransit2BR = [
+    { label: '3 Jam', price: 'Rp 200.000' },
+    { label: '6 Jam', price: 'Rp 250.000' },
+    { label: '9 Jam', price: 'Rp 300.000' },
+    { label: '12 Jam', price: 'Rp 350.000' },
+  ];
+  const specialFullday2BR = [
+    { label: 'Weekday (Sen-Kam)', price: 'Rp 650.000' },
+    { label: 'Weekend (Jum-Min)', price: 'Rp 700.000' },
   ];
 
-  // --- DATA REAL BERDASARKAN LINK FOTO (OPTIMIZED) ---
-  const rooms = [
+  // --- DATA TEMPLATES ---
+  const roomTemplates = [
     {
-      id: 1,
-      type: '1BR',
-      name: '1 BEDROOM',
-      floorLevel: 'Lantai 01', // Unit A
-      size: '38m²', beds: 1,
-      startFrom: '150rb',
-      description: 'Unit 1 Bedroom nyaman di Lantai 1 dengan akses mudah. Interior modern dilengkapi smart TV dan dapur lengkap. Pilihan tepat untuk privasi maksimal.',
+      type: 'Studio',
+      baseName: 'STUDIO', // Nama disederhanakan
+      size: '24m²', beds: 1,
       images: [
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215257.jpg?updatedAt=1770482875988&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215235.jpg?updatedAt=1770482875980&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215246.jpg?updatedAt=1770482875917&tr=w-800,q-80'
+        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260206_023946.jpg?tr=w-800,q-80', // Auto compress param
+        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260206_023934.jpg?tr=w-800,q-80', 
+        'https://images.unsplash.com/photo-1768383550694-adb7ddddad7d?q=80&w=800&auto=format&fit=crop',
+        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155132.jpg?tr=w-800,q-80'
       ],
-      transit: standardTransit, fullday: standardFullday, specs: specs1BR
+      description: 'Unit studio minimalis yang cocok untuk sewa harian. Lokasi strategis dekat AEON Mall Sentul City, ideal untuk istirahat sejenak setelah berbelanja atau bekerja.',
+      startFrom: '150rb', transit: defaultTransit, fullday: defaultFullday,
+      specs: [
+        { icon: <Bed size={16}/>, text: 'Queen Size Bed' }, { icon: <Wind size={16}/>, text: 'Full AC' },
+        { icon: <Tv size={16}/>, text: 'Smart TV (Netflix)' }, { icon: <UtensilsCrossed size={16}/>, text: 'Resto 24jam Siap Antar' },
+        { icon: <Utensils size={16}/>, text: 'Kitchen Set' }, { icon: <Waves size={16}/>, text: 'Water Heater' },
+        { icon: <Sparkles size={16}/>, text: 'Peralatan Mandi' }, { icon: <Coffee size={16}/>, text: 'Complimentary Coffee' }
+      ]
     },
     {
-      id: 2,
       type: '1BR',
-      name: '1 BEDROOM',
-      floorLevel: 'Lantai 01', // Unit B (Folder "LANTAI 1.")
+      baseName: '1 BEDROOM', // Nama disederhanakan
       size: '38m²', beds: 1,
-      startFrom: '150rb',
-      description: 'Opsi kedua unit 1 Bedroom di Lantai 1. Tata letak efisien dengan fasilitas standar hotel berbintang. Bersih, wangi, dan siap huni.',
       images: [
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201./20260207_215839.jpg?updatedAt=1770483765944&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201./20260207_215859.jpg?updatedAt=1770483765988&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201./20260207_215850.jpg?updatedAt=1770483766001&tr=w-800,q-80'
+        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260206_023956.jpg?tr=w-800,q-80', 
+        'https://images.unsplash.com/photo-1768384554121-339e5c56b0e2?q=80&w=800&auto=format&fit=crop',
+        'https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/20260125_155148.jpg?tr=w-800,q-80'
       ],
-      transit: standardTransit, fullday: standardFullday, specs: specs1BR
+      description: 'Pilihan terbaik apartemen murah Sentul dengan ruang tamu terpisah. Menawarkan privasi maksimal untuk pasangan atau profesional yang membutuhkan ketenangan.',
+      startFrom: '150rb', transit: defaultTransit, fullday: defaultFullday,
+      specs: [
+        { icon: <Bed size={16}/>, text: 'King Size Bed' }, { icon: <Wind size={16}/>, text: 'Full AC (Kamar & Ruang Tamu)' },
+        { icon: <Tv size={16}/>, text: 'Smart TV 42" & Netflix' }, { icon: <Building size={16}/>, text: 'Ruang Tamu Terpisah' },
+        { icon: <UtensilsCrossed size={16}/>, text: 'Resto 24jam Siap Antar' }, { icon: <Waves size={16}/>, text: 'Water Heater' },
+        { icon: <Utensils size={16}/>, text: 'Peralatan Masak' }, { icon: <Maximize size={16}/>, text: 'Balkon View Gunung' }
+      ]
     },
     {
-      id: 3,
-      type: '1BR',
-      name: '1 BEDROOM',
-      floorLevel: 'Lantai 03',
-      size: '38m²', beds: 1,
-      startFrom: '150rb',
-      description: 'Terletak di Lantai 3 yang strategis. Unit ini menawarkan kesejukan AC penuh di setiap ruangan dan view yang menenangkan. Cocok untuk staycation.',
+      type: '2BR',
+      baseName: '2 BEDROOM', // Nama disederhanakan
+      size: '56m²', beds: 2,
       images: [
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%203/20260207_221146.jpg?updatedAt=1770483439986&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%203/20260207_221117.jpg?updatedAt=1770483439884&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%203/20260207_221136.jpg?updatedAt=1770483439781&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%203/20260207_221127.jpg?updatedAt=1770483439891&tr=w-800,q-80'
+        'https://images.unsplash.com/photo-1768383550621-89197b8b9705?q=80&w=800&auto=format&fit=crop',
+        'https://ik.imagekit.io/x06namgbin/20260125_153112.jpg?tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/20260125_153129.jpg?tr=w-800,q-80'
       ],
-      transit: standardTransit, fullday: standardFullday, specs: specs1BR
-    },
-    {
-      id: 4,
-      type: '1BR',
-      name: '1 BEDROOM',
-      floorLevel: 'Lantai 05',
-      size: '38m²', beds: 1,
-      startFrom: '150rb',
-      description: 'Unit Lantai 5 dengan pencahayaan alami yang baik. Desain interior minimalis modern yang membuat ruangan terasa lega dan nyaman untuk beristirahat.',
-      images: [
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%205/20260207_214812.jpg?updatedAt=1770483708565&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%205/20260207_214825.jpg?updatedAt=1770483707875&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%205/20260207_214758.jpg?updatedAt=1770483707887&tr=w-800,q-80'
-      ],
-      transit: standardTransit, fullday: standardFullday, specs: specs1BR
-    },
-    {
-      id: 5,
-      type: '1BR',
-      name: '1 BEDROOM',
-      floorLevel: 'Lantai 10',
-      size: '38m²', beds: 1,
-      startFrom: '150rb',
-      description: 'Nikmati pemandangan lebih luas dari Lantai 10. Unit ini sangat populer karena ketenangannya, jauh dari kebisingan jalan, sempurna untuk healing.',
-      images: [
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010/20260207_214506.jpg?updatedAt=1770483870805&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010/20260207_214455.jpg?updatedAt=1770483868598&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010/20260207_214517.jpg?updatedAt=1770483868606&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010/20260207_214527.jpg?updatedAt=1770483872672&tr=w-800,q-80'
-      ],
-      transit: standardTransit, fullday: standardFullday, specs: specs1BR
-    },
-    {
-      id: 6,
-      type: '1BR',
-      name: '1 BEDROOM',
-      floorLevel: 'Lantai 11',
-      size: '38m²', beds: 1,
-      startFrom: '150rb',
-      description: 'Unit premium di Lantai 11 dengan view terbaik. Udara lebih segar dan privasi terjaga. Dilengkapi fasilitas lengkap termasuk water heater panas stabil.',
-      images: [
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2011/20260207_215701.jpg?updatedAt=1770483946714&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2011/20260207_215640.jpg?updatedAt=1770483947170&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2011/20260207_215715.jpg?updatedAt=1770483946842&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2011/20260207_215651.jpg?updatedAt=1770483947194&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2011/20260207_215727.jpg?updatedAt=1770483946699&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2011/20260207_215737.jpg?updatedAt=1770483946756&tr=w-800,q-80'
-      ],
-      transit: standardTransit, fullday: standardFullday, specs: specs1BR
+      description: 'Unit luas untuk staycation keluarga atau grup. Tersedia opsi transit 3 jam Sentul Tower yang fleksibel. Nikmati pemandangan gunung dan fasilitas lengkap.',
+      startFrom: '200rb', transit: specialTransit2BR, fullday: specialFullday2BR,
+      specs: [
+        { icon: <Bed size={16}/>, text: '1 Queen + 1 Single Bed' }, { icon: <Wind size={16}/>, text: 'Full AC di Setiap Kamar' },
+        { icon: <Tv size={16}/>, text: 'Smart TV & Home Theater' }, { icon: <UtensilsCrossed size={16}/>, text: 'Resto 24jam Siap Antar' },
+        { icon: <Utensils size={16}/>, text: 'Kitchen Set & Kulkas' }, { icon: <Waves size={16}/>, text: 'Water Heater & Bathup' },
+        { icon: <Building size={16}/>, text: 'Ruang Keluarga Luas' }, { icon: <Maximize size={16}/>, text: 'Balkon Luas View Gunung' }
+      ]
     }
   ];
 
+  // --- GENERATE 24 DUMMY UNITS ---
+  const rooms = Array.from({ length: 24 }).map((_, index) => {
+    // Rotasi template: Studio, 1BR, 2BR, Studio, dst...
+    const template = roomTemplates[index % 3];
+    // Generate Lantai Acak (Antara 3 sampai 32)
+    const randomFloor = Math.floor(Math.random() * 29) + 3; 
+    
+    return {
+      ...template,
+      id: index + 1,
+      name: template.baseName, // Menggunakan nama simpel
+      floorLevel: `Lantai ${randomFloor < 10 ? '0'+randomFloor : randomFloor}` // Format: Lantai 05
+    };
+  });
+
   // --- LOGIC FILTER & PAGINATION ---
   const filteredRooms = activeFilter === 'Semua' ? rooms : rooms.filter(r => r.type === activeFilter);
+  
+  // Hitung Pagination
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredRooms.slice(indexOfFirstItem, indexOfLastItem);
@@ -281,9 +287,11 @@ const App = () => {
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
+    // Scroll sedikit ke atas agar user sadar halaman berubah
     window.scrollTo({ top: 500, behavior: 'smooth' });
   };
 
+  // --- DATA FOOTER ---
   const nearbyData = [
     { name: "AEON Mall", dist: "2 Mnt", icon: <ShoppingBag size={14}/> },
     { name: "IKEA Sentul", dist: "5 Mnt", icon: <ShoppingBag size={14}/> },
@@ -363,78 +371,104 @@ const App = () => {
           </div>
         </div>
 
-        {/* --- ROOM LIST START --- */}
         <div className="space-y-6">
-          {currentItems.length > 0 ? (
-            currentItems.map(room => (
-              <div key={room.id} onClick={() => openRoomDetail(room)} className="bg-white rounded-[32px] p-3 shadow-sm border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer group">
-                <div className="relative">
-                  <ImageSlider images={room.images} heightClass="h-72" roundedClass="rounded-[24px]" altPrefix={`Interior ${room.name} Sentul Tower`} />
-                  
-                  {/* Badge Type */}
-                  <div className="absolute top-4 left-4 flex gap-2 pointer-events-none z-20">
-                    <span className="bg-black/70 backdrop-blur-md text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest">{room.type}</span>
-                  </div>
-
-                  {/* Badge Lantai */}
-                  <div className="absolute top-4 right-4 pointer-events-none z-20">
-                    <span className="bg-white/90 backdrop-blur text-slate-800 text-[10px] font-black px-3 py-1.5 rounded-xl shadow-lg border border-slate-100 uppercase tracking-wider">
-                      {room.floorLevel}
-                    </span>
-                  </div>
+          {currentItems.map(room => (
+            <div key={room.id} onClick={() => openRoomDetail(room)} className="bg-white rounded-[32px] p-3 shadow-sm border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer group">
+              <div className="relative">
+                <ImageSlider images={room.images} heightClass="h-72" roundedClass="rounded-[24px]" altPrefix={`Interior ${room.name} Sentul Tower`} />
+                
+                {/* Badge Type (Kiri Atas) */}
+                <div className="absolute top-4 left-4 flex gap-2 pointer-events-none z-20">
+                  <span className="bg-black/70 backdrop-blur-md text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest">{room.type}</span>
+                  {room.type === '2BR' && <span className="bg-[#D4AF37] text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg">PREMIUM</span>}
                 </div>
 
-                <div className="pt-5 px-3 pb-3">
-                  <h3 className="text-xl font-black text-slate-900 mb-1.5 uppercase tracking-tight">{room.name}</h3>
-                  <div className="flex items-center gap-4 text-slate-400 text-[11px] font-bold mb-4 uppercase tracking-wide">
-                    <div className="flex items-center gap-1.5"><Maximize size={14}/> {room.size}</div>
-                    <div className="flex items-center gap-1.5"><Bed size={14}/> {room.beds} Bed</div>
-                    <div className="flex items-center gap-1.5"><Shield size={14}/> 24/7 Aman</div>
-                  </div>
-
-                  {/* Badge Verified */}
-                  <div className="flex items-center gap-1.5 mb-3">
-                     <CheckCircle2 size={12} className="text-green-500" fill="currentColor" color="white" />
-                     <span className="text-[10px] font-bold text-slate-500 tracking-tight">Verified • Higienis • Aman</span>
-                  </div>
-
-                  <div className="flex justify-between items-end pt-4 border-t border-slate-50">
-                    <div>
-                      <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1">Harga Mulai</p>
-                      <p className="text-2xl font-black text-slate-900 tracking-tight">{room.startFrom}</p>
-                    </div>
-                    <button className="bg-slate-900 text-white font-bold px-6 py-3 rounded-2xl text-[11px] uppercase tracking-widest shadow-lg shadow-slate-200">Detail</button>
-                  </div>
+                {/* Badge Lantai (Kanan Atas) - REVISI: Hanya Lantai, Tanpa Nomor Unit */}
+                <div className="absolute top-4 right-4 pointer-events-none z-20">
+                  <span className="bg-white/90 backdrop-blur text-slate-800 text-[10px] font-black px-3 py-1.5 rounded-xl shadow-lg border border-slate-100 uppercase tracking-wider">
+                    {room.floorLevel}
+                  </span>
                 </div>
               </div>
-            ))
-          ) : (
-             <div className="text-center py-20 text-slate-400 font-bold">
-               <p>Unit untuk tipe ini sedang tidak tersedia.</p>
-               <button onClick={() => setActiveFilter('Semua')} className="mt-4 text-[#D4AF37] underline">Lihat Semua Unit</button>
-             </div>
-          )}
+
+              <div className="pt-5 px-3 pb-3">
+                <h3 className="text-xl font-black text-slate-900 mb-1.5 uppercase tracking-tight">{room.name}</h3>
+                
+                <div className="flex items-center gap-4 text-slate-400 text-[11px] font-bold mb-4 uppercase tracking-wide">
+                  <div className="flex items-center gap-1.5"><Maximize size={14}/> {room.size}</div>
+                  <div className="flex items-center gap-1.5"><Bed size={14}/> {room.beds} Bed</div>
+                  <div className="flex items-center gap-1.5"><Shield size={14}/> 24/7 Aman</div>
+                </div>
+
+                {/* Badge Security & Hygiene (Baru) */}
+                <div className="flex items-center gap-1.5 mb-3">
+                   <CheckCircle2 size={12} className="text-green-500" fill="currentColor" color="white" />
+                   <span className="text-[10px] font-bold text-slate-500 tracking-tight">Verified • Higienis • Aman</span>
+                </div>
+
+                <div className="flex justify-between items-end pt-4 border-t border-slate-50">
+                  <div>
+                    <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1">Harga Mulai</p>
+                    <p className="text-2xl font-black text-slate-900 tracking-tight">Rp {room.startFrom}</p>
+                  </div>
+                  <button className="bg-slate-900 text-white font-bold px-6 py-3 rounded-2xl text-[11px] uppercase tracking-widest shadow-lg shadow-slate-200">Detail</button>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-        {/* --- ROOM LIST END --- */}
 
         {/* --- PAGINATION CONTROLS --- */}
         {totalPages > 1 && (
           <div className="mt-8 flex flex-col items-center gap-4">
+             {/* Info Halaman */}
              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                 Menampilkan {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, filteredRooms.length)} dari {filteredRooms.length} Unit
              </div>
+
              <div className="flex items-center gap-2">
-                <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className={`p-3 rounded-xl border transition-all ${currentPage === 1 ? 'bg-slate-50 border-slate-100 text-slate-300' : 'bg-white border-slate-200 text-slate-800 hover:border-[#D4AF37] shadow-sm'}`}><ChevronLeft size={16} /></button>
+                {/* Tombol Previous */}
+                <button 
+                  onClick={() => handlePageChange(currentPage - 1)} 
+                  disabled={currentPage === 1}
+                  className={`p-3 rounded-xl border transition-all ${currentPage === 1 ? 'bg-slate-50 border-slate-100 text-slate-300' : 'bg-white border-slate-200 text-slate-800 hover:border-[#D4AF37] shadow-sm'}`}
+                >
+                   <ChevronLeft size={16} />
+                </button>
+
+                {/* Nomor Halaman */}
                 <div className="flex gap-1">
                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
-                      <button key={number} onClick={() => handlePageChange(number)} className={`w-10 h-10 flex items-center justify-center rounded-xl text-xs font-black transition-all ${currentPage === number ? 'bg-slate-900 text-[#D4AF37] shadow-lg scale-110' : 'bg-white border border-slate-200 text-slate-500 hover:bg-slate-50'}`}>{number}</button>
+                      <button
+                        key={number}
+                        onClick={() => handlePageChange(number)}
+                        className={`w-10 h-10 flex items-center justify-center rounded-xl text-xs font-black transition-all ${currentPage === number ? 'bg-slate-900 text-[#D4AF37] shadow-lg scale-110' : 'bg-white border border-slate-200 text-slate-500 hover:bg-slate-50'}`}
+                      >
+                         {number}
+                      </button>
                    ))}
                 </div>
-                <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} className={`p-3 rounded-xl border transition-all ${currentPage === totalPages ? 'bg-slate-50 border-slate-100 text-slate-300' : 'bg-white border-slate-200 text-slate-800 hover:border-[#D4AF37] shadow-sm'}`}><ChevronRight size={16} /></button>
+
+                {/* Tombol Next */}
+                <button 
+                  onClick={() => handlePageChange(currentPage + 1)} 
+                  disabled={currentPage === totalPages}
+                  className={`p-3 rounded-xl border transition-all ${currentPage === totalPages ? 'bg-slate-50 border-slate-100 text-slate-300' : 'bg-white border-slate-200 text-slate-800 hover:border-[#D4AF37] shadow-sm'}`}
+                >
+                   <ChevronRight size={16} />
+                </button>
              </div>
+
+             {/* Lompat ke Halaman (Dropdown Sederhana) */}
              <div className="relative">
-                <select value={currentPage} onChange={(e) => handlePageChange(Number(e.target.value))} className="appearance-none bg-white pl-4 pr-8 py-2 rounded-xl border border-slate-200 text-[10px] font-bold text-slate-600 uppercase tracking-widest focus:outline-none focus:border-[#D4AF37]">
-                   {Array.from({ length: totalPages }, (_, i) => i + 1).map(n => (<option key={n} value={n}>Lompat ke Hal {n}</option>))}
+                <select 
+                  value={currentPage} 
+                  onChange={(e) => handlePageChange(Number(e.target.value))}
+                  className="appearance-none bg-white pl-4 pr-8 py-2 rounded-xl border border-slate-200 text-[10px] font-bold text-slate-600 uppercase tracking-widest focus:outline-none focus:border-[#D4AF37]"
+                >
+                   {Array.from({ length: totalPages }, (_, i) => i + 1).map(n => (
+                      <option key={n} value={n}>Lompat ke Hal {n}</option>
+                   ))}
                 </select>
                 <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"/>
              </div>
@@ -445,6 +479,8 @@ const App = () => {
       {/* --- MEGA FOOTER --- */}
       <footer className="bg-slate-900 text-white p-6 mx-4 rounded-[40px] mb-8 shadow-2xl relative overflow-hidden">
         <div className="relative z-10">
+          
+          {/* 1. FAQ SECTION */}
           <div className="mb-10 pb-8 border-b border-slate-800/50">
             <div className="flex items-center gap-2 mb-4">
               <HelpCircle className="text-[#D4AF37]" size={16} />
@@ -455,38 +491,76 @@ const App = () => {
                 <FaqItem key={index} question={item.q} answer={item.a} />
               ))}
               <div className="mt-4 pt-4 border-t border-slate-700/50 text-center">
-                <button onClick={() => handleWaClick("chat")} className="text-[10px] font-bold text-[#D4AF37] hover:underline uppercase tracking-widest">Chat Admin via WhatsApp</button>
+                <button onClick={() => handleWaClick("chat")} className="text-[10px] font-bold text-[#D4AF37] hover:underline uppercase tracking-widest">
+                    Chat Admin via WhatsApp
+                </button>
               </div>
             </div>
           </div>
 
+          {/* 2. MAIN FOOTER */}
           <div className="text-center mb-8">
              <h3 className="text-2xl font-black mb-2 uppercase tracking-tighter italic">Apartemen Sentul Tower</h3>
              <p className="text-slate-500 text-[10px] mb-8 italic">"Privasi & Kenyamanan Prioritas Kami"</p>
+             
              <h4 className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-4">Cara Order Mudah</h4>
+             
+             {/* TOMBOL BESAR (2x2) DENGAN TEKS INSTRUKSI */}
              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                <div onClick={() => handleWaClick("chat")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all"><MessageCircle className="text-[#D4AF37] mb-2" size={24} /><span className="text-[10px] font-bold text-slate-300 uppercase">1. Chat WhatsApp</span></div>
-                <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all"><MapPin className="text-[#D4AF37] mb-2" size={24} /><span className="text-[10px] font-bold text-slate-300 uppercase">2. Datang Lokasi</span></a>
-                <div onClick={() => handleWaClick("key")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all"><Key className="text-[#D4AF37] mb-2" size={24} /><span className="text-[10px] font-bold text-slate-300 uppercase">3. Ambil Kunci</span></div>
-                <div onClick={() => handleWaClick("payment")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all"><Wallet className="text-[#D4AF37] mb-2" size={24} /><span className="text-[10px] font-bold text-slate-300 uppercase">4. Bayar di Tempat</span></div>
+                <div onClick={() => handleWaClick("chat")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all">
+                   <MessageCircle className="text-[#D4AF37] mb-2" size={24} />
+                   <span className="text-[10px] font-bold text-slate-300 uppercase">1. Chat WhatsApp</span>
+                </div>
+                <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all">
+                   <MapPin className="text-[#D4AF37] mb-2" size={24} />
+                   <span className="text-[10px] font-bold text-slate-300 uppercase">2. Datang Lokasi</span>
+                </a>
+                <div onClick={() => handleWaClick("key")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all">
+                   <Key className="text-[#D4AF37] mb-2" size={24} />
+                   <span className="text-[10px] font-bold text-slate-300 uppercase">3. Ambil Kunci</span>
+                </div>
+                <div onClick={() => handleWaClick("payment")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all">
+                   <Wallet className="text-[#D4AF37] mb-2" size={24} />
+                   <span className="text-[10px] font-bold text-slate-300 uppercase">4. Bayar di Tempat</span>
+                </div>
              </div>
+
+             {/* 3. LOKASI STRATEGIS (RAPI DI BAWAH) */}
              <div className="mt-8 pt-8 border-t border-slate-800/50">
                  <h4 className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-4">Lokasi Strategis</h4>
                  <div className="grid grid-cols-2 gap-2 text-left">
                    {nearbyData.map((item, idx) => (
-                     <div key={idx} className="bg-slate-800/40 p-2.5 rounded-xl border border-slate-700/30 flex items-center gap-2.5"><div className="text-[#D4AF37]">{item.icon}</div><div><p className="text-[9px] text-slate-500 uppercase font-bold tracking-wider">{item.dist}</p><p className="text-[10px] text-slate-200 font-bold leading-tight">{item.name}</p></div></div>
+                     <div key={idx} className="bg-slate-800/40 p-2.5 rounded-xl border border-slate-700/30 flex items-center gap-2.5">
+                        <div className="text-[#D4AF37]">{item.icon}</div>
+                        <div>
+                          <p className="text-[9px] text-slate-500 uppercase font-bold tracking-wider">{item.dist}</p>
+                          <p className="text-[10px] text-slate-200 font-bold leading-tight">{item.name}</p>
+                        </div>
+                     </div>
                    ))}
                  </div>
              </div>
           </div>
 
+          {/* 4. COPYRIGHT */}
           <div className="flex items-center justify-center gap-6 pt-6 border-t border-slate-800">
-            <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-white p-2 rounded-xl hover:scale-110 active:scale-95 transition-all shadow-xl flex items-center justify-center"><GoogleMapsLogo /></a>
-            <button onClick={() => handleWaClick("general")} className="bg-[#25D366] p-2 rounded-xl hover:scale-110 active:scale-95 transition-all shadow-xl shadow-green-900/30"><MessageCircle className="text-white" size={20} /></button>
+            <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-white p-2 rounded-xl hover:scale-110 active:scale-95 transition-all shadow-xl flex items-center justify-center">
+              <GoogleMapsLogo />
+            </a>
+            <button onClick={() => handleWaClick("general")} className="bg-[#25D366] p-2 rounded-xl hover:scale-110 active:scale-95 transition-all shadow-xl shadow-green-900/30">
+              <MessageCircle className="text-white" size={20} />
+            </button>
             <div className="h-5 w-[1px] bg-slate-700"></div>
-            <p className="text-[9px] font-black text-[#D4AF37] tracking-widest uppercase text-center leading-tight">Apartemen<br/>Sentul Tower</p>
+            <p className="text-[9px] font-black text-[#D4AF37] tracking-widest uppercase text-center leading-tight">
+              Apartemen<br/>Sentul Tower
+            </p>
           </div>
-          <div className="mt-6 pt-4 border-t border-slate-800/50 text-center"><p className="text-[9px] text-slate-600 font-medium leading-relaxed">Melayani sewa apartemen harian Sentul City, transit 3 jam, 6 jam. Solusi penginapan murah alternatif hotel di Bogor.</p></div>
+          
+          <div className="mt-6 pt-4 border-t border-slate-800/50 text-center">
+             <p className="text-[9px] text-slate-600 font-medium leading-relaxed">
+               Melayani sewa apartemen harian Sentul City, transit 3 jam, 6 jam. Solusi penginapan murah alternatif hotel di Bogor.
+             </p>
+          </div>
         </div>
         <div className="absolute top-[-20%] right-[-10%] w-48 h-48 bg-[#D4AF37]/10 rounded-full blur-3xl"></div>
       </footer>
@@ -497,19 +571,24 @@ const App = () => {
           <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={closeRoomDetail}></div>
           <div className="bg-white w-full max-w-md rounded-t-[40px] relative z-10 p-7 animate-slide-up overflow-y-auto max-h-[95vh] no-scrollbar shadow-2xl">
             <div className="flex items-center justify-between mb-6">
-              <button onClick={closeRoomDetail} className="flex items-center gap-1.5 text-slate-900 font-black text-[11px] uppercase tracking-widest bg-slate-100 px-4 py-2.5 rounded-2xl active:scale-95 transition-all"><ChevronLeft size={18} /> Kembali</button>
-              <div className="w-12 h-1.5 bg-slate-200 rounded-full"></div><div className="w-20"></div> 
+              <button 
+                onClick={closeRoomDetail}
+                className="flex items-center gap-1.5 text-slate-900 font-black text-[11px] uppercase tracking-widest bg-slate-100 px-4 py-2.5 rounded-2xl active:scale-95 transition-all"
+              >
+                <ChevronLeft size={18} /> Kembali
+              </button>
+              <div className="w-12 h-1.5 bg-slate-200 rounded-full"></div>
+              <div className="w-20"></div> 
             </div>
             
             <div className="relative mb-6">
                <ImageSlider images={selectedRoom.images} heightClass="h-72" roundedClass="rounded-[32px]" altPrefix={`Detail ${selectedRoom.name} Sentul`} />
-               <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-xl shadow-sm z-20"><p className="text-[10px] font-black text-[#D4AF37] uppercase tracking-widest">Pilihan {selectedRoom.type}</p></div>
+               <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-xl shadow-sm z-20">
+                  <p className="text-[10px] font-black text-[#D4AF37] uppercase tracking-widest">Pilihan {selectedRoom.type}</p>
+               </div>
             </div>
             
             <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-2 tracking-tight">{selectedRoom.name}</h2>
-            <div className="flex items-center gap-2 mb-4">
-               <span className="bg-slate-100 text-slate-600 text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wider">{selectedRoom.floorLevel}</span>
-            </div>
             <p className="text-slate-500 text-sm mb-8 leading-relaxed font-medium">{selectedRoom.description}</p>
 
             <div className="space-y-6 mb-8">
@@ -517,39 +596,70 @@ const App = () => {
                 <h4 className="text-[10px] font-black text-slate-400 flex items-center gap-2 mb-5 uppercase tracking-[0.2em]"><Clock size={14} className="text-[#D4AF37]"/> Paket Harga Transit</h4>
                 <div className="grid grid-cols-2 gap-3">
                   {selectedRoom.transit.map((p, i) => (
-                    <div key={i} className="bg-white p-4 rounded-2xl border border-slate-200/50 shadow-sm flex flex-col items-center"><p className="text-[10px] font-bold text-slate-400 uppercase mb-1">{p.label}</p><p className="text-sm font-black text-slate-800 tracking-tight">{p.price}</p></div>
+                    <div key={i} className="bg-white p-4 rounded-2xl border border-slate-200/50 shadow-sm flex flex-col items-center">
+                      <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">{p.label}</p>
+                      <p className="text-sm font-black text-slate-800 tracking-tight">{p.price}</p>
+                    </div>
                   ))}
                 </div>
               </div>
+
               <div className="bg-[#D4AF37]/10 p-5 rounded-[32px] border border-[#D4AF37]/20 shadow-sm">
                 <h4 className="text-[10px] font-black text-[#D4AF37] flex items-center gap-2 mb-5 uppercase tracking-[0.2em]"><Calendar size={14}/> Paket Harga Fullday</h4>
                 <div className="space-y-3">
                   {selectedRoom.fullday.map((p, i) => (
-                    <div key={i} className="flex justify-between items-center bg-white p-4 rounded-2xl border border-[#D4AF37]/10 shadow-sm"><p className="text-[10px] font-black text-slate-600 uppercase tracking-tight">{p.label}</p><p className="text-sm font-black text-slate-900 tracking-tight">{p.price}</p></div>
+                    <div key={i} className="flex justify-between items-center bg-white p-4 rounded-2xl border border-[#D4AF37]/10 shadow-sm">
+                      <p className="text-[10px] font-black text-slate-600 uppercase tracking-tight">{p.label}</p>
+                      <p className="text-sm font-black text-slate-900 tracking-tight">{p.price}</p>
+                    </div>
                   ))}
-                  <div className="pt-2"><div className="bg-amber-50 p-3 rounded-xl border border-amber-100 flex items-center justify-center gap-2"><Clock size={14} className="text-amber-600" /><p className="text-[10px] text-amber-700 font-black uppercase tracking-tighter">Checkout Fullday jam 12 Siang</p></div></div>
+                  <div className="pt-2">
+                     <div className="bg-amber-50 p-3 rounded-xl border border-amber-100 flex items-center justify-center gap-2">
+                        <Clock size={14} className="text-amber-600" />
+                        <p className="text-[10px] text-amber-700 font-black uppercase tracking-tighter">Checkout Fullday jam 12 Siang</p>
+                     </div>
+                  </div>
                 </div>
               </div>
             </div>
 
             <div className="mb-10 px-1">
-              <div className="flex items-center gap-3 mb-6"><div className="h-[2px] bg-slate-100 flex-1"></div><h4 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em]">Spesifikasi Unit</h4><div className="h-[2px] bg-slate-100 flex-1"></div></div>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-[2px] bg-slate-100 flex-1"></div>
+                <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em]">Spesifikasi Unit</h4>
+                <div className="h-[2px] bg-slate-100 flex-1"></div>
+              </div>
               <div className="grid grid-cols-2 gap-y-5 gap-x-4">
                 {selectedRoom.specs.map((spec, i) => (
-                  <div key={i} className="flex items-center gap-3"><div className="w-9 h-9 bg-slate-50 rounded-xl flex items-center justify-center text-[#D4AF37] shadow-sm border border-slate-100">{spec.icon}</div><span className="text-[11px] font-bold text-slate-700 leading-tight tracking-tight uppercase">{spec.text}</span></div>
+                  <div key={i} className="flex items-center gap-3">
+                    <div className="w-9 h-9 bg-slate-50 rounded-xl flex items-center justify-center text-[#D4AF37] shadow-sm border border-slate-100">
+                      {spec.icon}
+                    </div>
+                    <span className="text-[11px] font-bold text-slate-700 leading-tight tracking-tight uppercase">{spec.text}</span>
+                  </div>
                 ))}
               </div>
             </div>
 
-            <button onClick={() => handleWaClick("booking", selectedRoom.name)} className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-black py-5 rounded-[24px] flex items-center justify-center gap-3 shadow-2xl shadow-green-200 active:scale-95 transition-all uppercase tracking-widest text-xs"><MessageCircle size={20} /> Hubungi Lewat WhatsApp</button>
+            <button onClick={() => handleWaClick("booking", selectedRoom.name)} className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-black py-5 rounded-[24px] flex items-center justify-center gap-3 shadow-2xl shadow-green-200 active:scale-95 transition-all uppercase tracking-widest text-xs">
+              <MessageCircle size={20} /> Hubungi Lewat WhatsApp
+            </button>
           </div>
         </div>
       )}
 
+      {/* FAB (Floating Action Button) */}
       {!selectedRoom && (
         <div className="fixed bottom-6 left-0 right-0 px-6 z-40">
           <div onClick={() => handleWaClick("general")} className="bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-2xl rounded-[24px] p-5 flex justify-between items-center max-w-sm mx-auto animate-bounce-subtle cursor-pointer active:scale-95 transition-transform">
-            <div className="flex items-center gap-4"><div className="w-11 h-11 rounded-2xl bg-white/20 flex items-center justify-center backdrop-blur-md shadow-inner"><MessageCircle size={24} /></div><div><p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">Apartemen Sentul Tower</p><p className="text-sm font-black tracking-tight">Booking Cepat Via WA</p></div></div><ChevronRight size={24} />
+            <div className="flex items-center gap-4">
+              <div className="w-11 h-11 rounded-2xl bg-white/20 flex items-center justify-center backdrop-blur-md shadow-inner"><MessageCircle size={24} /></div>
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">Apartemen Sentul Tower</p>
+                <p className="text-sm font-black tracking-tight">Booking Cepat Via WA</p>
+              </div>
+            </div>
+            <ChevronRight size={24} />
           </div>
         </div>
       )}
@@ -564,6 +674,7 @@ const App = () => {
         .snap-mandatory { scroll-snap-type: x mandatory; }
         .snap-center { scroll-snap-align: center; }
       `}} />
+      
       <Analytics />
     </div>
   );
