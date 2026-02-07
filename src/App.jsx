@@ -582,9 +582,9 @@ const App = () => {
       <nav className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 py-3 flex justify-between items-center shadow-sm">
         <div className="flex items-center gap-2">
           <img              src="https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/1770491932595.png"              alt="Logo Sentul Tower"              className="h-16 w-auto object-contain"            />
-          <div className="flex flex-col justify-center leading-none pl-1">
-            <span className="font-black text-[10px] md:text-lg text-slate-900 tracking-widest uppercase">APARTEMEN</span>
-            <span className="font-black text-[10px] md:text-lg text-[#D4AF37] tracking-widest uppercase">SENTUL TOWER</span>
+          <div className="flex flex-col justify-center leading-none pl-2">
+            <span className="font-black text-xs md:text-lg text-slate-900 tracking-widest uppercase">APARTEMEN</span>
+            <span className="font-black text-xs md:text-lg text-[#D4AF37] tracking-widest uppercase">SENTUL TOWER</span>
           </div>
         </div>
         <div className="flex items-center gap-2">
