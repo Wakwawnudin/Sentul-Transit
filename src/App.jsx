@@ -181,6 +181,14 @@ const App = () => {
     window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`, '_blank');
   };
 
+  // --- DATA GAMBAR HERO HEADER (SLIDER) ---
+  const heroImages = [
+    "https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/_apartemenharian%20_apartemenmurah%20_apartemenmewah%20_apartemenpenginapan%20Wa-__+62%C2%A0812_2042_3774_%20(3).jpg?tr=w-1200,q-85",
+    "https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/_apartemenharian%20_apartemenmurah%20_apartemenmewah%20_apartemenpenginapan%20Wa-__+62%C2%A0812_2042_3774_%20(1).jpg?tr=w-1200,q-85",
+    "https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/_apartemenharian%20_apartemenmurah%20_apartemenmewah%20_apartemenpenginapan%20Wa-__+62%C2%A0812_2042_3774_%20(2).jpg?tr=w-1200,q-85",
+    "https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/_apartemenharian%20_apartemenmurah%20_apartemenmewah%20_apartemenpenginapan%20Wa-__+62%C2%A0812_2042_3774_.jpg?tr=w-1200,q-85"
+  ];
+
   const defaultTransit = [
     { label: '3 Jam', price: 'Rp 150.000' },
     { label: '6 Jam', price: 'Rp 200.000' },
@@ -257,6 +265,35 @@ const App = () => {
   const realUnits = [
     // --- STUDIO ---
     {
+      type: 'Studio', floor: 'Lantai 15', // 15.
+      images: [
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213645.jpg?updatedAt=1770485614631&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213729.jpg?updatedAt=1770485614606&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213656.jpg?updatedAt=1770485614544&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213751.jpg?updatedAt=1770485614628&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213741.jpg?updatedAt=1770485614649&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: 'Studio', floor: 'Lantai 16',
+      images: [
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214320.jpg?updatedAt=1770485568667&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214310.jpg?updatedAt=1770485568572&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214340.jpg?updatedAt=1770485568084&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214330.jpg?updatedAt=1770485568115&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214352.jpg?updatedAt=1770485568137&tr=w-800,q-80'
+      ]
+    },
+    {
+      type: 'Studio', floor: 'Lantai 15', // 15 Polos
+      images: [
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015/20260207_213517.jpg?updatedAt=1770485516707&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015/20260207_213504.jpg?updatedAt=1770485516705&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015/20260207_213451.jpg?updatedAt=1770485516706&tr=w-800,q-80',
+        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015/20260207_213531.jpg?updatedAt=1770485516417&tr=w-800,q-80'
+      ]
+    },
+    {
       type: 'Studio', floor: 'Lantai 12',
       images: [
         'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2012/20260207_215054.jpg?updatedAt=1770485467769&tr=w-800,q-80',
@@ -318,42 +355,13 @@ const App = () => {
       ]
     },
     {
-      type: 'Studio', floor: 'Deluxe',
+      type: 'Studio', floor: 'Lantai Deluxe',
       images: [
         'https://ik.imagekit.io/x06namgbin/STUDIO%20DELUXE/20260207_222133.jpg?updatedAt=1770484633281&tr=w-800,q-80',
         'https://ik.imagekit.io/x06namgbin/STUDIO%20DELUXE/20260207_222106.jpg?updatedAt=1770484633266&tr=w-800,q-80',
         'https://ik.imagekit.io/x06namgbin/STUDIO%20DELUXE/20260207_222151.jpg?updatedAt=1770484633210&tr=w-800,q-80',
         'https://ik.imagekit.io/x06namgbin/STUDIO%20DELUXE/20260207_222142.jpg?updatedAt=1770484633288&tr=w-800,q-80',
         'https://ik.imagekit.io/x06namgbin/STUDIO%20DELUXE/20260207_222117.jpg?updatedAt=1770484633201&tr=w-800,q-80'
-      ]
-    },
-        {
-      type: 'Studio', floor: 'Lantai 15', // 15.
-      images: [
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213645.jpg?updatedAt=1770485614631&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213729.jpg?updatedAt=1770485614606&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213656.jpg?updatedAt=1770485614544&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213751.jpg?updatedAt=1770485614628&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213741.jpg?updatedAt=1770485614649&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: 'Studio', floor: 'Lantai 16',
-      images: [
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214320.jpg?updatedAt=1770485568667&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214310.jpg?updatedAt=1770485568572&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214340.jpg?updatedAt=1770485568084&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214330.jpg?updatedAt=1770485568115&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214352.jpg?updatedAt=1770485568137&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: 'Studio', floor: 'Lantai 15', // 15 Polos
-      images: [
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015/20260207_213517.jpg?updatedAt=1770485516707&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015/20260207_213504.jpg?updatedAt=1770485516705&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015/20260207_213451.jpg?updatedAt=1770485516706&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015/20260207_213531.jpg?updatedAt=1770485516417&tr=w-800,q-80'
       ]
     },
 
@@ -493,7 +501,7 @@ const App = () => {
       ]
     },
     {
-      type: '2BR', floor: 'Deluxe', // Deluxe.
+      type: '2BR', floor: 'Lantai Deluxe', // Deluxe.
       images: [
         'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215405.jpg?updatedAt=1770484520183&tr=w-800,q-80',
         'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215415.jpg?updatedAt=1770484520177&tr=w-800,q-80',
@@ -506,7 +514,7 @@ const App = () => {
       ]
     },
     {
-      type: '2BR', floor: 'Deluxe', // Deluxe Polos
+      type: '2BR', floor: 'Lantai Deluxe', // Deluxe Polos
       images: [
         'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE/20260207_213310.jpg?updatedAt=1770484473278&tr=w-800,q-80',
         'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE/20260207_213255.jpg?updatedAt=1770484473060&tr=w-800,q-80',
@@ -530,6 +538,7 @@ const App = () => {
   });
 
   // ==================================================================================
+  const rooms = []; // Placeholder sementara agar tidak error sebelum di-paste
 
   // --- LOGIC FILTER & PAGINATION ---
   const filteredRooms = activeFilter === 'Semua' ? rooms : rooms.filter(r => r.type === activeFilter);
@@ -587,10 +596,20 @@ const App = () => {
         </div>
       </nav>
 
-      {/* Hero Header */}
+      {/* Hero Header (Dengan Slider Otomatis) */}
       <header className="relative h-[450px] overflow-hidden">
-        <img src="https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/AIEnhancer_20260206_022711.png?tr=w-1200,q-85" className="w-full h-full object-cover" alt="Apartemen Sentul Tower View Gunung" loading="eager" />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/40 to-transparent flex flex-col justify-end p-6">
+        {/* Menggunakan ImageSlider: height full, tanpa rounded */}
+        <div className="absolute inset-0 w-full h-full">
+           <ImageSlider 
+             images={heroImages} 
+             heightClass="h-full" 
+             roundedClass="rounded-none" 
+             altPrefix="Suasana Apartemen Sentul Tower" 
+           />
+        </div>
+
+        {/* Overlay Content */}
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/40 to-transparent flex flex-col justify-end p-6 pointer-events-none z-20">
           <div className="flex items-center gap-1.5 bg-slate-900 border border-slate-800 text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-full w-fit mb-3 shadow-lg">
             <MapPin size={10} /> DEKAT AEON MALL SENTUL
           </div>
