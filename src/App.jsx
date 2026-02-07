@@ -5,10 +5,24 @@ import {
   Building, ChevronLeft, ChevronRight, CheckCircle2, 
   MessageCircle, Tv, Wind, Coffee, Utensils, Waves, Sparkles, 
   UtensilsCrossed, Key, Wallet, HelpCircle, ChevronDown, ChevronUp,
-  ShoppingBag, Palmtree, ShieldCheck
+  ShoppingBag, Palmtree, ShieldCheck, Search
 } from 'lucide-react';
 
-// --- KOMPONEN UNIT BADGE (DI ATAS FOTO) ---
+// --- HELPER: AUTO IMAGE OPTIMIZER (IMAGEKIT) ---
+// Fungsi ini otomatis mengkompres gambar ImageKit agar ringan di HP
+const getOptimizedUrl = (url, width = 600) => {
+  if (!url) return "";
+  // Cek apakah URL dari ImageKit
+  if (url.includes('ik.imagekit.io')) {
+    // Cek apakah sudah ada query param (?)
+    const separator = url.includes('?') ? '&' : '?';
+    // Tambahkan parameter: resize width, quality 80%, format auto (WebP)
+    return `${url}${separator}tr=w-${width},q-80,f-auto`;
+  }
+  return url; // Kembalikan original jika bukan ImageKit (misal Unsplash)
+};
+
+// --- KOMPONEN UNIT BADGE ---
 const UnitBadge = ({ unit }) => (
   <div className="flex items-center gap-1.5 bg-white/90 backdrop-blur-md border border-slate-200/50 px-2.5 py-1.5 rounded-xl shadow-lg w-fit">
     <Key size={12} className="text-[#D4AF37]" />
@@ -16,7 +30,7 @@ const UnitBadge = ({ unit }) => (
   </div>
 );
 
-// --- KOMPONEN IMAGE SLIDER ---
+// --- KOMPONEN IMAGE SLIDER (DENGAN LAZY LOADING) ---
 const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32px]", altPrefix = "Apartemen Sentul Tower" }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef(null);
@@ -68,9 +82,12 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
         {images.map((img, idx) => (
           <img 
             key={idx}
-            src={img} 
+            // UPDATE: Gunakan fungsi optimizer dan Lazy Loading
+            src={getOptimizedUrl(img)} 
+            loading="lazy"      // Agar tidak berat saat load awal
+            decoding="async"    // Decode gambar secara asinkron
             className="w-full h-full object-cover shrink-0 snap-center" 
-            alt={`${altPrefix} - View ${idx + 1} - Fasilitas Lengkap`} 
+            alt={`${altPrefix} - View ${idx + 1}`} 
           />
         ))}
       </div>
@@ -130,6 +147,10 @@ const App = () => {
   const [activeFilter, setActiveFilter] = useState('Semua');
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [refCode, setRefCode] = useState("");
+  
+  // --- STATE PAGINATION ---
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6; // Menampilkan 6 unit per halaman
 
   const waNumber = "6283830033717";
   const mapsLink = "https://share.google/490MII2W8A99899m7";
@@ -143,6 +164,11 @@ const App = () => {
     const ref = queryParams.get('ref');
     if (ref) setRefCode(ref);
   }, []);
+
+  // Reset Halaman ke 1 jika Filter Berubah
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeFilter]);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -257,8 +283,6 @@ const App = () => {
     }
   ];
 
-  const filteredRooms = activeFilter === 'Semua' ? rooms : rooms.filter(r => r.type === activeFilter);
-
   const nearbyData = [
     { name: "AEON Mall", dist: "2 Mnt", icon: <ShoppingBag size={14}/> },
     { name: "IKEA Sentul", dist: "5 Mnt", icon: <ShoppingBag size={14}/> },
@@ -278,6 +302,21 @@ const App = () => {
     { q: "Apa Perlu Jaminan?", a: "Foto KTP atau SIM saja cukup. KTP & SIM tidak ditahan" },
     { q: "Cara booking?", a: "Chat WA, pilih jadwal, datang. Bayar bisa Cash/Transfer di lokasi." }
   ];
+
+  // --- LOGIC PAGINATION & FILTER ---
+  const allFilteredRooms = activeFilter === 'Semua' ? rooms : rooms.filter(r => r.type === activeFilter);
+  
+  // Hitung Data per Halaman
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentRooms = allFilteredRooms.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(allFilteredRooms.length / itemsPerPage);
+
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    // Auto scroll ke atas katalog saat ganti halaman
+    document.getElementById('katalog-section')?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-32">
@@ -301,7 +340,12 @@ const App = () => {
 
       {/* Hero Header */}
       <header className="relative h-[450px] overflow-hidden">
-        <img src="https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/AIEnhancer_20260206_022711.png" className="w-full h-full object-cover" alt="Apartemen Sentul Tower View Gunung" />
+        <img 
+            src={getOptimizedUrl("https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/AIEnhancer_20260206_022711.png")} 
+            className="w-full h-full object-cover" 
+            alt="Apartemen Sentul Tower View Gunung"
+            loading="lazy"
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/40 to-transparent flex flex-col justify-end p-6">
           <div className="flex items-center gap-1.5 bg-slate-900 border border-slate-800 text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-full w-fit mb-3 shadow-lg">
             <MapPin size={10} /> DEKAT AEON MALL SENTUL
@@ -327,8 +371,8 @@ const App = () => {
         </div>
       </section>
 
-      {/* Katalog */}
-      <section className="px-4 py-8">
+      {/* Katalog (ID untuk Scroll) */}
+      <section id="katalog-section" className="px-4 py-8">
         <div className="flex flex-col gap-4 mb-6 md:flex-row md:justify-between md:items-center">
           <h2 className="text-lg font-black text-slate-800 uppercase tracking-widest">KATALOG APARTEMEN</h2>
           <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1 md:pb-0">
@@ -339,19 +383,20 @@ const App = () => {
         </div>
 
         <div className="space-y-6">
-          {filteredRooms.map(room => (
+          {/* Mapping menggunakan currentRooms (Data per halaman) */}
+          {currentRooms.map(room => (
             <div key={room.id} onClick={() => openRoomDetail(room)} className="bg-white rounded-[32px] p-3 shadow-sm border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer group">
               <div className="relative">
                 <ImageSlider images={room.images} heightClass="h-72" roundedClass="rounded-[24px]" altPrefix={`Interior ${room.name} Sentul Tower`} />
                 
-                {/* --- UPDATE POSISI UNIT BADGE (TOP RIGHT FOTO) --- */}
+                {/* --- UNIT BADGE (TOP RIGHT FOTO) --- */}
                 <div className="absolute top-4 left-4 right-4 flex justify-between items-start pointer-events-none z-20">
                   <div className="flex gap-2">
                      <span className="bg-black/70 backdrop-blur-md text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest">{room.type}</span>
                      {room.type === '2BR' && <span className="bg-[#D4AF37] text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg">PREMIUM</span>}
                   </div>
                   
-                  {/* Unit Badge (Pojok Kanan Atas Foto) */}
+                  {/* Unit Badge */}
                   <UnitBadge unit={room.roomNumber} />
                 </div>
               </div>
@@ -367,7 +412,7 @@ const App = () => {
                   <div className="flex items-center gap-1.5"><Shield size={14}/> 24/7 Aman</div>
                 </div>
 
-                {/* --- UPDATE: BADGE KEAMANAN VERIFIED (DI ATAS HARGA) --- */}
+                {/* --- BADGE KEAMANAN VERIFIED (DI ATAS HARGA) --- */}
                 <div className="w-fit flex items-center gap-1.5 bg-blue-50/70 border border-blue-100/50 px-2.5 py-1.5 rounded-lg mb-4">
                    <ShieldCheck size={14} className="text-blue-500" />
                    <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">Verified • Higienis • Aman</span>
@@ -384,6 +429,66 @@ const App = () => {
             </div>
           ))}
         </div>
+
+        {/* --- KOMPONEN PAGINATION LENGKAP --- */}
+        {allFilteredRooms.length > itemsPerPage && (
+          <div className="flex flex-col items-center gap-4 mt-10">
+            {/* 1. Baris Angka & Panah */}
+            <div className="flex justify-center items-center gap-2">
+              <button 
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
+                className={`p-2 rounded-xl border ${currentPage === 1 ? 'border-slate-100 text-slate-300' : 'border-slate-200 text-slate-600 hover:bg-slate-100'} transition-all`}
+              >
+                <ChevronLeft size={20} />
+              </button>
+
+              <div className="flex gap-1">
+                {[...Array(totalPages)].map((_, i) => {
+                  // Logic sederhana untuk menampilkan beberapa halaman saja jika total page banyak bisa ditambah disini
+                  // Saat ini menampilkan semua angka halaman (aman utk < 10 halaman)
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => paginate(i + 1)}
+                      className={`w-10 h-10 rounded-xl text-xs font-black transition-all ${
+                        currentPage === i + 1 
+                          ? 'bg-slate-900 text-[#D4AF37] shadow-lg scale-110' 
+                          : 'bg-white border border-slate-100 text-slate-400 hover:bg-slate-50'
+                      }`}
+                    >
+                      {i + 1}
+                    </button>
+                  )
+                })}
+              </div>
+
+              <button 
+                onClick={() => paginate(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className={`p-2 rounded-xl border ${currentPage === totalPages ? 'border-slate-100 text-slate-300' : 'border-slate-200 text-slate-600 hover:bg-slate-100'} transition-all`}
+              >
+                <ChevronRight size={20} />
+              </button>
+            </div>
+
+            {/* 2. Dropdown Lompat ke Halaman (Muncul jika halaman > 3) */}
+            {totalPages > 3 && (
+               <div className="flex items-center gap-2 bg-white border border-slate-200 px-4 py-2 rounded-full shadow-sm">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase">Lompat ke Hal</span>
+                  <select 
+                    value={currentPage} 
+                    onChange={(e) => paginate(Number(e.target.value))}
+                    className="bg-slate-50 border border-slate-200 text-slate-700 text-xs font-black rounded-lg py-1 px-2 focus:outline-none focus:border-[#D4AF37]"
+                  >
+                    {[...Array(totalPages)].map((_, i) => (
+                      <option key={i} value={i + 1}>{i + 1}</option>
+                    ))}
+                  </select>
+               </div>
+            )}
+          </div>
+        )}
       </section>
 
       {/* --- MEGA FOOTER --- */}
