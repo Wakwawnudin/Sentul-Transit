@@ -8,7 +8,7 @@ import {
   ShoppingBag, Palmtree, Verified, Star
 } from 'lucide-react';
 
-// --- KOMPONEN IMAGE SLIDER ---
+// --- KOMPONEN IMAGE SLIDER (SEO OPTIMIZED) ---
 const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32px]", altPrefix = "Apartemen Sentul Tower" }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef(null);
@@ -63,7 +63,8 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
             src={img} 
             loading="lazy" 
             className="w-full h-full object-cover shrink-0 snap-center" 
-            alt={`${altPrefix} - View ${idx + 1}`} 
+            // SEO UPDATE: Alt text lebih deskriptif untuk Google Images
+            alt={`${altPrefix} - Foto ${idx + 1} - Sewa Harian & Transit Sentul City`} 
           />
         ))}
       </div>
@@ -132,17 +133,25 @@ const App = () => {
   const mapsLink = "https://share.google/490MII2W8A99899m7";
 
   useEffect(() => {
-    // --- 1. JURUS BAJAK DOMAIN (KHUSUS DOMAIN LAMA) ---
+    // --- 1. JURUS BAJAK DOMAIN ---
     if (window.location.hostname.includes('apartsentul.cloud')) {
       window.location.replace("https://apartemensentultower.com/?ref=Lani");
       return; 
     }
-
-    // --- 2. TANGKAP KODE REFERRAL (UNTUK SEMUA LINK) ---
+    // --- 2. TANGKAP KODE REFERRAL ---
     const queryParams = new URLSearchParams(window.location.search);
     const ref = queryParams.get('ref');
     if (ref) setRefCode(ref);
   }, []);
+
+  // SEO: Dynamic Title Change
+  useEffect(() => {
+    if (selectedRoom) {
+      document.title = `${selectedRoom.name} (${selectedRoom.floorLevel}) - Sewa Apartemen Sentul Tower`;
+    } else {
+      document.title = "Sewa Apartemen Sentul Tower | Transit & Fullday Dekat AEON";
+    }
+  }, [selectedRoom]);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -202,9 +211,7 @@ const App = () => {
     { label: 'Weekend (Jum-Min)', price: 'Rp 700.000' },
   ];
 
-  // ==================================================================================
-  // >>>>>>>>>> PASTE KODINGAN BARU (baseTemplates, realUnits, rooms) DI SINI <<<<<<<<<<
-    // --- DATA TEMPLATES (BASE DATA) ---
+  // --- DATA TEMPLATES (BASE DATA) ---
   const baseTemplates = {
     'Studio': {
       type: 'Studio',
@@ -252,7 +259,6 @@ const App = () => {
       ]
     }
   };
-
   // --- REAL UNIT DATA (IMAGES & FLOORS) ---
   const realUnits = [
     // --- STUDIO ---
@@ -265,7 +271,7 @@ const App = () => {
         'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2012/20260207_215139.jpg?updatedAt=1770485467195&tr=w-800,q-80'
       ]
     },
-          {
+    {
       type: '1BR', floor: 'Lantai 01',
       images: [
         'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215859.jpg?updatedAt=1770486566474&tr=w-800,q-80',
@@ -276,7 +282,7 @@ const App = () => {
         'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215246.jpg?updatedAt=1770482875917&tr=w-800,q-80'
       ]
     },
-        {
+    {
       type: '2BR', floor: 'Deluxe', // Deluxe.
       images: [
         'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215405.jpg?updatedAt=1770484520183&tr=w-800,q-80',
@@ -351,7 +357,7 @@ const App = () => {
         'https://ik.imagekit.io/x06namgbin/STUDIO%20DELUXE/20260207_222117.jpg?updatedAt=1770484633201&tr=w-800,q-80'
       ]
     },
-        {
+    {
       type: 'Studio', floor: 'Lantai 15', // 15.
       images: [
         'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213645.jpg?updatedAt=1770485614631&tr=w-800,q-80',
@@ -517,7 +523,7 @@ const App = () => {
     }
   ];
 
-  // --- GENERATE FINAL ROOMS LIST ---
+  // --- GENERATE FINAL ROOMS LIST (SEO OPTIMIZED) ---
   const rooms = realUnits.map((unit, index) => {
     const template = baseTemplates[unit.type];
     return {
@@ -525,11 +531,11 @@ const App = () => {
       id: index + 1,
       name: template.baseName,
       floorLevel: unit.floor,
-      images: unit.images
+      images: unit.images,
+      // SEO: Generate Alt Prefix spesifik per unit untuk komponen ImageSlider
+      altPrefix: `Sewa Apartemen ${template.baseName} ${unit.floor} Sentul Tower - View Gunung & City`
     };
   });
-
-  // ==================================================================================
 
   // --- LOGIC FILTER & PAGINATION ---
   const filteredRooms = activeFilter === 'Semua' ? rooms : rooms.filter(r => r.type === activeFilter);
@@ -566,25 +572,22 @@ const App = () => {
     { q: "Apa Perlu Jaminan?", a: "Foto KTP atau SIM saja cukup. KTP & SIM tidak ditahan" },
     { q: "Cara booking?", a: "Chat WA, pilih jadwal, datang. Bayar bisa Cash/Transfer di lokasi." }
   ];
-  // ... (kode faqData sebelumnya) ...
 
-  // >>>>> [BAGIAN 1] PASTE LINK GAMBAR SLIDER MAIN HOME DI SINI <<<<<
   const heroImages = [
     "https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/_apartemenharian%20_apartemenmurah%20_apartemenmewah%20_apartemenpenginapan%20Wa-__+62%C2%A0812_2042_3774_%20(3).jpg?tr=w-1200,q-85",
     "https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/_apartemenharian%20_apartemenmurah%20_apartemenmewah%20_apartemenpenginapan%20Wa-__+62%C2%A0812_2042_3774_%20(1).jpg?tr=w-1200,q-85",
     "https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/_apartemenharian%20_apartemenmurah%20_apartemenmewah%20_apartemenpenginapan%20Wa-__+62%C2%A0812_2042_3774_%20(2).jpg?tr=w-1200,q-85",
     "https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/_apartemenharian%20_apartemenmurah%20_apartemenmewah%20_apartemenpenginapan%20Wa-__+62%C2%A0812_2042_3774_.jpg?tr=w-1200,q-85"
   ];
-  
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-32">
-            {/* Navbar Transparan (Style Bali Rentals) */}
+      {/* Navbar Transparan - Semantic: nav */}
       <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex justify-between items-center transition-all duration-300 bg-gradient-to-b from-black/80 to-transparent">
         <div className="flex items-center gap-3">
-          {/* Logo */}
+          {/* Logo - SEO: Alt text diperjelas */}
           <img 
             src="https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/1770491932595.png" 
-            alt="Logo Sentul Tower" 
+            alt="Logo Apartemen Sentul Tower - Sewa Harian" 
             className="h-14 w-auto object-contain drop-shadow-md" 
           />
           
@@ -595,26 +598,25 @@ const App = () => {
           </div>
         </div>
 
-        {/* Tombol Kanan (Glassmorphism) */}
+        {/* Tombol Kanan */}
         <div className="flex items-center gap-2">
-          <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-white/20 backdrop-blur-md p-2.5 rounded-full border border-white/30 text-white shadow-lg active:scale-90 transition-transform flex items-center justify-center hover:bg-white/30">
+          <a href={mapsLink} target="_blank" rel="noopener noreferrer" aria-label="Lokasi Google Maps" className="bg-white/20 backdrop-blur-md p-2.5 rounded-full border border-white/30 text-white shadow-lg active:scale-90 transition-transform flex items-center justify-center hover:bg-white/30">
              <GoogleMapsLogo />
           </a>
-          <button onClick={() => handleWaClick("general")} className="bg-white/20 backdrop-blur-md text-white p-2.5 rounded-full border border-white/30 shadow-lg active:scale-90 transition-transform hover:bg-green-500/80 hover:border-green-500">
+          <button onClick={() => handleWaClick("general")} aria-label="Chat WhatsApp Admin" className="bg-white/20 backdrop-blur-md text-white p-2.5 rounded-full border border-white/30 shadow-lg active:scale-90 transition-transform hover:bg-green-500/80 hover:border-green-500">
             <MessageCircle size={20} />
           </button>
         </div>
       </nav>
 
-
-      {/* Hero Header (Full Height & Slider) */}
+      {/* Hero Header - Semantic: header */}
       <header className="relative h-[600px] w-full overflow-hidden">
         <div className="absolute inset-0 w-full h-full">
            <ImageSlider 
              images={heroImages} 
              heightClass="h-full" 
              roundedClass="rounded-none" 
-             altPrefix="Suasana Apartemen Sentul Tower" 
+             altPrefix="Fasilitas & View Apartemen Sentul Tower" 
            />
         </div>
 
@@ -623,13 +625,14 @@ const App = () => {
           <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-md border border-white/10 text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-full w-fit mb-3 shadow-lg">
             <MapPin size={10} /> DEKAT AEON MALL SENTUL
           </div>
+          {/* SEO: H1 Utama Website */}
           <h1 className="text-3xl font-black text-white leading-tight uppercase tracking-tight drop-shadow-lg mb-1">Apartemen Sentul Tower</h1>
           <p className="text-slate-200 text-sm italic font-medium drop-shadow-md">Solusi Staycation Mewah & Nyaman</p>
         </div>
       </header>
 
-      {/* Ringkasan Harga */}
-      <section className="px-4 -mt-6 relative z-10">
+      {/* Ringkasan Harga - Semantic: section */}
+      <section className="px-4 -mt-6 relative z-10" aria-label="Ringkasan Harga">
         <div className="bg-white rounded-[24px] shadow-2xl shadow-slate-200/50 border border-slate-100 p-4 grid grid-cols-2 gap-3">
           <div className="bg-slate-50 p-4 rounded-2xl flex flex-col items-center border border-slate-100">
             <Clock className="text-[#D4AF37] mb-1.5" size={18} />
@@ -643,10 +646,10 @@ const App = () => {
           </div>
         </div>
       </section>
-
-      {/* Katalog */}
-      <section className="px-4 py-8">
+      {/* Katalog - Semantic: section */}
+      <section className="px-4 py-8" aria-label="Daftar Unit Apartemen">
         <div className="flex flex-col gap-4 mb-6 md:flex-row md:justify-between md:items-center">
+          {/* SEO: H2 untuk Section Katalog */}
           <h2 className="text-lg font-black text-slate-800 uppercase tracking-widest">KATALOG APARTEMEN</h2>
           <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1 md:pb-0">
             {['Semua', 'Studio', '1BR', '2BR'].map(f => (
@@ -657,17 +660,19 @@ const App = () => {
 
         <div className="space-y-6">
           {currentItems.map(room => (
-            <div key={room.id} onClick={() => openRoomDetail(room)} className="bg-white rounded-[32px] p-3 shadow-sm border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer group">
+            /* Semantic: article untuk setiap item properti */
+            <article key={room.id} onClick={() => openRoomDetail(room)} className="bg-white rounded-[32px] p-3 shadow-sm border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer group">
               <div className="relative">
-                <ImageSlider images={room.images} heightClass="h-72" roundedClass="rounded-[24px]" altPrefix={`Interior ${room.name} Sentul Tower`} />
+                {/* SEO: Mengirim altPrefix spesifik ke Slider */}
+                <ImageSlider images={room.images} heightClass="h-72" roundedClass="rounded-[24px]" altPrefix={room.altPrefix} />
                 
-                {/* Badge Type (Kiri Atas) */}
+                {/* Badge Type */}
                 <div className="absolute top-4 left-4 flex gap-2 pointer-events-none z-20">
                   <span className="bg-black/70 backdrop-blur-md text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest">{room.type}</span>
                   {room.type === '2BR' && <span className="bg-[#D4AF37] text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg">PREMIUM</span>}
                 </div>
 
-                {/* Badge Lantai (Kanan Atas) */}
+                {/* Badge Lantai */}
                 <div className="absolute top-4 right-4 pointer-events-none z-20">
                   <span className="bg-white/90 backdrop-blur text-slate-800 text-[10px] font-black px-3 py-1.5 rounded-xl shadow-lg border border-slate-100 uppercase tracking-wider">
                     {room.floorLevel}
@@ -676,6 +681,7 @@ const App = () => {
               </div>
 
               <div className="pt-5 px-3 pb-3">
+                {/* SEO: H3 untuk Nama Unit */}
                 <h3 className="text-xl font-black text-slate-900 mb-1.5 uppercase tracking-tight">{room.name}</h3>
                 
                 <div className="flex items-center gap-4 text-slate-400 text-[11px] font-bold mb-4 uppercase tracking-wide">
@@ -684,7 +690,6 @@ const App = () => {
                   <div className="flex items-center gap-1.5"><Shield size={14}/> 24/7 Aman</div>
                 </div>
 
-                {/* Badge Security & Hygiene (Baru) */}
                 <div className="flex items-center gap-1.5 mb-3">
                    <CheckCircle2 size={12} className="text-green-500" fill="currentColor" color="white" />
                    <span className="text-[10px] font-bold text-slate-500 tracking-tight">Verified • Higienis • Aman</span>
@@ -698,32 +703,29 @@ const App = () => {
                   <button className="bg-slate-900 text-white font-bold px-6 py-3 rounded-2xl text-[11px] uppercase tracking-widest shadow-lg shadow-slate-200">Detail</button>
                 </div>
               </div>
-            </div>
+            </article>
           ))}
         </div>
 
         {/* --- PAGINATION CONTROLS --- */}
         {totalPages > 1 && (
           <div className="mt-8 flex flex-col items-center gap-4">
-             {/* Info Halaman */}
              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                 Menampilkan {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, filteredRooms.length)} dari {filteredRooms.length} Unit
              </div>
 
              <div className="flex items-center gap-2">
-                {/* Tombol Previous */}
                 <button 
                   onClick={() => handlePageChange(currentPage - 1)} 
                   disabled={currentPage === 1}
+                  aria-label="Halaman Sebelumnya"
                   className={`p-3 rounded-xl border transition-all ${currentPage === 1 ? 'bg-slate-50 border-slate-100 text-slate-300' : 'bg-white border-slate-200 text-slate-800 hover:border-[#D4AF37] shadow-sm'}`}
                 >
                    <ChevronLeft size={16} />
                 </button>
 
-                {/* Nomor Halaman BARU (DENGAN TITIK-TITIK) */}
                 <div className="flex gap-1">
                    {(() => {
-                      // Logika untuk menentukan angka mana yang muncul
                       let pages = [];
                       if (totalPages <= 5) {
                          pages = Array.from({ length: totalPages }, (_, i) => i + 1);
@@ -752,22 +754,21 @@ const App = () => {
                    })()}
                 </div>
 
-
-                {/* Tombol Next */}
                 <button 
                   onClick={() => handlePageChange(currentPage + 1)} 
                   disabled={currentPage === totalPages}
+                  aria-label="Halaman Selanjutnya"
                   className={`p-3 rounded-xl border transition-all ${currentPage === totalPages ? 'bg-slate-50 border-slate-100 text-slate-300' : 'bg-white border-slate-200 text-slate-800 hover:border-[#D4AF37] shadow-sm'}`}
                 >
                    <ChevronRight size={16} />
                 </button>
              </div>
 
-             {/* Lompat ke Halaman (Dropdown Sederhana) */}
              <div className="relative">
                 <select 
                   value={currentPage} 
                   onChange={(e) => handlePageChange(Number(e.target.value))}
+                  aria-label="Pilih Halaman"
                   className="appearance-none bg-white pl-4 pr-8 py-2 rounded-xl border border-slate-200 text-[10px] font-bold text-slate-600 uppercase tracking-widest focus:outline-none focus:border-[#D4AF37]"
                 >
                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(n => (
@@ -780,11 +781,11 @@ const App = () => {
         )}
       </section>
 
-      {/* --- MEGA FOOTER --- */}
+      {/* --- MEGA FOOTER (Semantic: footer) --- */}
       <footer className="bg-slate-900 text-white p-6 mx-4 rounded-[40px] mb-8 shadow-2xl relative overflow-hidden">
         <div className="relative z-10">
           
-          {/* 1. FAQ SECTION */}
+          {/* FAQ SECTION */}
           <div className="mb-10 pb-8 border-b border-slate-800/50">
             <div className="flex items-center gap-2 mb-4">
               <HelpCircle className="text-[#D4AF37]" size={16} />
@@ -802,14 +803,13 @@ const App = () => {
             </div>
           </div>
 
-          {/* 2. MAIN FOOTER */}
+          {/* MAIN FOOTER INFO */}
           <div className="text-center mb-8">
              <h3 className="text-2xl font-black mb-2 uppercase tracking-tighter italic">Apartemen Sentul Tower</h3>
              <p className="text-slate-500 text-[10px] mb-8 italic">"Privasi & Kenyamanan Prioritas Kami"</p>
              
              <h4 className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-4">Cara Order Mudah</h4>
              
-             {/* TOMBOL BESAR (2x2) DENGAN TEKS INSTRUKSI */}
              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                 <div onClick={() => handleWaClick("chat")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all">
                    <MessageCircle className="text-[#D4AF37] mb-2" size={24} />
@@ -829,7 +829,6 @@ const App = () => {
                 </div>
              </div>
 
-             {/* 3. LOKASI STRATEGIS (RAPI DI BAWAH) */}
              <div className="mt-8 pt-8 border-t border-slate-800/50">
                  <h4 className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-4">Lokasi Strategis</h4>
                  <div className="grid grid-cols-2 gap-2 text-left">
@@ -846,12 +845,11 @@ const App = () => {
              </div>
           </div>
 
-          {/* 4. COPYRIGHT */}
           <div className="flex items-center justify-center gap-6 pt-6 border-t border-slate-800">
-            <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-white p-2 rounded-xl hover:scale-110 active:scale-95 transition-all shadow-xl flex items-center justify-center">
+            <a href={mapsLink} target="_blank" rel="noopener noreferrer" aria-label="Buka Google Maps" className="bg-white p-2 rounded-xl hover:scale-110 active:scale-95 transition-all shadow-xl flex items-center justify-center">
               <GoogleMapsLogo />
             </a>
-            <button onClick={() => handleWaClick("general")} className="bg-[#25D366] p-2 rounded-xl hover:scale-110 active:scale-95 transition-all shadow-xl shadow-green-900/30">
+            <button onClick={() => handleWaClick("general")} aria-label="Chat WhatsApp" className="bg-[#25D366] p-2 rounded-xl hover:scale-110 active:scale-95 transition-all shadow-xl shadow-green-900/30">
               <MessageCircle className="text-white" size={20} />
             </button>
             <div className="h-5 w-[1px] bg-slate-700"></div>
@@ -869,7 +867,7 @@ const App = () => {
         <div className="absolute top-[-20%] right-[-10%] w-48 h-48 bg-[#D4AF37]/10 rounded-full blur-3xl"></div>
       </footer>
 
-      {/* Modal Detail */}
+      {/* Modal Detail Room */}
       {selectedRoom && (
         <div className="fixed inset-0 z-50 flex items-end justify-center">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={closeRoomDetail}></div>
@@ -886,12 +884,13 @@ const App = () => {
             </div>
             
             <div className="relative mb-6">
-               <ImageSlider images={selectedRoom.images} heightClass="h-72" roundedClass="rounded-[32px]" altPrefix={`Detail ${selectedRoom.name} Sentul`} />
+               <ImageSlider images={selectedRoom.images} heightClass="h-72" roundedClass="rounded-[32px]" altPrefix={`Detail ${selectedRoom.name} - ${selectedRoom.floorLevel}`} />
                <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-xl shadow-sm z-20">
                   <p className="text-[10px] font-black text-[#D4AF37] uppercase tracking-widest">Pilihan {selectedRoom.type}</p>
                </div>
             </div>
             
+            {/* SEO: H2 untuk Detail Kamar (Hierarki yang benar) */}
             <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-2 tracking-tight">{selectedRoom.name}</h2>
             <p className="text-slate-500 text-sm mb-8 leading-relaxed font-medium">{selectedRoom.description}</p>
 
