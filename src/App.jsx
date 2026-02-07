@@ -711,18 +711,38 @@ const App = () => {
                    <ChevronLeft size={16} />
                 </button>
 
-                {/* Nomor Halaman */}
+                {/* Nomor Halaman BARU (DENGAN TITIK-TITIK) */}
                 <div className="flex gap-1">
-                   {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
-                      <button
-                        key={number}
-                        onClick={() => handlePageChange(number)}
-                        className={`w-10 h-10 flex items-center justify-center rounded-xl text-xs font-black transition-all ${currentPage === number ? 'bg-slate-900 text-[#D4AF37] shadow-lg scale-110' : 'bg-white border border-slate-200 text-slate-500 hover:bg-slate-50'}`}
-                      >
-                         {number}
-                      </button>
-                   ))}
+                   {(() => {
+                      // Logika untuk menentukan angka mana yang muncul
+                      let pages = [];
+                      if (totalPages <= 5) {
+                         pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+                      } else {
+                         if (currentPage <= 3) pages = [1, 2, 3, '...', totalPages];
+                         else if (currentPage >= totalPages - 2) pages = [1, '...', totalPages - 2, totalPages - 1, totalPages];
+                         else pages = [1, '...', currentPage, '...', totalPages];
+                      }
+
+                      return pages.map((page, index) => (
+                        <button
+                          key={index}
+                          onClick={() => typeof page === 'number' && handlePageChange(page)}
+                          disabled={page === '...'}
+                          className={`w-10 h-10 flex items-center justify-center rounded-xl text-xs font-black transition-all ${
+                            page === currentPage 
+                              ? 'bg-slate-900 text-[#D4AF37] shadow-lg scale-110 z-10' 
+                              : page === '...'
+                                ? 'bg-transparent text-slate-400 cursor-default border-none' 
+                                : 'bg-white border border-slate-200 text-slate-500 hover:bg-slate-50'
+                          }`}
+                        >
+                           {page}
+                        </button>
+                      ));
+                   })()}
                 </div>
+
 
                 {/* Tombol Next */}
                 <button 
