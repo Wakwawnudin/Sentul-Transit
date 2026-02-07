@@ -629,7 +629,7 @@ const App = () => {
       </header>
 
       {/* Ringkasan Harga */}
-      <section className="px-4 -mt-6 relative z-10">
+      <section className="px-4 -mt-24 relative z-30">
         <div className="bg-white rounded-[24px] shadow-2xl shadow-slate-200/50 border border-slate-100 p-4 grid grid-cols-2 gap-3">
           <div className="bg-slate-50 p-4 rounded-2xl flex flex-col items-center border border-slate-100">
             <Clock className="text-[#D4AF37] mb-1.5" size={18} />
