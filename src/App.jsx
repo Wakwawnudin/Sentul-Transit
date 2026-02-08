@@ -523,13 +523,14 @@ const App = () => {
     }
   ];
 
-  // --- GENERATE FINAL ROOMS LIST (SEO OPTIMIZED) ---
+  // --- GENERATE FINAL ROOMS LIST (SEO OPTIMIZED & DYNAMIC NAME) ---
   const rooms = realUnits.map((unit, index) => {
     const template = baseTemplates[unit.type];
     return {
       ...template,
       id: index + 1,
-      name: template.baseName,
+      // UPDATE: Nama unit digabung dengan lantai (STUDIO - LANTAI 06)
+      name: `${template.baseName} - ${unit.floor.toUpperCase()}`, 
       floorLevel: unit.floor,
       images: unit.images,
       // SEO: Generate Alt Prefix spesifik per unit untuk komponen ImageSlider
