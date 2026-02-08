@@ -202,9 +202,9 @@ const App = () => {
   ];
   const specialTransit2BR = [
     { label: '3 Jam', price: 'Rp 200.000' },
-    { label: '6 Jam', price: 'Rp 250.000' },
-    { label: '9 Jam', price: 'Rp 300.000' },
-    { label: '12 Jam', price: 'Rp 350.000' },
+    { label: '6 Jam', price: 'Rp 300.000' },
+    { label: '9 Jam', price: 'Rp 350.000' },
+    { label: '12 Jam', price: 'Rp 400.000' },
   ];
   const specialFullday2BR = [
     { label: 'Weekday (Sen-Kam)', price: 'Rp 650.000' },
