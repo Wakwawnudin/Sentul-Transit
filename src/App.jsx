@@ -285,7 +285,7 @@ const HomePage = () => {
         <div className="absolute inset-0 w-full h-full">
            <ImageSlider images={heroImages} heightClass="h-full" roundedClass="rounded-none" altPrefix="Fasilitas & View Apartemen Sentul Tower" />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent flex flex-col justify-end p-6 pb-20 pointer-events-none z-20">
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent flex flex-col justify-end p-6 pb-12 pointer-events-none z-20">
           <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-md border border-white/10 text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-full w-fit mb-3 shadow-lg">
             <MapPin size={10} /> DEKAT AEON MALL SENTUL
           </div>
@@ -294,7 +294,7 @@ const HomePage = () => {
         </div>
       </header>
 
-      <section className="px-4 -mt-6 relative z-10" aria-label="Ringkasan Harga">
+      <section className="px-4 py-8 bg-white/50 backdrop-blur-sm relative z-10" aria-label="Ringkasan Harga">
         <div className="bg-white rounded-[24px] shadow-2xl shadow-slate-200/50 border border-slate-100 p-4 grid grid-cols-2 gap-3">
           <div className="bg-slate-50 p-4 rounded-2xl flex flex-col items-center border border-slate-100">
             <Clock className="text-[#D4AF37] mb-1.5" size={18} />
