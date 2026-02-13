@@ -2,7 +2,8 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
 const SEOStructuredDataHome = () => {
-  const structuredData = {
+  // 1. Schema untuk Identitas Bisnis (Lodging)
+  const lodgingSchema = {
     "@context": "https://schema.org",
     "@type": "LodgingBusiness",
     "name": "Apartemen Sentul Tower",
@@ -20,8 +21,6 @@ const SEOStructuredDataHome = () => {
       "postalCode": "16810",
       "addressCountry": "ID"
     },
-    // 👇 INI BAGIAN PENTING
-    // Mengaitkan website dengan titik Google Maps Anda
     "sameAs": [
       "https://share.google/490MII2W8A99899m7"
     ],
@@ -34,19 +33,32 @@ const SEOStructuredDataHome = () => {
       "closes": "23:59"
     },
     "areaServed": [
-      "Sentul City",
-      "Bogor",
-      "Babakan Madang",
-      "Sirkuit Sentul",
-      "Cibinong"
+      "Sentul City", "Bogor", "Babakan Madang", "Sirkuit Sentul", "Cibinong"
     ]
+  };
+
+  // 2. 👇 INJEKSI BARU: Schema untuk Site Name Google
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Apartemen Sentul Tower",
+    "url": "https://apartemensentultower.com/"
   };
 
   return (
     <Helmet>
+      {/* Script untuk Bisnis */}
       <script type="application/ld+json">
-        {JSON.stringify(structuredData)}
+        {JSON.stringify(lodgingSchema)}
       </script>
+
+      {/* Script untuk Site Name */}
+      <script type="application/ld+json">
+        {JSON.stringify(websiteSchema)}
+      </script>
+
+      {/* 👇 Injeksi Meta Tag untuk memperkuat Brand di Google & Medsos */}
+      <meta property="og:site_name" content="Apartemen Sentul Tower" />
     </Helmet>
   );
 };
