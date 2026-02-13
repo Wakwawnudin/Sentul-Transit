@@ -342,14 +342,18 @@ export const realUnits = [
 // --- GENERATED FINAL DATA ---
 export const roomsData = realUnits.map((unit, index) => {
   const template = baseTemplates[unit.type];
+  // 👇 MODIFIKASI: Tambahkan index ke slug agar 100% UNIK untuk setiap unit
+  const uniqueId = index + 1;
+  const baseSlug = `${template.baseName.toLowerCase().replace(/\s+/g, '-')}-${unit.floor.toLowerCase().replace(/[\s.]+/g, '-')}`;
+  
   return {
     ...template,
-    id: index + 1,
+    id: uniqueId,
     name: `${template.baseName} - ${unit.floor.toUpperCase()}`, 
     floorLevel: unit.floor,
     images: unit.images,
     altPrefix: `Sewa Apartemen ${template.baseName} ${unit.floor} Sentul Tower - View Gunung & City`,
-    // Tambahkan slug untuk URL yang ramah SEO
-    slug: `${template.baseName.toLowerCase().replace(/\s+/g, '-')}-${unit.floor.toLowerCase().replace(/[\s.]+/g, '-')}`
+    // Format slug baru: 1-bedroom-lantai-10-1, 1-bedroom-lantai-10-2, dst.
+    slug: `${baseSlug}-${uniqueId}`
   };
 });
