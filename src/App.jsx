@@ -1,26 +1,31 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Analytics } from '@vercel/analytics/react';
-import { Routes, Route, Link, useParams, useLocation, useNavigate } from 'react-router-dom';
-// 👇 INJEKSI 1: Import Library SEO
+// 👇 UPDATE: Menambahkan useSearchParams
+import { Routes, Route, Link, useParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { 
   MapPin, Bed, Clock, Calendar, Shield, 
   Building, ChevronLeft, ChevronRight, CheckCircle2, 
   MessageCircle, Tv, Wind, Coffee, Utensils, Waves, Sparkles, 
   UtensilsCrossed, Key, Wallet, HelpCircle, ChevronDown, ChevronUp,
-  ShoppingBag, Palmtree, Maximize
+  ShoppingBag, Palmtree, Maximize, Search
 } from 'lucide-react';
 
 // Import data kamar
 import { roomsData } from './roomsData';
-// 👇 INJEKSI 2: Import Komponen Data Terstruktur (Schema.org)
 import SEOStructuredData from './SEOStructuredData';
 
 // --- KOMPONEN SCROLL TO TOP ---
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   useEffect(() => {
-    window.scrollTo(0, 0);
+    // Jangan scroll ke atas jika kita hanya ganti parameter page di URL (Home)
+    // Scroll hanya jika path berubah (misal dari Home ke Unit)
+    if (!pathname.includes('unit')) {
+        // Opsional: Anda bisa mengatur posisi scroll spesifik jika kembali ke home
+    } else {
+        window.scrollTo(0, 0);
+    }
   }, [pathname]);
   return null;
 };
@@ -135,13 +140,26 @@ const GoogleMapsLogo = () => (
 
 // --- HALAMAN UTAMA (HOME) ---
 const HomePage = () => {
+  // 👇 MODIFIKASI: Menggunakan URL Params untuk Pagination Persisten
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pageParam = searchParams.get('page');
+  const initialPage = pageParam ? parseInt(pageParam, 10) : 1;
+
   const [activeFilter, setActiveFilter] = useState('Semua');
   const [refCode, setRefCode] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 3; // UX ASLI: Tetap 3 unit per halaman
+  const [currentPage, setCurrentPage] = useState(initialPage); // Inisialisasi dari URL
+  const [jumpPageInput, setJumpPageInput] = useState(""); // State untuk input lompat halaman
+
+  const itemsPerPage = 3; 
 
   const waNumber = "6283830033717";
   const mapsLink = "https://share.google/490MII2W8A99899m7";
+
+  // Sinkronisasi URL saat currentPage berubah
+  useEffect(() => {
+    const currentParams = Object.fromEntries([...searchParams]);
+    setSearchParams({ ...currentParams, page: currentPage });
+  }, [currentPage, setSearchParams]);
 
   useEffect(() => {
     if (window.location.hostname.includes('apartsentul.cloud')) {
@@ -153,9 +171,12 @@ const HomePage = () => {
     if (ref) setRefCode(ref);
   }, []);
 
-  useEffect(() => {
+  // Reset ke halaman 1 jika filter berubah
+  const handleFilterChange = (filter) => {
+    setActiveFilter(filter);
     setCurrentPage(1);
-  }, [activeFilter]);
+    setJumpPageInput("");
+  };
 
   const handleWaClick = (messageType = "general") => {
     let text = "";
@@ -176,8 +197,20 @@ const HomePage = () => {
   const totalPages = Math.ceil(filteredRooms.length / itemsPerPage);
 
   const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-    window.scrollTo({ top: 500, behavior: 'smooth' });
+    const targetPage = Number(pageNumber);
+    if (targetPage >= 1 && targetPage <= totalPages) {
+        setCurrentPage(targetPage);
+        window.scrollTo({ top: 500, behavior: 'smooth' });
+    }
+  };
+
+  // Fungsi untuk handle submit form "Jump to"
+  const handleJumpSubmit = (e) => {
+    e.preventDefault();
+    if (jumpPageInput) {
+        handlePageChange(jumpPageInput);
+        setJumpPageInput("");
+    }
   };
 
   const nearbyData = [
@@ -206,10 +239,9 @@ const HomePage = () => {
     "https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/_apartemenharian%20_apartemenmurah%20_apartemenmewah%20_apartemenpenginapan%20Wa-__+62%C2%A0812_2042_3774_%20(2).jpg?tr=w-1200,q-85",
     "https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/_apartemenharian%20_apartemenmurah%20_apartemenmewah%20_apartemenpenginapan%20Wa-__+62%C2%A0812_2042_3774_.jpg?tr=w-1200,q-85"
   ];
-
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-32">
-      {/* 👇 INJEKSI 3: HELMET untuk Halaman Utama */}
+      {/* HELMET untuk Halaman Utama */}
       <Helmet>
         <title>Sewa Apartemen Sentul Tower | Transit 3 Jam 150rb & Fullday</title>
         <meta name="description" content="Daftar Harga Sewa Apartemen Sentul Tower: Transit 3 Jam (150rb), 6 Jam (200rb), Fullday (300rb). Fasilitas Netflix, Wifi, Water Heater. Booking via WA." />
@@ -274,7 +306,7 @@ const HomePage = () => {
           <h2 className="text-lg font-black text-slate-800 uppercase tracking-widest">KATALOG APARTEMEN</h2>
           <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1 md:pb-0">
             {['Semua', 'Studio', '1BR', '2BR'].map(f => (
-              <button key={f} onClick={() => setActiveFilter(f)} className={`text-[9px] font-black px-3.5 py-2 rounded-full border transition-all whitespace-nowrap ${activeFilter === f ? 'bg-slate-900 border-slate-900 text-[#D4AF37] shadow-lg' : 'bg-white border-slate-200 text-slate-500 hover:border-[#D4AF37] hover:text-[#D4AF37]'}`}>{f}</button>
+              <button key={f} onClick={() => handleFilterChange(f)} className={`text-[9px] font-black px-3.5 py-2 rounded-full border transition-all whitespace-nowrap ${activeFilter === f ? 'bg-slate-900 border-slate-900 text-[#D4AF37] shadow-lg' : 'bg-white border-slate-200 text-slate-500 hover:border-[#D4AF37] hover:text-[#D4AF37]'}`}>{f}</button>
             ))}
           </div>
         </div>
@@ -318,12 +350,14 @@ const HomePage = () => {
           ))}
         </div>
 
-        {/* PAGINATION CONTROLS - UX ASLI DIPERTAHANKAN */}
+        {/* 👇 FITUR PAGINATION BARU (PERSISTEN + LOMPAT HALAMAN) */}
         {totalPages > 1 && (
           <div className="mt-8 flex flex-col items-center gap-4">
              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                 Menampilkan {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, filteredRooms.length)} dari {filteredRooms.length} Unit
              </div>
+             
+             {/* Kontrol Standar */}
              <div className="flex items-center gap-2">
                 <button 
                   onClick={() => handlePageChange(currentPage - 1)} 
@@ -339,6 +373,7 @@ const HomePage = () => {
                       if (totalPages <= 5) {
                          pages = Array.from({ length: totalPages }, (_, i) => i + 1);
                       } else {
+                         // Logika tampilan "..."
                          if (currentPage <= 3) pages = [1, 2, 3, '...', totalPages];
                          else if (currentPage >= totalPages - 2) pages = [1, '...', totalPages - 2, totalPages - 1, totalPages];
                          else pages = [1, '...', currentPage, '...', totalPages];
@@ -370,6 +405,27 @@ const HomePage = () => {
                    <ChevronRight size={16} />
                 </button>
              </div>
+
+             {/* 👇 INPUT JUMP KE HALAMAN TERTENTU */}
+             <form onSubmit={handleJumpSubmit} className="flex items-center gap-2 bg-white p-1.5 pl-3 rounded-xl border border-slate-200 shadow-sm mt-1">
+                <span className="text-[10px] font-bold text-slate-400 uppercase">Lompat ke Hal:</span>
+                <input 
+                  type="number" 
+                  min="1" 
+                  max={totalPages}
+                  value={jumpPageInput}
+                  onChange={(e) => setJumpPageInput(e.target.value)}
+                  className="w-10 h-7 bg-slate-50 rounded-lg border border-slate-200 text-center text-xs font-bold focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-none"
+                  placeholder="#"
+                />
+                <button 
+                  type="submit"
+                  disabled={!jumpPageInput}
+                  className="bg-slate-900 text-[#D4AF37] h-7 px-3 rounded-lg text-[9px] font-black uppercase hover:bg-slate-800 transition-colors disabled:opacity-50"
+                >
+                  Go
+                </button>
+             </form>
           </div>
         )}
       </section>
@@ -469,7 +525,8 @@ const HomePage = () => {
     </div>
   );
 };
-// --- HALAMAN DETAIL KAMAR (MODIFIKASI: SWIPE + SEO, TAMPILAN TETAP) ---
+
+// --- HALAMAN DETAIL KAMAR (MODIFIKASI: Navigasi Balik Persisten) ---
 const UnitDetailPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -477,11 +534,9 @@ const UnitDetailPage = () => {
   const waNumber = "6283830033717";
   const [refCode, setRefCode] = useState("");
 
-  // ⚙️ INJEKSI FITUR SWIPE (Agar UX terasa seperti Aplikasi HP)
   const [touchStart, setTouchStart] = useState(null);
   const [pullY, setPullY] = useState(0);
 
-  // Logic 1: Cari data kamar
   useEffect(() => {
     const room = roomsData.find(r => r.slug === slug);
     if (room) {
@@ -491,14 +546,12 @@ const UnitDetailPage = () => {
     }
   }, [slug, navigate]);
 
-  // Logic 2: Referral
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     const ref = queryParams.get('ref');
     if (ref) setRefCode(ref);
   }, []);
 
-  // Logic 3: Handle Swipe Gesture
   const onTouchStart = (e) => {
     const scrollTop = e.currentTarget.scrollTop;
     if (scrollTop === 0) {
@@ -510,16 +563,17 @@ const UnitDetailPage = () => {
     if (!touchStart) return;
     const touchY = e.targetTouches[0].clientY;
     const diff = touchY - touchStart;
-    if (diff > 0) { // Hanya izinkan tarik ke bawah
+    if (diff > 0) { 
       setPullY(diff);
     }
   };
 
   const onTouchEnd = () => {
-    if (pullY > 150) { // Jika ditarik > 150px, tutup halaman
-      navigate('/');
+    if (pullY > 150) {
+      // 👇 MODIFIKASI: Gunakan -1 agar kembali ke history sebelumnya (menyimpan state pagination)
+      navigate(-1);
     } else {
-      setPullY(0); // Jika tidak, kembalikan ke posisi awal
+      setPullY(0); 
     }
     setTouchStart(null);
   };
@@ -527,7 +581,6 @@ const UnitDetailPage = () => {
   const handleWaClick = (messageType = "general", roomName = "") => {
     let text = "";
     const refTag = refCode ? `\n\n(Info by ${refCode})` : "";
-    
     switch (messageType) {
       case "booking": text = `Halo, saya tertarik dengan unit ${roomName} di Apartemen Sentul Tower.${refTag}`; break;
       default: text = `Halo, saya mau tanya sewa Apartemen Sentul Tower.${refTag}`;
@@ -539,7 +592,6 @@ const UnitDetailPage = () => {
 
   return (
     <>
-      {/* 👇 INJEKSI SEO: Agar Google mengerti detail kamar ini */}
       <SEOStructuredData room={selectedRoom} />
       <Helmet>
         <title>{selectedRoom.name} - Sewa Harian Sentul Tower</title>
@@ -547,38 +599,34 @@ const UnitDetailPage = () => {
       </Helmet>
 
       <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-50">
-        {/* Background Overlay (Memudar saat ditarik) */}
         <div 
           className="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity duration-300" 
           style={{ opacity: 1 - (pullY / 1000) }}
-          onClick={() => navigate('/')}
+          // 👇 MODIFIKASI: Navigasi mundur
+          onClick={() => navigate(-1)}
         ></div>
         
-        {/* Container Utama (Slide Up + Swipe Logic) */}
         <div 
           className="bg-white w-full max-w-md rounded-t-[40px] relative z-10 p-7 animate-slide-up overflow-y-auto max-h-[95vh] h-[95vh] no-scrollbar shadow-2xl transition-transform duration-200 ease-out"
-          style={{ transform: `translateY(${pullY}px)` }} // Bergerak mengikuti jari
+          style={{ transform: `translateY(${pullY}px)` }} 
           onTouchStart={onTouchStart}
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
         >
-          
-          {/* Indikator Garis Swipe (Visual Cue) */}
           <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6"></div>
 
-          {/* Header Navigasi */}
           <div className="flex items-center justify-between mb-6">
             <button 
-              onClick={() => navigate('/')}
+              // 👇 MODIFIKASI: Navigasi mundur
+              onClick={() => navigate(-1)}
               className="flex items-center gap-1.5 text-slate-900 font-black text-[11px] uppercase tracking-widest bg-slate-100 px-4 py-2.5 rounded-2xl active:scale-95 transition-all"
             >
               <ChevronLeft size={18} /> Kembali
             </button>
-            <div className="w-12 h-1.5 bg-transparent"></div> {/* Spacer */}
+            <div className="w-12 h-1.5 bg-transparent"></div> 
             <div className="w-20"></div> 
           </div>
           
-          {/* Slider Gambar */}
           <div className="relative mb-6">
              <ImageSlider images={selectedRoom.images} heightClass="h-72" roundedClass="rounded-[32px]" altPrefix={`Detail ${selectedRoom.name} - ${selectedRoom.floorLevel}`} />
              <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-xl shadow-sm z-20">
@@ -586,13 +634,10 @@ const UnitDetailPage = () => {
              </div>
           </div>
           
-          {/* Judul & Deskripsi */}
           <h1 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-2 tracking-tight">{selectedRoom.name}</h1>
           <p className="text-slate-500 text-sm mb-8 leading-relaxed font-medium">{selectedRoom.description}</p>
 
-          {/* Harga & Paket */}
           <div className="space-y-6 mb-8">
-            {/* Paket Transit */}
             <div className="bg-slate-50 p-5 rounded-[32px] border border-slate-100 shadow-inner">
               <h4 className="text-[10px] font-black text-slate-400 flex items-center gap-2 mb-5 uppercase tracking-[0.2em]"><Clock size={14} className="text-[#D4AF37]"/> Paket Harga Transit</h4>
               <div className="grid grid-cols-2 gap-3">
@@ -605,7 +650,6 @@ const UnitDetailPage = () => {
               </div>
             </div>
 
-            {/* Paket Fullday */}
             <div className="bg-[#D4AF37]/10 p-5 rounded-[32px] border border-[#D4AF37]/20 shadow-sm">
               <h4 className="text-[10px] font-black text-[#D4AF37] flex items-center gap-2 mb-5 uppercase tracking-[0.2em]"><Calendar size={14}/> Paket Harga Fullday</h4>
               <div className="space-y-3">
@@ -625,7 +669,6 @@ const UnitDetailPage = () => {
             </div>
           </div>
 
-          {/* Spesifikasi */}
           <div className="mb-10 px-1">
             <div className="flex items-center gap-3 mb-6">
               <div className="h-[2px] bg-slate-100 flex-1"></div>
@@ -644,13 +687,11 @@ const UnitDetailPage = () => {
             </div>
           </div>
 
-          {/* Tombol Booking */}
           <button onClick={() => handleWaClick("booking", selectedRoom.name)} className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-black py-5 rounded-[24px] flex items-center justify-center gap-3 shadow-2xl shadow-green-200 active:scale-95 transition-all uppercase tracking-widest text-xs">
             <MessageCircle size={20} /> Hubungi Lewat WhatsApp
           </button>
         </div>
 
-        {/* Styles Animation */}
         <style dangerouslySetInnerHTML={{ __html: `
           @keyframes slide-up { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
           @keyframes bounce-subtle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
@@ -666,15 +707,13 @@ const UnitDetailPage = () => {
   );
 };
 
-// --- APP UTAMA (MODIFIKASI: WRAPPED WITH HELMET PROVIDER) ---
+// --- APP UTAMA ---
 const App = () => {
   return (
-    // 👇 INI YANG MENCEGAH LAYAR PUTIH / BLANK
     <HelmetProvider>
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        {/* Route Dinamis untuk Detail Kamar */}
         <Route path="/unit/:slug" element={<UnitDetailPage />} />
       </Routes>
       <Analytics />
