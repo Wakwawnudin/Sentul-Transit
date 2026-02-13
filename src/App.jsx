@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Analytics } from '@vercel/analytics/react';
-// 👇 UPDATE: Menambahkan useSearchParams
 import { Routes, Route, Link, useParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { 
@@ -19,10 +18,8 @@ import SEOStructuredData from './SEOStructuredData';
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   useEffect(() => {
-    // Jangan scroll ke atas jika kita hanya ganti parameter page di URL (Home)
-    // Scroll hanya jika path berubah (misal dari Home ke Unit)
     if (!pathname.includes('unit')) {
-        // Opsional: Anda bisa mengatur posisi scroll spesifik jika kembali ke home
+        // Biarkan jika hanya pindah halaman/filter
     } else {
         window.scrollTo(0, 0);
     }
@@ -140,26 +137,29 @@ const GoogleMapsLogo = () => (
 
 // --- HALAMAN UTAMA (HOME) ---
 const HomePage = () => {
-  // 👇 MODIFIKASI: Menggunakan URL Params untuk Pagination Persisten
   const [searchParams, setSearchParams] = useSearchParams();
+  
+  // 👇 UPDATE: Ambil filter & page dari URL
   const pageParam = searchParams.get('page');
-  const initialPage = pageParam ? parseInt(pageParam, 10) : 1;
+  const filterParam = searchParams.get('filter');
 
-  const [activeFilter, setActiveFilter] = useState('Semua');
+  const initialPage = pageParam ? parseInt(pageParam, 10) : 1;
+  const initialFilter = filterParam ? filterParam : 'Semua';
+
+  const [activeFilter, setActiveFilter] = useState(initialFilter);
   const [refCode, setRefCode] = useState("");
-  const [currentPage, setCurrentPage] = useState(initialPage); // Inisialisasi dari URL
-  const [jumpPageInput, setJumpPageInput] = useState(""); // State untuk input lompat halaman
+  const [currentPage, setCurrentPage] = useState(initialPage); 
+  const [jumpPageInput, setJumpPageInput] = useState(""); 
 
   const itemsPerPage = 3; 
-
   const waNumber = "6283830033717";
   const mapsLink = "https://share.google/490MII2W8A99899m7";
 
-  // Sinkronisasi URL saat currentPage berubah
+  // 👇 UPDATE: Sinkronisasi URL saat currentPage ATAU activeFilter berubah
   useEffect(() => {
     const currentParams = Object.fromEntries([...searchParams]);
-    setSearchParams({ ...currentParams, page: currentPage });
-  }, [currentPage, setSearchParams]);
+    setSearchParams({ ...currentParams, filter: activeFilter, page: currentPage });
+  }, [currentPage, activeFilter, setSearchParams]);
 
   useEffect(() => {
     if (window.location.hostname.includes('apartsentul.cloud')) {
@@ -204,7 +204,6 @@ const HomePage = () => {
     }
   };
 
-  // Fungsi untuk handle submit form "Jump to"
   const handleJumpSubmit = (e) => {
     e.preventDefault();
     if (jumpPageInput) {
@@ -239,15 +238,14 @@ const HomePage = () => {
     "https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/_apartemenharian%20_apartemenmurah%20_apartemenmewah%20_apartemenpenginapan%20Wa-__+62%C2%A0812_2042_3774_%20(2).jpg?tr=w-1200,q-85",
     "https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/_apartemenharian%20_apartemenmurah%20_apartemenmewah%20_apartemenpenginapan%20Wa-__+62%C2%A0812_2042_3774_.jpg?tr=w-1200,q-85"
   ];
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-32">
-      {/* HELMET untuk Halaman Utama */}
       <Helmet>
         <title>Sewa Apartemen Sentul Tower | Transit 3 Jam 150rb & Fullday</title>
         <meta name="description" content="Daftar Harga Sewa Apartemen Sentul Tower: Transit 3 Jam (150rb), 6 Jam (200rb), Fullday (300rb). Fasilitas Netflix, Wifi, Water Heater. Booking via WA." />
       </Helmet>
 
-      {/* Navbar Transparan */}
       <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex justify-between items-center transition-all duration-300 bg-gradient-to-b from-black/80 to-transparent">
         <div className="flex items-center gap-3">
           <img 
@@ -270,7 +268,6 @@ const HomePage = () => {
         </div>
       </nav>
 
-      {/* Hero Header */}
       <header className="relative h-[600px] w-full overflow-hidden">
         <div className="absolute inset-0 w-full h-full">
            <ImageSlider images={heroImages} heightClass="h-full" roundedClass="rounded-none" altPrefix="Fasilitas & View Apartemen Sentul Tower" />
@@ -284,7 +281,6 @@ const HomePage = () => {
         </div>
       </header>
 
-      {/* Ringkasan Harga */}
       <section className="px-4 -mt-6 relative z-10" aria-label="Ringkasan Harga">
         <div className="bg-white rounded-[24px] shadow-2xl shadow-slate-200/50 border border-slate-100 p-4 grid grid-cols-2 gap-3">
           <div className="bg-slate-50 p-4 rounded-2xl flex flex-col items-center border border-slate-100">
@@ -300,7 +296,6 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Katalog */}
       <section className="px-4 py-8" aria-label="Daftar Unit Apartemen">
         <div className="flex flex-col gap-4 mb-6 md:flex-row md:justify-between md:items-center">
           <h2 className="text-lg font-black text-slate-800 uppercase tracking-widest">KATALOG APARTEMEN</h2>
@@ -350,14 +345,12 @@ const HomePage = () => {
           ))}
         </div>
 
-        {/* 👇 FITUR PAGINATION BARU (PERSISTEN + LOMPAT HALAMAN) */}
         {totalPages > 1 && (
           <div className="mt-8 flex flex-col items-center gap-4">
              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                 Menampilkan {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, filteredRooms.length)} dari {filteredRooms.length} Unit
              </div>
              
-             {/* Kontrol Standar */}
              <div className="flex items-center gap-2">
                 <button 
                   onClick={() => handlePageChange(currentPage - 1)} 
@@ -373,7 +366,6 @@ const HomePage = () => {
                       if (totalPages <= 5) {
                          pages = Array.from({ length: totalPages }, (_, i) => i + 1);
                       } else {
-                         // Logika tampilan "..."
                          if (currentPage <= 3) pages = [1, 2, 3, '...', totalPages];
                          else if (currentPage >= totalPages - 2) pages = [1, '...', totalPages - 2, totalPages - 1, totalPages];
                          else pages = [1, '...', currentPage, '...', totalPages];
@@ -406,7 +398,6 @@ const HomePage = () => {
                 </button>
              </div>
 
-             {/* 👇 INPUT JUMP KE HALAMAN TERTENTU */}
              <form onSubmit={handleJumpSubmit} className="flex items-center gap-2 bg-white p-1.5 pl-3 rounded-xl border border-slate-200 shadow-sm mt-1">
                 <span className="text-[10px] font-bold text-slate-400 uppercase">Lompat ke Hal:</span>
                 <input 
@@ -430,10 +421,8 @@ const HomePage = () => {
         )}
       </section>
 
-      {/* MEGA FOOTER */}
       <footer className="bg-slate-900 text-white p-6 mx-4 rounded-[40px] mb-8 shadow-2xl relative overflow-hidden">
         <div className="relative z-10">
-          {/* FAQ SECTION */}
           <div className="mb-10 pb-8 border-b border-slate-800/50">
             <div className="flex items-center gap-2 mb-4">
               <HelpCircle className="text-[#D4AF37]" size={16} />
@@ -450,7 +439,6 @@ const HomePage = () => {
               </div>
             </div>
           </div>
-          {/* MAIN FOOTER INFO */}
           <div className="text-center mb-8">
              <h3 className="text-2xl font-black mb-2 uppercase tracking-tighter italic">Apartemen Sentul Tower</h3>
              <p className="text-slate-500 text-[10px] mb-8 italic">"Privasi & Kenyamanan Prioritas Kami"</p>
@@ -509,7 +497,6 @@ const HomePage = () => {
         <div className="absolute top-[-20%] right-[-10%] w-48 h-48 bg-[#D4AF37]/10 rounded-full blur-3xl"></div>
       </footer>
 
-      {/* FAB (Floating Action Button) */}
       <div className="fixed bottom-6 left-0 right-0 px-6 z-40">
         <div onClick={() => handleWaClick("general")} className="bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-2xl rounded-[24px] p-5 flex justify-between items-center max-w-sm mx-auto animate-bounce-subtle cursor-pointer active:scale-95 transition-transform">
           <div className="flex items-center gap-4">
@@ -525,7 +512,6 @@ const HomePage = () => {
     </div>
   );
 };
-
 // --- HALAMAN DETAIL KAMAR (UPDATE: FIX LINK LUAR & SMART BACK) ---
 const UnitDetailPage = () => {
   const { slug } = useParams();
@@ -555,21 +541,25 @@ const UnitDetailPage = () => {
     if (ref) setRefCode(ref);
   }, []);
 
-  // 👇 LOGIKA BARU: HANDLE BACK BUTTON (CERDAS)
+  // 👇 LOGIKA BARU: HANDLE BACK BUTTON (CERDAS + FILTER AWARE)
   const handleBack = () => {
-    // Cek apakah ada history state (artinya datang dari dalam web)
-    // window.history.state.idx > 0 biasanya menandakan ada tumpukan history
+    // Cek apakah ada history state (artinya datang dari dalam web, filter aman)
     if (window.history.state && window.history.state.idx > 0) {
       navigate(-1);
     } else {
-      // Jika tidak ada history (Datang dari Link WA/Share), kita hitung dia harus balik ke page berapa
-      const roomIndex = roomsData.findIndex(r => r.slug === slug);
-      if (roomIndex !== -1) {
-        // Hitung halaman: (Index + 1) dibagi 3 (itemsPerPage), dibulatkan ke atas
-        const targetPage = Math.ceil((roomIndex + 1) / 3); 
-        navigate(`/?page=${targetPage}`, { replace: true });
+      // Jika tidak ada history (Datang dari Link Luar WA/IG)
+      if (selectedRoom) {
+        // Cari unit ini ada di urutan ke berapa pada Kategori filternya
+        const filteredRooms = roomsData.filter(r => r.type === selectedRoom.type);
+        const roomIndex = filteredRooms.findIndex(r => r.slug === slug);
+        
+        // Hitung target halaman (3 unit per halaman)
+        const targetPage = roomIndex !== -1 ? Math.ceil((roomIndex + 1) / 3) : 1; 
+        
+        // Arahkan ke home lengkap dengan Filter dan Halamannya!
+        navigate(`/?filter=${selectedRoom.type}&page=${targetPage}`, { replace: true });
       } else {
-        // Fallback ke halaman 1
+        // Fallback
         navigate('/', { replace: true });
       }
     }
@@ -594,7 +584,7 @@ const UnitDetailPage = () => {
 
   const onTouchEnd = () => {
     if (pullY > 150) {
-      handleBack(); // Gunakan fungsi handleBack yang baru
+      handleBack(); 
     } else {
       setPullY(0); 
     }
@@ -627,7 +617,7 @@ const UnitDetailPage = () => {
         <div 
           className="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity duration-300" 
           style={{ opacity: 1 - (pullY / 1000) }}
-          onClick={handleBack} // Gunakan fungsi handleBack yang baru
+          onClick={handleBack} 
         ></div>
         
         {/* Container Utama */}
@@ -644,7 +634,7 @@ const UnitDetailPage = () => {
           {/* Header Navigasi */}
           <div className="flex items-center justify-between mb-6">
             <button 
-              onClick={handleBack} // Gunakan fungsi handleBack yang baru
+              onClick={handleBack} 
               className="flex items-center gap-1.5 text-slate-900 font-black text-[11px] uppercase tracking-widest bg-slate-100 px-4 py-2.5 rounded-2xl active:scale-95 transition-all"
             >
               <ChevronLeft size={18} /> Kembali
@@ -732,7 +722,6 @@ const UnitDetailPage = () => {
     </>
   );
 };
-
 
 // --- APP UTAMA ---
 const App = () => {
