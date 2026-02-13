@@ -285,7 +285,7 @@ const HomePage = () => {
         <div className="absolute inset-0 w-full h-full">
            <ImageSlider images={heroImages} heightClass="h-full" roundedClass="rounded-none" altPrefix="Fasilitas & View Apartemen Sentul Tower" />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent flex flex-col justify-end p-6 pb-12 pointer-events-none z-20">
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent flex flex-col justify-end p-6 pb-20 pointer-events-none z-20">
           <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-md border border-white/10 text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-full w-fit mb-3 shadow-lg">
             <MapPin size={10} /> DEKAT AEON MALL SENTUL
           </div>
