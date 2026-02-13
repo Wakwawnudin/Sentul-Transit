@@ -526,7 +526,7 @@ const HomePage = () => {
   );
 };
 
-// --- HALAMAN DETAIL KAMAR (MODIFIKASI: Navigasi Balik Persisten) ---
+// --- HALAMAN DETAIL KAMAR (UPDATE: FIX LINK LUAR & SMART BACK) ---
 const UnitDetailPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -537,21 +537,45 @@ const UnitDetailPage = () => {
   const [touchStart, setTouchStart] = useState(null);
   const [pullY, setPullY] = useState(0);
 
+  // Logic 1: Cari data kamar
   useEffect(() => {
     const room = roomsData.find(r => r.slug === slug);
     if (room) {
       setSelectedRoom(room);
     } else {
-      navigate('/');
+      // Jika slug salah, lempar ke home
+      navigate('/', { replace: true });
     }
   }, [slug, navigate]);
 
+  // Logic 2: Ambil Ref Code
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     const ref = queryParams.get('ref');
     if (ref) setRefCode(ref);
   }, []);
 
+  // 👇 LOGIKA BARU: HANDLE BACK BUTTON (CERDAS)
+  const handleBack = () => {
+    // Cek apakah ada history state (artinya datang dari dalam web)
+    // window.history.state.idx > 0 biasanya menandakan ada tumpukan history
+    if (window.history.state && window.history.state.idx > 0) {
+      navigate(-1);
+    } else {
+      // Jika tidak ada history (Datang dari Link WA/Share), kita hitung dia harus balik ke page berapa
+      const roomIndex = roomsData.findIndex(r => r.slug === slug);
+      if (roomIndex !== -1) {
+        // Hitung halaman: (Index + 1) dibagi 3 (itemsPerPage), dibulatkan ke atas
+        const targetPage = Math.ceil((roomIndex + 1) / 3); 
+        navigate(`/?page=${targetPage}`, { replace: true });
+      } else {
+        // Fallback ke halaman 1
+        navigate('/', { replace: true });
+      }
+    }
+  };
+
+  // Logic 3: Handle Swipe Gesture
   const onTouchStart = (e) => {
     const scrollTop = e.currentTarget.scrollTop;
     if (scrollTop === 0) {
@@ -570,8 +594,7 @@ const UnitDetailPage = () => {
 
   const onTouchEnd = () => {
     if (pullY > 150) {
-      // 👇 MODIFIKASI: Gunakan -1 agar kembali ke history sebelumnya (menyimpan state pagination)
-      navigate(-1);
+      handleBack(); // Gunakan fungsi handleBack yang baru
     } else {
       setPullY(0); 
     }
@@ -581,6 +604,7 @@ const UnitDetailPage = () => {
   const handleWaClick = (messageType = "general", roomName = "") => {
     let text = "";
     const refTag = refCode ? `\n\n(Info by ${refCode})` : "";
+    
     switch (messageType) {
       case "booking": text = `Halo, saya tertarik dengan unit ${roomName} di Apartemen Sentul Tower.${refTag}`; break;
       default: text = `Halo, saya mau tanya sewa Apartemen Sentul Tower.${refTag}`;
@@ -599,13 +623,14 @@ const UnitDetailPage = () => {
       </Helmet>
 
       <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-50">
+        {/* Background Overlay */}
         <div 
           className="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity duration-300" 
           style={{ opacity: 1 - (pullY / 1000) }}
-          // 👇 MODIFIKASI: Navigasi mundur
-          onClick={() => navigate(-1)}
+          onClick={handleBack} // Gunakan fungsi handleBack yang baru
         ></div>
         
+        {/* Container Utama */}
         <div 
           className="bg-white w-full max-w-md rounded-t-[40px] relative z-10 p-7 animate-slide-up overflow-y-auto max-h-[95vh] h-[95vh] no-scrollbar shadow-2xl transition-transform duration-200 ease-out"
           style={{ transform: `translateY(${pullY}px)` }} 
@@ -613,12 +638,13 @@ const UnitDetailPage = () => {
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
         >
+          
           <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6"></div>
 
+          {/* Header Navigasi */}
           <div className="flex items-center justify-between mb-6">
             <button 
-              // 👇 MODIFIKASI: Navigasi mundur
-              onClick={() => navigate(-1)}
+              onClick={handleBack} // Gunakan fungsi handleBack yang baru
               className="flex items-center gap-1.5 text-slate-900 font-black text-[11px] uppercase tracking-widest bg-slate-100 px-4 py-2.5 rounded-2xl active:scale-95 transition-all"
             >
               <ChevronLeft size={18} /> Kembali
@@ -706,6 +732,7 @@ const UnitDetailPage = () => {
     </>
   );
 };
+
 
 // --- APP UTAMA ---
 const App = () => {
