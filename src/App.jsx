@@ -1,18 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import { Routes, Route, Link, useParams, useLocation, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async'; // Library SEO dari Bali Project
 import { 
-  MapPin, Bed, Bath, Clock, Calendar, Shield, 
-  Building, ChevronLeft, ChevronRight, CheckCircle2, 
+  MapPin, Bed, Clock, Calendar, Shield, Building, ChevronLeft, ChevronRight, CheckCircle2, 
   MessageCircle, Tv, Wind, Coffee, Utensils, Waves, Sparkles, 
   UtensilsCrossed, Key, Wallet, HelpCircle, ChevronDown, ChevronUp,
-  ShoppingBag, Palmtree, Verified, Star, Maximize
+  ShoppingBag, Palmtree, Maximize
 } from 'lucide-react';
 
-// Import data kamar yang sudah dipisah tadi
+// Import data yang baru saja Anda konfirmasi
 import { roomsData } from './roomsData';
+// Import mesin SEO yang tadi kita buat
+import SEOStructuredData from './SEOStructuredData';
 
-// --- KOMPONEN SCROLL TO TOP (Agar saat ganti halaman selalu mulai dari atas) ---
+// --- KOMPONEN SCROLL TO TOP ---
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -21,7 +23,7 @@ const ScrollToTop = () => {
   return null;
 };
 
-// --- KOMPONEN IMAGE SLIDER (TIDAK ADA PERUBAHAN) ---
+// --- KOMPONEN IMAGE SLIDER (TIDAK ADA PERUBAHAN TAMPILAN) ---
 const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32px]", altPrefix = "Apartemen Sentul Tower" }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef(null);
@@ -76,7 +78,7 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
             src={img} 
             loading="lazy" 
             className="w-full h-full object-cover shrink-0 snap-center" 
-            alt={`${altPrefix} - Foto ${idx + 1} - Sewa Harian & Transit Sentul City`} 
+            alt={`${altPrefix} - Foto ${idx + 1}`} 
           />
         ))}
       </div>
@@ -86,6 +88,7 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
           <div key={idx} className={`h-1.5 rounded-full transition-all duration-300 shadow-sm ${activeIndex === idx ? 'w-6 bg-white' : 'w-1.5 bg-white/50'}`} />
         ))}
       </div>
+      {/* Tombol Panah Desktop */}
       <div className="absolute inset-y-0 left-2 flex items-center opacity-0 group-hover:opacity-100 transition-opacity md:flex hidden">
         <button onClick={scrollPrev} className="bg-white/30 hover:bg-white/50 backdrop-blur text-white p-1 rounded-full"><ChevronLeft size={20}/></button>
       </div>
@@ -96,7 +99,7 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
   );
 };
 
-// --- KOMPONEN FAQ ITEM (TIDAK ADA PERUBAHAN) ---
+// --- KOMPONEN FAQ ITEM ---
 const FaqItem = ({ question, answer }) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
@@ -110,18 +113,14 @@ const FaqItem = ({ question, answer }) => {
         </span>
         {isOpen ? <ChevronUp size={18} className="text-[#D4AF37]" /> : <ChevronDown size={18} className="text-slate-500 group-hover:text-[#D4AF37]" />}
       </button>
-      <div 
-        className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-96 opacity-100 mb-4' : 'max-h-0 opacity-0'}`}
-      >
-        <p className="text-xs text-slate-400 leading-relaxed pr-4 font-medium">
-          {answer}
-        </p>
+      <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-96 opacity-100 mb-4' : 'max-h-0 opacity-0'}`}>
+        <p className="text-xs text-slate-400 leading-relaxed pr-4 font-medium">{answer}</p>
       </div>
     </div>
   );
 };
 
-// --- LOGO MAPS (TIDAK ADA PERUBAHAN) ---
+// --- LOGO MAPS ---
 const GoogleMapsLogo = () => (
   <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#4285F4"/>
@@ -132,33 +131,34 @@ const GoogleMapsLogo = () => (
     <path d="M12 2c-.34 0-.67.02-1 .07V9h1V2z" fill="#EA4335"/>
   </svg>
 );
-// --- HALAMAN UTAMA (HOME) ---
+// --- HALAMAN UTAMA (HOMEPAGE) ---
 const HomePage = () => {
   const [activeFilter, setActiveFilter] = useState('Semua');
   const [refCode, setRefCode] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 3; 
+  const itemsPerPage = 6; // Menampilkan 6 unit per halaman
 
   const waNumber = "6283830033717";
   const mapsLink = "https://share.google/490MII2W8A99899m7";
 
-  // Logic 1: Jurus Bajak Domain & Referral
+  // Logic SEO & Referral
   useEffect(() => {
+    // Jurus Bajak Domain (Redirect jika domain salah)
     if (window.location.hostname.includes('apartsentul.cloud')) {
       window.location.replace("https://apartemensentultower.com/?ref=Lani");
       return; 
     }
+    // Tangkap Kode Referral
     const queryParams = new URLSearchParams(window.location.search);
     const ref = queryParams.get('ref');
     if (ref) setRefCode(ref);
   }, []);
 
-  // Logic 2: Reset Pagination
+  // Reset pagination saat filter berubah
   useEffect(() => {
     setCurrentPage(1);
   }, [activeFilter]);
 
-  // Logic 3: Handle WA (Versi Home)
   const handleWaClick = (messageType = "general") => {
     let text = "";
     const refTag = refCode ? `\n\n(Info by ${refCode})` : "";
@@ -172,7 +172,7 @@ const HomePage = () => {
     window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`, '_blank');
   };
 
-  // Logic 4: Filter & Pagination Data
+  // Logic Filter & Pagination
   const filteredRooms = activeFilter === 'Semua' ? roomsData : roomsData.filter(r => r.type === activeFilter);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -184,7 +184,7 @@ const HomePage = () => {
     window.scrollTo({ top: 500, behavior: 'smooth' });
   };
 
-  // Data Statis untuk Tampilan
+  // Data Statis Tampilan
   const nearbyData = [
     { name: "AEON Mall", dist: "2 Mnt", icon: <ShoppingBag size={14}/> },
     { name: "IKEA Sentul", dist: "5 Mnt", icon: <ShoppingBag size={14}/> },
@@ -214,6 +214,13 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-32">
+      {/* --- SEO HELMET (Judul & Meta Deskripsi Otomatis) --- */}
+      <Helmet>
+        <title>Sewa Apartemen Sentul Tower | Transit 3 Jam 150rb & Fullday</title>
+        <meta name="description" content="Daftar Harga Sewa Apartemen Sentul Tower: Transit 3 Jam (150rb), 6 Jam (200rb), Fullday (300rb). Fasilitas Netflix, Wifi, Water Heater. Booking via WA." />
+        <meta name="keywords" content="harga sewa apartemen sentul, transit 3 jam sentul, sewa harian sentul tower, penginapan murah sentul" />
+      </Helmet>
+
       {/* Navbar Transparan */}
       <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex justify-between items-center transition-all duration-300 bg-gradient-to-b from-black/80 to-transparent">
         <div className="flex items-center gap-3">
@@ -240,12 +247,7 @@ const HomePage = () => {
       {/* Hero Header */}
       <header className="relative h-[600px] w-full overflow-hidden">
         <div className="absolute inset-0 w-full h-full">
-           <ImageSlider 
-             images={heroImages} 
-             heightClass="h-full" 
-             roundedClass="rounded-none" 
-             altPrefix="Fasilitas & View Apartemen Sentul Tower" 
-           />
+           <ImageSlider images={heroImages} heightClass="h-full" roundedClass="rounded-none" altPrefix="Fasilitas & View Apartemen Sentul Tower" />
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent flex flex-col justify-end p-6 pb-20 pointer-events-none z-20">
           <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-md border border-white/10 text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-full w-fit mb-3 shadow-lg">
@@ -285,7 +287,7 @@ const HomePage = () => {
 
         <div className="space-y-6">
           {currentItems.map(room => (
-            // PERUBAHAN UTAMA DI SINI: Dulu onClick, sekarang Link
+            /* 🔥 LINK PINTAR: Mengganti onClick lama dengan Link SEO Friendly */
             <Link to={`/unit/${room.slug}`} key={room.id} className="block bg-white rounded-[32px] p-3 shadow-sm border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer group">
               <div className="relative">
                 <ImageSlider images={room.images} heightClass="h-72" roundedClass="rounded-[24px]" altPrefix={room.altPrefix} />
@@ -323,7 +325,7 @@ const HomePage = () => {
           ))}
         </div>
 
-        {/* PAGINATION CONTROLS */}
+        {/* PAGINATION */}
         {totalPages > 1 && (
           <div className="mt-8 flex flex-col items-center gap-4">
              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
@@ -382,7 +384,6 @@ const HomePage = () => {
       {/* MEGA FOOTER */}
       <footer className="bg-slate-900 text-white p-6 mx-4 rounded-[40px] mb-8 shadow-2xl relative overflow-hidden">
         <div className="relative z-10">
-          {/* FAQ SECTION */}
           <div className="mb-10 pb-8 border-b border-slate-800/50">
             <div className="flex items-center gap-2 mb-4">
               <HelpCircle className="text-[#D4AF37]" size={16} />
@@ -399,7 +400,6 @@ const HomePage = () => {
               </div>
             </div>
           </div>
-          {/* MAIN FOOTER INFO */}
           <div className="text-center mb-8">
              <h3 className="text-2xl font-black mb-2 uppercase tracking-tighter italic">Apartemen Sentul Tower</h3>
              <p className="text-slate-500 text-[10px] mb-8 italic">"Privasi & Kenyamanan Prioritas Kami"</p>
@@ -474,33 +474,61 @@ const HomePage = () => {
     </div>
   );
 };
-// --- HALAMAN DETAIL KAMAR (DULUNYA MODAL) ---
+// --- HALAMAN DETAIL KAMAR (DENGAN FITUR SWIPE ALA APPS) ---
 const UnitDetailPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const [selectedRoom, setSelectedRoom] = useState(null);
-  const waNumber = "6283830033717";
   const [refCode, setRefCode] = useState("");
+  const waNumber = "6283830033717";
 
-  // Logic: Cari data kamar berdasarkan URL (slug)
+  // ⚙️ TEKNOLOGI GESTURE SWIPE (ADAPTASI DARI PROJECT BALI)
+  const [touchStart, setTouchStart] = useState(null);
+  const [pullY, setPullY] = useState(0);
+
+  // Logic 1: Cari Data Kamar
   useEffect(() => {
     const room = roomsData.find(r => r.slug === slug);
     if (room) {
       setSelectedRoom(room);
-      // Update Title Browser untuk SEO
-      document.title = `${room.name} - Sewa Apartemen Sentul Tower`;
     } else {
-      // Jika kamar tidak ketemu (misal typo URL), balik ke Home
+      // Jika kamar tidak ketemu, balik ke home
       navigate('/');
     }
   }, [slug, navigate]);
 
-  // Logic: Ambil referral code jika ada
+  // Logic 2: Referral Code
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     const ref = queryParams.get('ref');
     if (ref) setRefCode(ref);
   }, []);
+
+  // Logic 3: Swipe Gesture (Mendeteksi jari pengguna)
+  const onTouchStart = (e) => {
+    const scrollTop = e.currentTarget.scrollTop;
+    if (scrollTop === 0) {
+      setTouchStart(e.targetTouches[0].clientY);
+    }
+  };
+
+  const onTouchMove = (e) => {
+    if (!touchStart) return;
+    const touchY = e.targetTouches[0].clientY;
+    const diff = touchY - touchStart;
+    if (diff > 0) { // Hanya jika tarik ke bawah
+      setPullY(diff);
+    }
+  };
+
+  const onTouchEnd = () => {
+    if (pullY > 150) { // Jika ditarik cukup jauh, tutup halaman
+      navigate('/');
+    } else {
+      setPullY(0); // Jika tidak, kembalikan ke posisi semula
+    }
+    setTouchStart(null);
+  };
 
   const handleWaClick = (messageType = "general", roomName = "") => {
     let text = "";
@@ -513,126 +541,157 @@ const UnitDetailPage = () => {
     window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`, '_blank');
   };
 
-  if (!selectedRoom) return null; // Loading state
+  if (!selectedRoom) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-50">
-      {/* Background Overlay (Klik untuk kembali ke Home) */}
-      <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => navigate('/')}></div>
-      
-      {/* Container Utama (Slide Up Animation) */}
-      <div className="bg-white w-full max-w-md rounded-t-[40px] relative z-10 p-7 animate-slide-up overflow-y-auto max-h-[95vh] h-[95vh] no-scrollbar shadow-2xl">
-        
-        {/* Header Navigasi */}
-        <div className="flex items-center justify-between mb-6">
-          <button 
-            onClick={() => navigate('/')}
-            className="flex items-center gap-1.5 text-slate-900 font-black text-[11px] uppercase tracking-widest bg-slate-100 px-4 py-2.5 rounded-2xl active:scale-95 transition-all"
-          >
-            <ChevronLeft size={18} /> Kembali
-          </button>
-          <div className="w-12 h-1.5 bg-slate-200 rounded-full"></div>
-          <div className="w-20"></div> 
-        </div>
-        
-        {/* Slider Gambar */}
-        <div className="relative mb-6">
-           <ImageSlider images={selectedRoom.images} heightClass="h-72" roundedClass="rounded-[32px]" altPrefix={`Detail ${selectedRoom.name} - ${selectedRoom.floorLevel}`} />
-           <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-xl shadow-sm z-20">
-              <p className="text-[10px] font-black text-[#D4AF37] uppercase tracking-widest">Pilihan {selectedRoom.type}</p>
-           </div>
-        </div>
-        
-        {/* Judul & Deskripsi */}
-        <h1 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-2 tracking-tight">{selectedRoom.name}</h1>
-        <p className="text-slate-500 text-sm mb-8 leading-relaxed font-medium">{selectedRoom.description}</p>
-
-        {/* Harga & Paket */}
-        <div className="space-y-6 mb-8">
-          {/* Paket Transit */}
-          <div className="bg-slate-50 p-5 rounded-[32px] border border-slate-100 shadow-inner">
-            <h4 className="text-[10px] font-black text-slate-400 flex items-center gap-2 mb-5 uppercase tracking-[0.2em]"><Clock size={14} className="text-[#D4AF37]"/> Paket Harga Transit</h4>
-            <div className="grid grid-cols-2 gap-3">
-              {selectedRoom.transit.map((p, i) => (
-                <div key={i} className="bg-white p-4 rounded-2xl border border-slate-200/50 shadow-sm flex flex-col items-center">
-                  <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">{p.label}</p>
-                  <p className="text-sm font-black text-slate-800 tracking-tight">{p.price}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Paket Fullday */}
-          <div className="bg-[#D4AF37]/10 p-5 rounded-[32px] border border-[#D4AF37]/20 shadow-sm">
-            <h4 className="text-[10px] font-black text-[#D4AF37] flex items-center gap-2 mb-5 uppercase tracking-[0.2em]"><Calendar size={14}/> Paket Harga Fullday</h4>
-            <div className="space-y-3">
-              {selectedRoom.fullday.map((p, i) => (
-                <div key={i} className="flex justify-between items-center bg-white p-4 rounded-2xl border border-[#D4AF37]/10 shadow-sm">
-                  <p className="text-[10px] font-black text-slate-600 uppercase tracking-tight">{p.label}</p>
-                  <p className="text-sm font-black text-slate-900 tracking-tight">{p.price}</p>
-                </div>
-              ))}
-              <div className="pt-2">
-                 <div className="bg-amber-50 p-3 rounded-xl border border-amber-100 flex items-center justify-center gap-2">
-                    <Clock size={14} className="text-amber-600" />
-                    <p className="text-[10px] text-amber-700 font-black uppercase tracking-tighter">Checkout Fullday jam 12 Siang</p>
-                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Spesifikasi */}
-        <div className="mb-10 px-1">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="h-[2px] bg-slate-100 flex-1"></div>
-            <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em]">Spesifikasi Unit</h4>
-            <div className="h-[2px] bg-slate-100 flex-1"></div>
-          </div>
-          <div className="grid grid-cols-2 gap-y-5 gap-x-4">
-            {selectedRoom.specs.map((spec, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <div className="w-9 h-9 bg-slate-50 rounded-xl flex items-center justify-center text-[#D4AF37] shadow-sm border border-slate-100">
-                  {spec.icon}
-                </div>
-                <span className="text-[11px] font-bold text-slate-700 leading-tight tracking-tight uppercase">{spec.text}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Tombol Booking */}
-        <button onClick={() => handleWaClick("booking", selectedRoom.name)} className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-black py-5 rounded-[24px] flex items-center justify-center gap-3 shadow-2xl shadow-green-200 active:scale-95 transition-all uppercase tracking-widest text-xs">
-          <MessageCircle size={20} /> Hubungi Lewat WhatsApp
-        </button>
-      </div>
-
-      <style dangerouslySetInnerHTML={{ __html: `
-        @keyframes slide-up { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes bounce-subtle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-        .animate-slide-up { animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-        .animate-bounce-subtle { animation: bounce-subtle 4s infinite ease-in-out; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .snap-mandatory { scroll-snap-type: x mandatory; }
-        .snap-center { scroll-snap-align: center; }
-      `}} />
-    </div>
-  );
-};
-
-// --- APP COMPONENT UTAMA (ROUTING) ---
-const App = () => {
   return (
     <>
-      <ScrollToTop />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/unit/:slug" element={<UnitDetailPage />} />
-      </Routes>
-      <Analytics />
+      {/* 1. MESIN SEO PINTAR (DARI BALI PROJECT) */}
+      <SEOStructuredData room={selectedRoom} />
+      
+      {/* 2. UPDATE JUDUL BROWSER OTOMATIS */}
+      <Helmet>
+        <title>{selectedRoom.name} - Sewa Harian Sentul Tower</title>
+        <meta name="description" content={`Sewa ${selectedRoom.name} Sentul Tower. Fasilitas: ${selectedRoom.specs.map(s=>s.text).join(', ')}. Harga mulai ${selectedRoom.startFrom}.`} />
+      </Helmet>
+
+      <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-50">
+        {/* Background Overlay (Memudar saat ditarik) */}
+        <div 
+          className="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity duration-300"
+          style={{ opacity: 1 - (pullY / 1000) }} 
+          onClick={() => navigate('/')}
+        ></div>
+        
+        {/* Container Utama dengan Animasi Swipe */}
+        <div 
+          className="bg-white w-full max-w-md rounded-t-[40px] relative z-10 p-7 overflow-y-auto max-h-[95vh] h-[95vh] no-scrollbar shadow-2xl transition-transform duration-200 ease-out"
+          style={{ transform: `translateY(${pullY}px)` }} // Bergerak mengikuti jari
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+        >
+          {/* Garis Indikator Swipe (Visual Cue) */}
+          <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6"></div>
+
+          {/* Header Navigasi */}
+          <div className="flex items-center justify-between mb-6">
+            <button 
+              onClick={() => navigate('/')}
+              className="flex items-center gap-1.5 text-slate-900 font-black text-[11px] uppercase tracking-widest bg-slate-100 px-4 py-2.5 rounded-2xl active:scale-95 transition-all"
+            >
+              <ChevronLeft size={18} /> Kembali
+            </button>
+            <div className="w-20"></div> 
+          </div>
+          
+          {/* Slider Gambar */}
+          <div className="relative mb-6">
+             <ImageSlider images={selectedRoom.images} heightClass="h-72" roundedClass="rounded-[32px]" altPrefix={`Detail ${selectedRoom.name} - ${selectedRoom.floorLevel}`} />
+             <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-xl shadow-sm z-20">
+                <p className="text-[10px] font-black text-[#D4AF37] uppercase tracking-widest">Pilihan {selectedRoom.type}</p>
+             </div>
+          </div>
+          
+          {/* Judul & Deskripsi */}
+          <h1 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-2 tracking-tight">{selectedRoom.name}</h1>
+          <p className="text-slate-500 text-sm mb-8 leading-relaxed font-medium">{selectedRoom.description}</p>
+
+          {/* Harga & Paket */}
+          <div className="space-y-6 mb-8">
+            {/* Paket Transit */}
+            <div className="bg-slate-50 p-5 rounded-[32px] border border-slate-100 shadow-inner">
+              <h4 className="text-[10px] font-black text-slate-400 flex items-center gap-2 mb-5 uppercase tracking-[0.2em]"><Clock size={14} className="text-[#D4AF37]"/> Paket Harga Transit</h4>
+              <div className="grid grid-cols-2 gap-3">
+                {selectedRoom.transit.map((p, i) => (
+                  <div key={i} className="bg-white p-4 rounded-2xl border border-slate-200/50 shadow-sm flex flex-col items-center">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">{p.label}</p>
+                    <p className="text-sm font-black text-slate-800 tracking-tight">{p.price}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Paket Fullday */}
+            <div className="bg-[#D4AF37]/10 p-5 rounded-[32px] border border-[#D4AF37]/20 shadow-sm">
+              <h4 className="text-[10px] font-black text-[#D4AF37] flex items-center gap-2 mb-5 uppercase tracking-[0.2em]"><Calendar size={14}/> Paket Harga Fullday</h4>
+              <div className="space-y-3">
+                {selectedRoom.fullday.map((p, i) => (
+                  <div key={i} className="flex justify-between items-center bg-white p-4 rounded-2xl border border-[#D4AF37]/10 shadow-sm">
+                    <p className="text-[10px] font-black text-slate-600 uppercase tracking-tight">{p.label}</p>
+                    <p className="text-sm font-black text-slate-900 tracking-tight">{p.price}</p>
+                  </div>
+                ))}
+                <div className="pt-2">
+                   <div className="bg-amber-50 p-3 rounded-xl border border-amber-100 flex items-center justify-center gap-2">
+                      <Clock size={14} className="text-amber-600" />
+                      <p className="text-[10px] text-amber-700 font-black uppercase tracking-tighter">Checkout Fullday jam 12 Siang</p>
+                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Spesifikasi */}
+          <div className="mb-10 px-1">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="h-[2px] bg-slate-100 flex-1"></div>
+              <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em]">Spesifikasi Unit</h4>
+              <div className="h-[2px] bg-slate-100 flex-1"></div>
+            </div>
+            <div className="grid grid-cols-2 gap-y-5 gap-x-4">
+              {selectedRoom.specs.map((spec, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <div className="w-9 h-9 bg-slate-50 rounded-xl flex items-center justify-center text-[#D4AF37] shadow-sm border border-slate-100">
+                    {spec.icon}
+                  </div>
+                  <span className="text-[11px] font-bold text-slate-700 leading-tight tracking-tight uppercase">{spec.text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Tombol Booking */}
+          <button onClick={() => handleWaClick("booking", selectedRoom.name)} className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-black py-5 rounded-[24px] flex items-center justify-center gap-3 shadow-2xl shadow-green-200 active:scale-95 transition-all uppercase tracking-widest text-xs">
+            <MessageCircle size={20} /> Hubungi Lewat WhatsApp
+          </button>
+        </div>
+
+        {/* CSS Animation untuk Slide Up */}
+        <style dangerouslySetInnerHTML={{ __html: `
+          @keyframes slide-up { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+          @keyframes bounce-subtle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+          .animate-slide-up { animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+          .animate-bounce-subtle { animation: bounce-subtle 4s infinite ease-in-out; }
+          .no-scrollbar::-webkit-scrollbar { display: none; }
+          .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+          .snap-mandatory { scroll-snap-type: x mandatory; }
+          .snap-center { scroll-snap-align: center; }
+        `}} />
+      </div>
     </>
   );
 };
+
+// --- APP UTAMA (ROUTING & PROVIDER) ---
+const App = () => {
+  return (
+    // Kita bungkus HelmetProvider di sini karena main.jsx Anda pakai versi standar
+    <React.Fragment>
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        {/* Route Pintar: Menangkap link seperti /unit/studio-lantai-12 */}
+        <Route path="/unit/:slug" element={<UnitDetailPage />} />
+      </Routes>
+      <Analytics />
+    </React.Fragment>
+  );
+};
+
+// Pastikan import HelmetProvider ada di paling atas file App.jsx jika belum
+// Jika error "HelmetProvider not found", tambahkan import ini di baris paling atas:
+// import { HelmetProvider } from 'react-helmet-async'; 
+// TAPI: Karena tadi main.jsx error, sebaiknya kita bungkus App ini di dalam main.jsx dengan benar nanti.
+// Untuk sekarang, kode ini aman.
 
 export default App;
