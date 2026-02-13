@@ -94,6 +94,18 @@ const DynamicLandingPage = () => {
     ? seoSlug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
     : 'Sewa Apartemen Sentul Tower';
 
+  // 👇 5. COPYWRITING DINAMIS (JURUS BUNGLON)
+  let dynamicDesc = "Pilihan unit apartemen Sentul Tower terbaik yang sesuai dengan pencarian Anda. Privasi terjamin, higienis, dan nyaman untuk staycation atau istirahat sejenak.";
+  if (isTransit) {
+    dynamicDesc = `Layanan ${pageTitle.toLowerCase()} dengan fasilitas lengkap. Sangat cocok untuk Anda yang butuh tempat istirahat sementara yang bersih, aman, dan tanpa ribet di sekitar Sentul.`;
+  } else if (isMurah) {
+    dynamicDesc = `Mencari ${pageTitle.toLowerCase()}? Kami menawarkan unit dengan harga paling terjangkau di Sentul Tower tanpa mengorbankan kenyamanan dan kebersihan.`;
+  } else if (isKeluarga) {
+    dynamicDesc = `Nikmati momen kebersamaan dengan ${pageTitle.toLowerCase()}. Unit luas, fasilitas lengkap seperti di rumah sendiri, dengan pemandangan pegunungan yang menenangkan.`;
+  } else {
+    dynamicDesc = `Temukan ${pageTitle.toLowerCase()} dengan pelayanan bintang 5. Bebas ribet, privasi 100% aman, dan berdekatan langsung dengan pusat kuliner serta AEON Mall Sentul City.`;
+  }
+
   // Jika URL error/aneh, batalkan render
   if (seoSlug && seoSlug.includes('.')) return null;
 
@@ -101,7 +113,8 @@ const DynamicLandingPage = () => {
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-24">
       <Helmet>
         <title>{pageTitle} | Apartemen Sentul Tower</title>
-        <meta name="description" content={`Sewa ${pageTitle.toLowerCase()} dengan harga terbaik. Fasilitas lengkap, bersih, privasi aman. Hubungi kami untuk booking via WhatsApp.`} />
+        {/* 👇 Meta Description akan berubah sesuai paragraf bunglon */}
+        <meta name="description" content={dynamicDesc} />
         <link rel="canonical" href={`https://apartemensentultower.com/${seoSlug}`} />
       </Helmet>
 
@@ -118,8 +131,9 @@ const DynamicLandingPage = () => {
             {pageTitle}
           </h1>
           
+          {/* 👇 Paragraf layar akan berubah sesuai keyword */}
           <p className="text-slate-400 max-w-xl mx-auto text-sm leading-relaxed font-medium">
-            Pilihan unit terbaik yang sesuai dengan pencarian Anda. Privasi terjamin, higienis, dan nyaman untuk staycation atau transit.
+            {dynamicDesc}
           </p>
         </div>
       </div>
