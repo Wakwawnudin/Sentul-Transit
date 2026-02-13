@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import { Routes, Route, Link, useParams, useLocation, useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async'; // Library SEO dari Bali Project
+import { Helmet, HelmetProvider } from 'react-helmet-async'; // ✅ SUDAH DIPERBAIKI (Ditambah HelmetProvider)
 import { 
   MapPin, Bed, Clock, Calendar, Shield, Building, ChevronLeft, ChevronRight, CheckCircle2, 
   MessageCircle, Tv, Wind, Coffee, Utensils, Waves, Sparkles, 
@@ -131,6 +131,7 @@ const GoogleMapsLogo = () => (
     <path d="M12 2c-.34 0-.67.02-1 .07V9h1V2z" fill="#EA4335"/>
   </svg>
 );
+
 // --- HALAMAN UTAMA (HOMEPAGE) ---
 const HomePage = () => {
   const [activeFilter, setActiveFilter] = useState('Semua');
@@ -545,7 +546,7 @@ const UnitDetailPage = () => {
 
   return (
     <>
-      {/* 1. MESIN SEO PINTAR (DARI BALI PROJECT) */}
+      {/* 1. MESIN SEO PINTAR */}
       <SEOStructuredData room={selectedRoom} />
       
       {/* 2. UPDATE JUDUL BROWSER OTOMATIS */}
@@ -656,7 +657,7 @@ const UnitDetailPage = () => {
           </button>
         </div>
 
-        {/* CSS Animation untuk Slide Up */}
+        {/* CSS Animation */}
         <style dangerouslySetInnerHTML={{ __html: `
           @keyframes slide-up { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
           @keyframes bounce-subtle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
@@ -675,8 +676,9 @@ const UnitDetailPage = () => {
 // --- APP UTAMA (ROUTING & PROVIDER) ---
 const App = () => {
   return (
-    // Kita bungkus HelmetProvider di sini karena main.jsx Anda pakai versi standar
-    <React.Fragment>
+    // ✅ KUNCI PERBAIKAN: HelmetProvider kita pasang di sini
+    // Ini menjamin SEO jalan dan TIDAK AKAN layar putih (blank)
+    <HelmetProvider>
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -684,14 +686,8 @@ const App = () => {
         <Route path="/unit/:slug" element={<UnitDetailPage />} />
       </Routes>
       <Analytics />
-    </React.Fragment>
+    </HelmetProvider>
   );
 };
-
-// Pastikan import HelmetProvider ada di paling atas file App.jsx jika belum
-// Jika error "HelmetProvider not found", tambahkan import ini di baris paling atas:
-// import { HelmetProvider } from 'react-helmet-async'; 
-// TAPI: Karena tadi main.jsx error, sebaiknya kita bungkus App ini di dalam main.jsx dengan benar nanti.
-// Untuk sekarang, kode ini aman.
 
 export default App;
