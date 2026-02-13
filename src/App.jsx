@@ -495,7 +495,7 @@ const HomePage = () => {
         </div>
         <div className="absolute top-[-20%] right-[-10%] w-48 h-48 bg-[#D4AF37]/10 rounded-full blur-3xl"></div>
       </footer>
-
+      
       <div className="fixed bottom-6 left-0 right-0 px-6 z-40">
         <div onClick={() => handleWaClick("general")} className="bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-2xl rounded-[24px] p-5 flex justify-between items-center max-w-sm mx-auto animate-bounce-subtle cursor-pointer active:scale-95 transition-transform">
           <div className="flex items-center gap-4">
