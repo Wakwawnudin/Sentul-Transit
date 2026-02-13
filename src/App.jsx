@@ -1,17 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import { Routes, Route, Link, useParams, useLocation, useNavigate } from 'react-router-dom';
-import { Helmet, HelmetProvider } from 'react-helmet-async'; // ✅ SUDAH DIPERBAIKI (Ditambah HelmetProvider)
+// 👇 INJEKSI 1: Import Library SEO
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { 
-  MapPin, Bed, Clock, Calendar, Shield, Building, ChevronLeft, ChevronRight, CheckCircle2, 
+  MapPin, Bed, Clock, Calendar, Shield, 
+  Building, ChevronLeft, ChevronRight, CheckCircle2, 
   MessageCircle, Tv, Wind, Coffee, Utensils, Waves, Sparkles, 
   UtensilsCrossed, Key, Wallet, HelpCircle, ChevronDown, ChevronUp,
   ShoppingBag, Palmtree, Maximize
 } from 'lucide-react';
 
-// Import data yang baru saja Anda konfirmasi
+// Import data kamar
 import { roomsData } from './roomsData';
-// Import mesin SEO yang tadi kita buat
+// 👇 INJEKSI 2: Import Komponen Data Terstruktur (Schema.org)
 import SEOStructuredData from './SEOStructuredData';
 
 // --- KOMPONEN SCROLL TO TOP ---
@@ -23,7 +25,7 @@ const ScrollToTop = () => {
   return null;
 };
 
-// --- KOMPONEN IMAGE SLIDER (TIDAK ADA PERUBAHAN TAMPILAN) ---
+// --- KOMPONEN IMAGE SLIDER (TIDAK DIUBAH) ---
 const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32px]", altPrefix = "Apartemen Sentul Tower" }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef(null);
@@ -88,7 +90,6 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
           <div key={idx} className={`h-1.5 rounded-full transition-all duration-300 shadow-sm ${activeIndex === idx ? 'w-6 bg-white' : 'w-1.5 bg-white/50'}`} />
         ))}
       </div>
-      {/* Tombol Panah Desktop */}
       <div className="absolute inset-y-0 left-2 flex items-center opacity-0 group-hover:opacity-100 transition-opacity md:flex hidden">
         <button onClick={scrollPrev} className="bg-white/30 hover:bg-white/50 backdrop-blur text-white p-1 rounded-full"><ChevronLeft size={20}/></button>
       </div>
@@ -99,7 +100,7 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
   );
 };
 
-// --- KOMPONEN FAQ ITEM ---
+// --- KOMPONEN FAQ ITEM (TIDAK DIUBAH) ---
 const FaqItem = ({ question, answer }) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
@@ -120,7 +121,7 @@ const FaqItem = ({ question, answer }) => {
   );
 };
 
-// --- LOGO MAPS ---
+// --- LOGO MAPS (TIDAK DIUBAH) ---
 const GoogleMapsLogo = () => (
   <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#4285F4"/>
@@ -132,30 +133,26 @@ const GoogleMapsLogo = () => (
   </svg>
 );
 
-// --- HALAMAN UTAMA (HOMEPAGE) ---
+// --- HALAMAN UTAMA (HOME) ---
 const HomePage = () => {
   const [activeFilter, setActiveFilter] = useState('Semua');
   const [refCode, setRefCode] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6; // Menampilkan 6 unit per halaman
+  const itemsPerPage = 3; // UX ASLI: Tetap 3 unit per halaman
 
   const waNumber = "6283830033717";
   const mapsLink = "https://share.google/490MII2W8A99899m7";
 
-  // Logic SEO & Referral
   useEffect(() => {
-    // Jurus Bajak Domain (Redirect jika domain salah)
     if (window.location.hostname.includes('apartsentul.cloud')) {
       window.location.replace("https://apartemensentultower.com/?ref=Lani");
       return; 
     }
-    // Tangkap Kode Referral
     const queryParams = new URLSearchParams(window.location.search);
     const ref = queryParams.get('ref');
     if (ref) setRefCode(ref);
   }, []);
 
-  // Reset pagination saat filter berubah
   useEffect(() => {
     setCurrentPage(1);
   }, [activeFilter]);
@@ -163,7 +160,6 @@ const HomePage = () => {
   const handleWaClick = (messageType = "general") => {
     let text = "";
     const refTag = refCode ? `\n\n(Info by ${refCode})` : "";
-    
     switch (messageType) {
       case "chat": text = `Halo, saya mau tanya-tanya tentang sewa Apartemen Sentul Tower.${refTag}`; break;
       case "key": text = `Halo, saya sudah sampai di lokasi dan ingin AMBIL KUNCI.${refTag}`; break;
@@ -173,7 +169,6 @@ const HomePage = () => {
     window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`, '_blank');
   };
 
-  // Logic Filter & Pagination
   const filteredRooms = activeFilter === 'Semua' ? roomsData : roomsData.filter(r => r.type === activeFilter);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -185,7 +180,6 @@ const HomePage = () => {
     window.scrollTo({ top: 500, behavior: 'smooth' });
   };
 
-  // Data Statis Tampilan
   const nearbyData = [
     { name: "AEON Mall", dist: "2 Mnt", icon: <ShoppingBag size={14}/> },
     { name: "IKEA Sentul", dist: "5 Mnt", icon: <ShoppingBag size={14}/> },
@@ -215,11 +209,10 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-32">
-      {/* --- SEO HELMET (Judul & Meta Deskripsi Otomatis) --- */}
+      {/* 👇 INJEKSI 3: HELMET untuk Halaman Utama */}
       <Helmet>
         <title>Sewa Apartemen Sentul Tower | Transit 3 Jam 150rb & Fullday</title>
         <meta name="description" content="Daftar Harga Sewa Apartemen Sentul Tower: Transit 3 Jam (150rb), 6 Jam (200rb), Fullday (300rb). Fasilitas Netflix, Wifi, Water Heater. Booking via WA." />
-        <meta name="keywords" content="harga sewa apartemen sentul, transit 3 jam sentul, sewa harian sentul tower, penginapan murah sentul" />
       </Helmet>
 
       {/* Navbar Transparan */}
@@ -288,7 +281,6 @@ const HomePage = () => {
 
         <div className="space-y-6">
           {currentItems.map(room => (
-            /* 🔥 LINK PINTAR: Mengganti onClick lama dengan Link SEO Friendly */
             <Link to={`/unit/${room.slug}`} key={room.id} className="block bg-white rounded-[32px] p-3 shadow-sm border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer group">
               <div className="relative">
                 <ImageSlider images={room.images} heightClass="h-72" roundedClass="rounded-[24px]" altPrefix={room.altPrefix} />
@@ -326,7 +318,7 @@ const HomePage = () => {
           ))}
         </div>
 
-        {/* PAGINATION */}
+        {/* PAGINATION CONTROLS - UX ASLI DIPERTAHANKAN */}
         {totalPages > 1 && (
           <div className="mt-8 flex flex-col items-center gap-4">
              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
@@ -385,6 +377,7 @@ const HomePage = () => {
       {/* MEGA FOOTER */}
       <footer className="bg-slate-900 text-white p-6 mx-4 rounded-[40px] mb-8 shadow-2xl relative overflow-hidden">
         <div className="relative z-10">
+          {/* FAQ SECTION */}
           <div className="mb-10 pb-8 border-b border-slate-800/50">
             <div className="flex items-center gap-2 mb-4">
               <HelpCircle className="text-[#D4AF37]" size={16} />
@@ -401,6 +394,7 @@ const HomePage = () => {
               </div>
             </div>
           </div>
+          {/* MAIN FOOTER INFO */}
           <div className="text-center mb-8">
              <h3 className="text-2xl font-black mb-2 uppercase tracking-tighter italic">Apartemen Sentul Tower</h3>
              <p className="text-slate-500 text-[10px] mb-8 italic">"Privasi & Kenyamanan Prioritas Kami"</p>
@@ -475,37 +469,36 @@ const HomePage = () => {
     </div>
   );
 };
-// --- HALAMAN DETAIL KAMAR (DENGAN FITUR SWIPE ALA APPS) ---
+// --- HALAMAN DETAIL KAMAR (MODIFIKASI: SWIPE + SEO, TAMPILAN TETAP) ---
 const UnitDetailPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const [selectedRoom, setSelectedRoom] = useState(null);
-  const [refCode, setRefCode] = useState("");
   const waNumber = "6283830033717";
+  const [refCode, setRefCode] = useState("");
 
-  // ⚙️ TEKNOLOGI GESTURE SWIPE (ADAPTASI DARI PROJECT BALI)
+  // ⚙️ INJEKSI FITUR SWIPE (Agar UX terasa seperti Aplikasi HP)
   const [touchStart, setTouchStart] = useState(null);
   const [pullY, setPullY] = useState(0);
 
-  // Logic 1: Cari Data Kamar
+  // Logic 1: Cari data kamar
   useEffect(() => {
     const room = roomsData.find(r => r.slug === slug);
     if (room) {
       setSelectedRoom(room);
     } else {
-      // Jika kamar tidak ketemu, balik ke home
       navigate('/');
     }
   }, [slug, navigate]);
 
-  // Logic 2: Referral Code
+  // Logic 2: Referral
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     const ref = queryParams.get('ref');
     if (ref) setRefCode(ref);
   }, []);
 
-  // Logic 3: Swipe Gesture (Mendeteksi jari pengguna)
+  // Logic 3: Handle Swipe Gesture
   const onTouchStart = (e) => {
     const scrollTop = e.currentTarget.scrollTop;
     if (scrollTop === 0) {
@@ -517,16 +510,16 @@ const UnitDetailPage = () => {
     if (!touchStart) return;
     const touchY = e.targetTouches[0].clientY;
     const diff = touchY - touchStart;
-    if (diff > 0) { // Hanya jika tarik ke bawah
+    if (diff > 0) { // Hanya izinkan tarik ke bawah
       setPullY(diff);
     }
   };
 
   const onTouchEnd = () => {
-    if (pullY > 150) { // Jika ditarik cukup jauh, tutup halaman
+    if (pullY > 150) { // Jika ditarik > 150px, tutup halaman
       navigate('/');
     } else {
-      setPullY(0); // Jika tidak, kembalikan ke posisi semula
+      setPullY(0); // Jika tidak, kembalikan ke posisi awal
     }
     setTouchStart(null);
   };
@@ -546,10 +539,8 @@ const UnitDetailPage = () => {
 
   return (
     <>
-      {/* 1. MESIN SEO PINTAR */}
+      {/* 👇 INJEKSI SEO: Agar Google mengerti detail kamar ini */}
       <SEOStructuredData room={selectedRoom} />
-      
-      {/* 2. UPDATE JUDUL BROWSER OTOMATIS */}
       <Helmet>
         <title>{selectedRoom.name} - Sewa Harian Sentul Tower</title>
         <meta name="description" content={`Sewa ${selectedRoom.name} Sentul Tower. Fasilitas: ${selectedRoom.specs.map(s=>s.text).join(', ')}. Harga mulai ${selectedRoom.startFrom}.`} />
@@ -558,20 +549,21 @@ const UnitDetailPage = () => {
       <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-50">
         {/* Background Overlay (Memudar saat ditarik) */}
         <div 
-          className="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity duration-300"
-          style={{ opacity: 1 - (pullY / 1000) }} 
+          className="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity duration-300" 
+          style={{ opacity: 1 - (pullY / 1000) }}
           onClick={() => navigate('/')}
         ></div>
         
-        {/* Container Utama dengan Animasi Swipe */}
+        {/* Container Utama (Slide Up + Swipe Logic) */}
         <div 
-          className="bg-white w-full max-w-md rounded-t-[40px] relative z-10 p-7 overflow-y-auto max-h-[95vh] h-[95vh] no-scrollbar shadow-2xl transition-transform duration-200 ease-out"
+          className="bg-white w-full max-w-md rounded-t-[40px] relative z-10 p-7 animate-slide-up overflow-y-auto max-h-[95vh] h-[95vh] no-scrollbar shadow-2xl transition-transform duration-200 ease-out"
           style={{ transform: `translateY(${pullY}px)` }} // Bergerak mengikuti jari
           onTouchStart={onTouchStart}
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
         >
-          {/* Garis Indikator Swipe (Visual Cue) */}
+          
+          {/* Indikator Garis Swipe (Visual Cue) */}
           <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6"></div>
 
           {/* Header Navigasi */}
@@ -582,6 +574,7 @@ const UnitDetailPage = () => {
             >
               <ChevronLeft size={18} /> Kembali
             </button>
+            <div className="w-12 h-1.5 bg-transparent"></div> {/* Spacer */}
             <div className="w-20"></div> 
           </div>
           
@@ -657,7 +650,7 @@ const UnitDetailPage = () => {
           </button>
         </div>
 
-        {/* CSS Animation */}
+        {/* Styles Animation */}
         <style dangerouslySetInnerHTML={{ __html: `
           @keyframes slide-up { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
           @keyframes bounce-subtle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
@@ -673,16 +666,15 @@ const UnitDetailPage = () => {
   );
 };
 
-// --- APP UTAMA (ROUTING & PROVIDER) ---
+// --- APP UTAMA (MODIFIKASI: WRAPPED WITH HELMET PROVIDER) ---
 const App = () => {
   return (
-    // ✅ KUNCI PERBAIKAN: HelmetProvider kita pasang di sini
-    // Ini menjamin SEO jalan dan TIDAK AKAN layar putih (blank)
+    // 👇 INI YANG MENCEGAH LAYAR PUTIH / BLANK
     <HelmetProvider>
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        {/* Route Pintar: Menangkap link seperti /unit/studio-lantai-12 */}
+        {/* Route Dinamis untuk Detail Kamar */}
         <Route path="/unit/:slug" element={<UnitDetailPage />} />
       </Routes>
       <Analytics />
