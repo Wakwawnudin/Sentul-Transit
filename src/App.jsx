@@ -1,14 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Analytics } from '@vercel/analytics/react';
+import { Routes, Route, Link, useParams, useLocation, useNavigate } from 'react-router-dom';
 import { 
-  Home, MapPin, Maximize, Bed, Bath, Clock, Calendar, Shield, 
+  MapPin, Bed, Bath, Clock, Calendar, Shield, 
   Building, ChevronLeft, ChevronRight, CheckCircle2, 
   MessageCircle, Tv, Wind, Coffee, Utensils, Waves, Sparkles, 
   UtensilsCrossed, Key, Wallet, HelpCircle, ChevronDown, ChevronUp,
-  ShoppingBag, Palmtree, Verified, Star
+  ShoppingBag, Palmtree, Verified, Star, Maximize
 } from 'lucide-react';
 
-// --- KOMPONEN IMAGE SLIDER (SEO OPTIMIZED) ---
+// Import data kamar yang sudah dipisah tadi
+import { roomsData } from './roomsData';
+
+// --- KOMPONEN SCROLL TO TOP (Agar saat ganti halaman selalu mulai dari atas) ---
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+};
+
+// --- KOMPONEN IMAGE SLIDER (TIDAK ADA PERUBAHAN) ---
 const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32px]", altPrefix = "Apartemen Sentul Tower" }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef(null);
@@ -63,7 +76,6 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
             src={img} 
             loading="lazy" 
             className="w-full h-full object-cover shrink-0 snap-center" 
-            // SEO UPDATE: Alt text lebih deskriptif untuk Google Images
             alt={`${altPrefix} - Foto ${idx + 1} - Sewa Harian & Transit Sentul City`} 
           />
         ))}
@@ -84,7 +96,7 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
   );
 };
 
-// --- KOMPONEN FAQ ITEM ---
+// --- KOMPONEN FAQ ITEM (TIDAK ADA PERUBAHAN) ---
 const FaqItem = ({ question, answer }) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
@@ -109,6 +121,7 @@ const FaqItem = ({ question, answer }) => {
   );
 };
 
+// --- LOGO MAPS (TIDAK ADA PERUBAHAN) ---
 const GoogleMapsLogo = () => (
   <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#4285F4"/>
@@ -119,69 +132,38 @@ const GoogleMapsLogo = () => (
     <path d="M12 2c-.34 0-.67.02-1 .07V9h1V2z" fill="#EA4335"/>
   </svg>
 );
-
-const App = () => {
+// --- HALAMAN UTAMA (HOME) ---
+const HomePage = () => {
   const [activeFilter, setActiveFilter] = useState('Semua');
-  const [selectedRoom, setSelectedRoom] = useState(null);
   const [refCode, setRefCode] = useState("");
-  
-  // State untuk Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3; 
 
   const waNumber = "6283830033717";
   const mapsLink = "https://share.google/490MII2W8A99899m7";
 
+  // Logic 1: Jurus Bajak Domain & Referral
   useEffect(() => {
-    // --- 1. JURUS BAJAK DOMAIN ---
     if (window.location.hostname.includes('apartsentul.cloud')) {
       window.location.replace("https://apartemensentultower.com/?ref=Lani");
       return; 
     }
-    // --- 2. TANGKAP KODE REFERRAL ---
     const queryParams = new URLSearchParams(window.location.search);
     const ref = queryParams.get('ref');
     if (ref) setRefCode(ref);
   }, []);
 
-  // SEO: Dynamic Title Change
-  useEffect(() => {
-    if (selectedRoom) {
-      document.title = `${selectedRoom.name} (${selectedRoom.floorLevel}) - Sewa Apartemen Sentul Tower`;
-    } else {
-      document.title = "Sewa Apartemen Sentul Tower | Transit & Fullday Dekat AEON";
-    }
-  }, [selectedRoom]);
-
-  useEffect(() => {
-    const handlePopState = () => {
-      if (selectedRoom) setSelectedRoom(null);
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, [selectedRoom]);
-
-  // Reset pagination saat filter berubah
+  // Logic 2: Reset Pagination
   useEffect(() => {
     setCurrentPage(1);
   }, [activeFilter]);
 
-  const openRoomDetail = (room) => {
-    setSelectedRoom(room);
-    window.history.pushState({ modalOpen: true }, "");
-  };
-
-  const closeRoomDetail = () => {
-    setSelectedRoom(null);
-    if (window.history.state?.modalOpen) window.history.back();
-  };
-
-  const handleWaClick = (messageType = "general", roomName = "") => {
+  // Logic 3: Handle WA (Versi Home)
+  const handleWaClick = (messageType = "general") => {
     let text = "";
     const refTag = refCode ? `\n\n(Info by ${refCode})` : "";
     
     switch (messageType) {
-      case "booking": text = `Halo, saya tertarik dengan unit ${roomName} di Apartemen Sentul Tower.${refTag}`; break;
       case "chat": text = `Halo, saya mau tanya-tanya tentang sewa Apartemen Sentul Tower.${refTag}`; break;
       case "key": text = `Halo, saya sudah sampai di lokasi dan ingin AMBIL KUNCI.${refTag}`; break;
       case "payment": text = `Halo, saya ingin melakukan PEMBAYARAN DI TEMPAT.${refTag}`; break;
@@ -190,358 +172,8 @@ const App = () => {
     window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`, '_blank');
   };
 
-  const defaultTransit = [
-    { label: '3 Jam', price: 'Rp 150.000' },
-    { label: '6 Jam', price: 'Rp 200.000' },
-    { label: '9 Jam', price: 'Rp 250.000' },
-    { label: '12 Jam', price: 'Rp 300.000' },
-  ];
-  const defaultFullday = [
-    { label: 'Weekday (Sen-Kam)', price: 'Rp 300.000' },
-    { label: 'Weekend (Jum-Min)', price: 'Rp 350.000' },
-  ];
-  const specialTransit2BR = [
-    { label: '3 Jam', price: 'Rp 200.000' },
-    { label: '6 Jam', price: 'Rp 300.000' },
-    { label: '9 Jam', price: 'Rp 350.000' },
-    { label: '12 Jam', price: 'Rp 400.000' },
-  ];
-  const specialFullday2BR = [
-    { label: 'Weekday (Sen-Kam)', price: 'Rp 650.000' },
-    { label: 'Weekend (Jum-Min)', price: 'Rp 700.000' },
-  ];
-
-  // --- DATA TEMPLATES (BASE DATA) ---
-  const baseTemplates = {
-    'Studio': {
-      type: 'Studio',
-      baseName: 'STUDIO',
-      size: '24m²', beds: 1,
-      description: 'Unit studio minimalis yang cocok untuk sewa harian. Lokasi strategis dekat AEON Mall Sentul City, ideal untuk istirahat sejenak setelah berbelanja atau bekerja.',
-      startFrom: '150rb', 
-      transit: defaultTransit, 
-      fullday: defaultFullday,
-      specs: [
-        { icon: <Bed size={16}/>, text: 'Queen Size Bed' }, { icon: <Wind size={16}/>, text: 'Full AC' },
-        { icon: <Tv size={16}/>, text: 'Smart TV (Netflix)' }, { icon: <UtensilsCrossed size={16}/>, text: 'Resto 24jam Siap Antar' },
-        { icon: <Utensils size={16}/>, text: 'Kitchen Set' }, { icon: <Waves size={16}/>, text: 'Water Heater' },
-        { icon: <Sparkles size={16}/>, text: 'Peralatan Mandi' }, { icon: <Coffee size={16}/>, text: 'Complimentary Coffee' }
-      ]
-    },
-    '1BR': {
-      type: '1BR',
-      baseName: '1 BEDROOM',
-      size: '38m²', beds: 1,
-      description: 'Pilihan terbaik apartemen murah Sentul dengan ruang tamu terpisah. Menawarkan privasi maksimal untuk pasangan atau profesional yang membutuhkan ketenangan.',
-      startFrom: '150rb', 
-      transit: defaultTransit, 
-      fullday: defaultFullday,
-      specs: [
-        { icon: <Bed size={16}/>, text: 'King Size Bed' }, { icon: <Wind size={16}/>, text: 'Full AC (Kamar & Ruang Tamu)' },
-        { icon: <Tv size={16}/>, text: 'Smart TV 42" & Netflix' }, { icon: <Building size={16}/>, text: 'Ruang Tamu Terpisah' },
-        { icon: <UtensilsCrossed size={16}/>, text: 'Resto 24jam Siap Antar' }, { icon: <Waves size={16}/>, text: 'Water Heater' },
-        { icon: <Utensils size={16}/>, text: 'Peralatan Masak' }, { icon: <Maximize size={16}/>, text: 'Balkon View Gunung' }
-      ]
-    },
-    '2BR': {
-      type: '2BR',
-      baseName: '2 BEDROOM',
-      size: '56m²', beds: 2,
-      description: 'Unit luas untuk staycation keluarga atau grup. Tersedia opsi transit 3 jam Sentul Tower yang fleksibel. Nikmati pemandangan gunung dan fasilitas lengkap.',
-      startFrom: '200rb', 
-      transit: specialTransit2BR, 
-      fullday: specialFullday2BR,
-      specs: [
-        { icon: <Bed size={16}/>, text: '1 Queen + 1 Single Bed' }, { icon: <Wind size={16}/>, text: 'Full AC di Setiap Kamar' },
-        { icon: <Tv size={16}/>, text: 'Smart TV & Home Theater' }, { icon: <UtensilsCrossed size={16}/>, text: 'Resto 24jam Siap Antar' },
-        { icon: <Utensils size={16}/>, text: 'Kitchen Set & Kulkas' }, { icon: <Waves size={16}/>, text: 'Water Heater & Bathup' },
-        { icon: <Building size={16}/>, text: 'Ruang Keluarga Luas' }, { icon: <Maximize size={16}/>, text: 'Balkon Luas View Gunung' }
-      ]
-    }
-  };
-  // --- REAL UNIT DATA (IMAGES & FLOORS) ---
-  const realUnits = [
-    // --- STUDIO ---
-    {
-      type: 'Studio', floor: 'Lantai 12',
-      images: [
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2012/20260207_215054.jpg?updatedAt=1770485467769&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2012/20260207_215107.jpg?updatedAt=1770485467865&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2012/20260207_215120.jpg?updatedAt=1770485467711&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2012/20260207_215139.jpg?updatedAt=1770485467195&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: '1BR', floor: 'Lantai 01',
-      images: [
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215859.jpg?updatedAt=1770486566474&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215257.jpg?updatedAt=1770482875988&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215850.jpg?updatedAt=1770486566548&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215235.jpg?updatedAt=1770482875980&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215839.jpg?updatedAt=1770486566575&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215246.jpg?updatedAt=1770482875917&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: '2BR', floor: 'Deluxe', // Deluxe.
-      images: [
-        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215405.jpg?updatedAt=1770484520183&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215415.jpg?updatedAt=1770484520177&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215453.jpg?updatedAt=1770484520224&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215430.jpg?updatedAt=1770484520216&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215503.jpg?updatedAt=1770484520210&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215522.jpg?updatedAt=1770484520303&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215443.jpg?updatedAt=1770484520229&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE./20260207_215541.jpg?updatedAt=1770484519539&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: 'Studio', floor: 'Lantai 08', // 8.
-      images: [
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%208./20260207_221354.jpg?updatedAt=1770485422626&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%208./20260207_221346.jpg?updatedAt=1770485422484&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%208./20260207_221529.jpg?updatedAt=1770485422625&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: 'Studio', floor: 'Lantai 05', // 5.
-      images: [
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%205./20260207_220617.jpg?updatedAt=1770485360161&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%205./20260207_220625.jpg?updatedAt=1770485359580&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%205./20260207_220633.jpg?updatedAt=1770485359615&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: 'Studio', floor: 'Lantai 08', // 8 Polos
-      images: [
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%208/20260208_002742.jpg?updatedAt=1770485302195&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%208/20260207_213928.jpg?updatedAt=1770485181235&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%208/20260207_213917.jpg?updatedAt=1770485180684&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%208/20260207_213938.jpg?updatedAt=1770485181252&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: 'Studio', floor: 'Lantai 07',
-      images: [
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%207/20260207_214112.jpg?updatedAt=1770485053971&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%207/20260207_214051.jpg?updatedAt=1770485053251&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%207/20260207_214102.jpg?updatedAt=1770485053897&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%207/20260207_214156.jpg?updatedAt=1770485053912&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%207/20260207_214122.jpg?updatedAt=1770485053936&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: 'Studio', floor: 'Lantai 06',
-      images: [
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%206/20260207_220838.jpg?updatedAt=1770484963369&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%206/20260207_220828.jpg?updatedAt=1770484963299&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%206/20260207_220811.jpg?updatedAt=1770484963447&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: 'Studio', floor: 'Lantai 05', // 5 Polos
-      images: [
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%205/20260207_205748.jpg?updatedAt=1770484692778&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%205/20260207_205822.jpg?updatedAt=1770484693527&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%205/20260207_205809.jpg?updatedAt=1770484693522&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%205/20260207_205836.jpg?updatedAt=1770484693623&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: 'Studio', floor: 'Deluxe',
-      images: [
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20DELUXE/20260207_222133.jpg?updatedAt=1770484633281&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20DELUXE/20260207_222106.jpg?updatedAt=1770484633266&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20DELUXE/20260207_222151.jpg?updatedAt=1770484633210&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20DELUXE/20260207_222142.jpg?updatedAt=1770484633288&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20DELUXE/20260207_222117.jpg?updatedAt=1770484633201&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: 'Studio', floor: 'Lantai 15', // 15.
-      images: [
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213645.jpg?updatedAt=1770485614631&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213729.jpg?updatedAt=1770485614606&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213656.jpg?updatedAt=1770485614544&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213751.jpg?updatedAt=1770485614628&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015./20260207_213741.jpg?updatedAt=1770485614649&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: 'Studio', floor: 'Lantai 16',
-      images: [
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214320.jpg?updatedAt=1770485568667&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214310.jpg?updatedAt=1770485568572&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214340.jpg?updatedAt=1770485568084&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214330.jpg?updatedAt=1770485568115&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2016/20260207_214352.jpg?updatedAt=1770485568137&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: 'Studio', floor: 'Lantai 15', // 15 Polos
-      images: [
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015/20260207_213517.jpg?updatedAt=1770485516707&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015/20260207_213504.jpg?updatedAt=1770485516705&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015/20260207_213451.jpg?updatedAt=1770485516706&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2015/20260207_213531.jpg?updatedAt=1770485516417&tr=w-800,q-80'
-      ]
-    },
-
-    // --- 1 BEDROOM ---
-    {
-      type: '1BR', floor: 'Lantai 16', // 16..
-      images: [
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016../20260207_220359.jpg?updatedAt=1770484409294&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016../20260207_220351.jpg?updatedAt=1770484409497&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016../20260207_220407.jpg?updatedAt=1770484409298&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016../20260207_220328.jpg?updatedAt=1770484409800&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016../20260207_220341.jpg?updatedAt=1770484409684&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: '1BR', floor: 'Lantai 16', // 16.
-      images: [
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016./20260207_214621.jpg?updatedAt=1770484357104&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016./20260207_214633.jpg?updatedAt=1770484357117&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016./20260207_214644.jpg?updatedAt=1770484357077&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016./20260207_214653.jpg?updatedAt=1770484357159&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: '1BR', floor: 'Lantai 11', // 11.
-      images: [
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2011./20260207_220956.jpg?updatedAt=1770484300643&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2011./20260207_220947.jpg?updatedAt=1770484300066&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2011./20260207_221007.jpg?updatedAt=1770484300714&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2011./20260207_220933.jpg?updatedAt=1770484300717&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: '1BR', floor: 'Lantai 10', // 10....
-      images: [
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010..../20260207_221705.jpg?updatedAt=1770484226369&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010..../20260207_221655.jpg?updatedAt=1770484225920&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010..../20260207_221716.jpg?updatedAt=1770484225952&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: '1BR', floor: 'Lantai 10', // 10...
-      images: [
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010.../20260207_221428.jpg?updatedAt=1770484171374&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010.../20260207_221416.jpg?updatedAt=1770484171449&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010.../20260207_221510.jpg?updatedAt=1770484171433&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010.../20260207_221519.jpg?updatedAt=1770484171382&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010.../20260207_221407.jpg?updatedAt=1770484170661&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: '1BR', floor: 'Lantai 10', // 10.
-      images: [
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010./20260207_214940.jpg?updatedAt=1770484049832&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010./20260207_214922.jpg?updatedAt=1770484049834&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010./20260207_214951.jpg?updatedAt=1770484049895&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010./20260207_215001.jpg?updatedAt=1770484049844&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: '1BR', floor: 'Lantai 10', // 10..
-      images: [
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010../20260207_220608.jpg?updatedAt=1770484117276&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010../20260207_220553.jpg?updatedAt=1770484117339&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010../20260207_220544.jpg?updatedAt=1770484117288&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010../20260207_220530.jpg?updatedAt=1770484116675&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: '1BR', floor: 'Lantai 16', // 16 Polos
-      images: [
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016/20260207_214320.jpg?updatedAt=1770483991109&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016/20260207_214310.jpg?updatedAt=1770483990874&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016/20260207_214340.jpg?updatedAt=1770483991088&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016/20260207_214330.jpg?updatedAt=1770483990905&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2016/20260207_214352.jpg?updatedAt=1770483991124&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: '1BR', floor: 'Lantai 11', // 11 Polos
-      images: [
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2011/20260207_215651.jpg?updatedAt=1770483947194&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2011/20260207_215640.jpg?updatedAt=1770483947170&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2011/20260207_215701.jpg?updatedAt=1770483946714&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2011/20260207_215715.jpg?updatedAt=1770483946842&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2011/20260207_215727.jpg?updatedAt=1770483946699&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2011/20260207_215737.jpg?updatedAt=1770483946756&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: '1BR', floor: 'Lantai 10', // 10 Polos
-      images: [
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010/20260207_214455.jpg?updatedAt=1770483868598&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010/20260207_214506.jpg?updatedAt=1770483870805&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010/20260207_214517.jpg?updatedAt=1770483868606&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%2010/20260207_214527.jpg?updatedAt=1770483872672&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: '1BR', floor: 'Lantai 05',
-      images: [
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%205/20260207_214812.jpg?updatedAt=1770483708565&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%205/20260207_214825.jpg?updatedAt=1770483707875&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%205/20260207_214758.jpg?updatedAt=1770483707887&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: '1BR', floor: 'Lantai 03',
-      images: [
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%203/20260207_221146.jpg?updatedAt=1770483439986&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%203/20260207_221117.jpg?updatedAt=1770483439884&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%203/20260207_221127.jpg?updatedAt=1770483439891&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%203/20260207_221136.jpg?updatedAt=1770483439781&tr=w-800,q-80'
-      ]
-    },
-
-    // --- 2 BEDROOM ---
-    {
-      type: '2BR', floor: 'Lantai 11',
-      images: [
-        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20LANTAI%2011/20260207_220039.jpg?updatedAt=1770484583428&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20LANTAI%2011/20260207_220049.jpg?updatedAt=1770484583352&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20LANTAI%2011/20260207_220059.jpg?updatedAt=1770484583340&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20LANTAI%2011/20260207_220018.jpg?updatedAt=1770484582827&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20LANTAI%2011/20260207_220029.jpg?updatedAt=1770484582846&tr=w-800,q-80'
-      ]
-    },
-    {
-      type: '2BR', floor: 'Deluxe', // Deluxe Polos
-      images: [
-        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE/20260207_213310.jpg?updatedAt=1770484473278&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE/20260207_213255.jpg?updatedAt=1770484473060&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE/20260207_213334.jpg?updatedAt=1770484473214&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE/20260207_213321.jpg?updatedAt=1770484473185&tr=w-800,q-80',
-        'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE/20260207_213345.jpg?updatedAt=1770484472834&tr=w-800,q-80'
-      ]
-    }
-  ];
-
-  // --- GENERATE FINAL ROOMS LIST (SEO OPTIMIZED & DYNAMIC NAME) ---
-  const rooms = realUnits.map((unit, index) => {
-    const template = baseTemplates[unit.type];
-    return {
-      ...template,
-      id: index + 1,
-      // UPDATE: Nama unit digabung dengan lantai (STUDIO - LANTAI 06)
-      name: `${template.baseName} - ${unit.floor.toUpperCase()}`, 
-      floorLevel: unit.floor,
-      images: unit.images,
-      // SEO: Generate Alt Prefix spesifik per unit untuk komponen ImageSlider
-      altPrefix: `Sewa Apartemen ${template.baseName} ${unit.floor} Sentul Tower - View Gunung & City`
-    };
-  });
-
-  // --- LOGIC FILTER & PAGINATION ---
-  const filteredRooms = activeFilter === 'Semua' ? rooms : rooms.filter(r => r.type === activeFilter);
-  
-  // Hitung Pagination
+  // Logic 4: Filter & Pagination Data
+  const filteredRooms = activeFilter === 'Semua' ? roomsData : roomsData.filter(r => r.type === activeFilter);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredRooms.slice(indexOfFirstItem, indexOfLastItem);
@@ -549,11 +181,10 @@ const App = () => {
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-    // Scroll sedikit ke atas agar user sadar halaman berubah
     window.scrollTo({ top: 500, behavior: 'smooth' });
   };
 
-  // --- DATA FOOTER ---
+  // Data Statis untuk Tampilan
   const nearbyData = [
     { name: "AEON Mall", dist: "2 Mnt", icon: <ShoppingBag size={14}/> },
     { name: "IKEA Sentul", dist: "5 Mnt", icon: <ShoppingBag size={14}/> },
@@ -580,26 +211,22 @@ const App = () => {
     "https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/_apartemenharian%20_apartemenmurah%20_apartemenmewah%20_apartemenpenginapan%20Wa-__+62%C2%A0812_2042_3774_%20(2).jpg?tr=w-1200,q-85",
     "https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/_apartemenharian%20_apartemenmurah%20_apartemenmewah%20_apartemenpenginapan%20Wa-__+62%C2%A0812_2042_3774_.jpg?tr=w-1200,q-85"
   ];
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-32">
-      {/* Navbar Transparan - Semantic: nav */}
+      {/* Navbar Transparan */}
       <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex justify-between items-center transition-all duration-300 bg-gradient-to-b from-black/80 to-transparent">
         <div className="flex items-center gap-3">
-          {/* Logo - SEO: Alt text diperjelas */}
           <img 
             src="https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/1770491932595.png" 
             alt="Logo Apartemen Sentul Tower - Sewa Harian" 
             className="h-14 w-auto object-contain drop-shadow-md" 
           />
-          
-          {/* Teks Brand */}
           <div className="flex flex-col justify-center pl-1">
             <span className="font-black text-[10px] md:text-sm text-white tracking-[0.2em] leading-tight uppercase drop-shadow-md">APARTEMEN</span>
             <span className="font-black text-[11px] md:text-base text-[#D4AF37] tracking-widest leading-tight uppercase -mt-0.5 drop-shadow-md">SENTUL TOWER</span>
           </div>
         </div>
-
-        {/* Tombol Kanan */}
         <div className="flex items-center gap-2">
           <a href={mapsLink} target="_blank" rel="noopener noreferrer" aria-label="Lokasi Google Maps" className="bg-white/20 backdrop-blur-md p-2.5 rounded-full border border-white/30 text-white shadow-lg active:scale-90 transition-transform flex items-center justify-center hover:bg-white/30">
              <GoogleMapsLogo />
@@ -610,7 +237,7 @@ const App = () => {
         </div>
       </nav>
 
-      {/* Hero Header - Semantic: header */}
+      {/* Hero Header */}
       <header className="relative h-[600px] w-full overflow-hidden">
         <div className="absolute inset-0 w-full h-full">
            <ImageSlider 
@@ -620,19 +247,16 @@ const App = () => {
              altPrefix="Fasilitas & View Apartemen Sentul Tower" 
            />
         </div>
-
-        {/* Overlay Content */}
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent flex flex-col justify-end p-6 pb-20 pointer-events-none z-20">
           <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-md border border-white/10 text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-full w-fit mb-3 shadow-lg">
             <MapPin size={10} /> DEKAT AEON MALL SENTUL
           </div>
-          {/* SEO: H1 Utama Website */}
           <h1 className="text-3xl font-black text-white leading-tight uppercase tracking-tight drop-shadow-lg mb-1">Apartemen Sentul Tower</h1>
           <p className="text-slate-200 text-sm italic font-medium drop-shadow-md">Solusi Staycation Mewah & Nyaman</p>
         </div>
       </header>
 
-      {/* Ringkasan Harga - Semantic: section */}
+      {/* Ringkasan Harga */}
       <section className="px-4 -mt-6 relative z-10" aria-label="Ringkasan Harga">
         <div className="bg-white rounded-[24px] shadow-2xl shadow-slate-200/50 border border-slate-100 p-4 grid grid-cols-2 gap-3">
           <div className="bg-slate-50 p-4 rounded-2xl flex flex-col items-center border border-slate-100">
@@ -647,10 +271,10 @@ const App = () => {
           </div>
         </div>
       </section>
-      {/* Katalog - Semantic: section */}
+
+      {/* Katalog */}
       <section className="px-4 py-8" aria-label="Daftar Unit Apartemen">
         <div className="flex flex-col gap-4 mb-6 md:flex-row md:justify-between md:items-center">
-          {/* SEO: H2 untuk Section Katalog */}
           <h2 className="text-lg font-black text-slate-800 uppercase tracking-widest">KATALOG APARTEMEN</h2>
           <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1 md:pb-0">
             {['Semua', 'Studio', '1BR', '2BR'].map(f => (
@@ -661,19 +285,14 @@ const App = () => {
 
         <div className="space-y-6">
           {currentItems.map(room => (
-            /* Semantic: article untuk setiap item properti */
-            <article key={room.id} onClick={() => openRoomDetail(room)} className="bg-white rounded-[32px] p-3 shadow-sm border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer group">
+            // PERUBAHAN UTAMA DI SINI: Dulu onClick, sekarang Link
+            <Link to={`/unit/${room.slug}`} key={room.id} className="block bg-white rounded-[32px] p-3 shadow-sm border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer group">
               <div className="relative">
-                {/* SEO: Mengirim altPrefix spesifik ke Slider */}
                 <ImageSlider images={room.images} heightClass="h-72" roundedClass="rounded-[24px]" altPrefix={room.altPrefix} />
-                
-                {/* Badge Type */}
                 <div className="absolute top-4 left-4 flex gap-2 pointer-events-none z-20">
                   <span className="bg-black/70 backdrop-blur-md text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest">{room.type}</span>
                   {room.type === '2BR' && <span className="bg-[#D4AF37] text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg">PREMIUM</span>}
                 </div>
-
-                {/* Badge Lantai */}
                 <div className="absolute top-4 right-4 pointer-events-none z-20">
                   <span className="bg-white/90 backdrop-blur text-slate-800 text-[10px] font-black px-3 py-1.5 rounded-xl shadow-lg border border-slate-100 uppercase tracking-wider">
                     {room.floorLevel}
@@ -682,20 +301,16 @@ const App = () => {
               </div>
 
               <div className="pt-5 px-3 pb-3">
-                {/* SEO: H3 untuk Nama Unit */}
                 <h3 className="text-xl font-black text-slate-900 mb-1.5 uppercase tracking-tight">{room.name}</h3>
-                
                 <div className="flex items-center gap-4 text-slate-400 text-[11px] font-bold mb-4 uppercase tracking-wide">
                   <div className="flex items-center gap-1.5"><Maximize size={14}/> {room.size}</div>
                   <div className="flex items-center gap-1.5"><Bed size={14}/> {room.beds} Bed</div>
                   <div className="flex items-center gap-1.5"><Shield size={14}/> 24/7 Aman</div>
                 </div>
-
                 <div className="flex items-center gap-1.5 mb-3">
                    <CheckCircle2 size={12} className="text-green-500" fill="currentColor" color="white" />
                    <span className="text-[10px] font-bold text-slate-500 tracking-tight">Verified • Higienis • Aman</span>
                 </div>
-
                 <div className="flex justify-between items-end pt-4 border-t border-slate-50">
                   <div>
                     <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1">Harga Mulai</p>
@@ -704,17 +319,16 @@ const App = () => {
                   <button className="bg-slate-900 text-white font-bold px-6 py-3 rounded-2xl text-[11px] uppercase tracking-widest shadow-lg shadow-slate-200">Detail</button>
                 </div>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
 
-        {/* --- PAGINATION CONTROLS --- */}
+        {/* PAGINATION CONTROLS */}
         {totalPages > 1 && (
           <div className="mt-8 flex flex-col items-center gap-4">
              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                 Menampilkan {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, filteredRooms.length)} dari {filteredRooms.length} Unit
              </div>
-
              <div className="flex items-center gap-2">
                 <button 
                   onClick={() => handlePageChange(currentPage - 1)} 
@@ -724,7 +338,6 @@ const App = () => {
                 >
                    <ChevronLeft size={16} />
                 </button>
-
                 <div className="flex gap-1">
                    {(() => {
                       let pages = [];
@@ -735,7 +348,6 @@ const App = () => {
                          else if (currentPage >= totalPages - 2) pages = [1, '...', totalPages - 2, totalPages - 1, totalPages];
                          else pages = [1, '...', currentPage, '...', totalPages];
                       }
-
                       return pages.map((page, index) => (
                         <button
                           key={index}
@@ -754,7 +366,6 @@ const App = () => {
                       ));
                    })()}
                 </div>
-
                 <button 
                   onClick={() => handlePageChange(currentPage + 1)} 
                   disabled={currentPage === totalPages}
@@ -764,28 +375,13 @@ const App = () => {
                    <ChevronRight size={16} />
                 </button>
              </div>
-
-             <div className="relative">
-                <select 
-                  value={currentPage} 
-                  onChange={(e) => handlePageChange(Number(e.target.value))}
-                  aria-label="Pilih Halaman"
-                  className="appearance-none bg-white pl-4 pr-8 py-2 rounded-xl border border-slate-200 text-[10px] font-bold text-slate-600 uppercase tracking-widest focus:outline-none focus:border-[#D4AF37]"
-                >
-                   {Array.from({ length: totalPages }, (_, i) => i + 1).map(n => (
-                      <option key={n} value={n}>Lompat ke Hal {n}</option>
-                   ))}
-                </select>
-                <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"/>
-             </div>
           </div>
         )}
       </section>
 
-      {/* --- MEGA FOOTER (Semantic: footer) --- */}
+      {/* MEGA FOOTER */}
       <footer className="bg-slate-900 text-white p-6 mx-4 rounded-[40px] mb-8 shadow-2xl relative overflow-hidden">
         <div className="relative z-10">
-          
           {/* FAQ SECTION */}
           <div className="mb-10 pb-8 border-b border-slate-800/50">
             <div className="flex items-center gap-2 mb-4">
@@ -803,14 +399,11 @@ const App = () => {
               </div>
             </div>
           </div>
-
           {/* MAIN FOOTER INFO */}
           <div className="text-center mb-8">
              <h3 className="text-2xl font-black mb-2 uppercase tracking-tighter italic">Apartemen Sentul Tower</h3>
              <p className="text-slate-500 text-[10px] mb-8 italic">"Privasi & Kenyamanan Prioritas Kami"</p>
-             
              <h4 className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-4">Cara Order Mudah</h4>
-             
              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                 <div onClick={() => handleWaClick("chat")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all">
                    <MessageCircle className="text-[#D4AF37] mb-2" size={24} />
@@ -829,7 +422,6 @@ const App = () => {
                    <span className="text-[10px] font-bold text-slate-300 uppercase">4. Bayar di Tempat</span>
                 </div>
              </div>
-
              <div className="mt-8 pt-8 border-t border-slate-800/50">
                  <h4 className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-4">Lokasi Strategis</h4>
                  <div className="grid grid-cols-2 gap-2 text-left">
@@ -845,7 +437,6 @@ const App = () => {
                  </div>
              </div>
           </div>
-
           <div className="flex items-center justify-center gap-6 pt-6 border-t border-slate-800">
             <a href={mapsLink} target="_blank" rel="noopener noreferrer" aria-label="Buka Google Maps" className="bg-white p-2 rounded-xl hover:scale-110 active:scale-95 transition-all shadow-xl flex items-center justify-center">
               <GoogleMapsLogo />
@@ -858,7 +449,6 @@ const App = () => {
               Apartemen<br/>Sentul Tower
             </p>
           </div>
-          
           <div className="mt-6 pt-4 border-t border-slate-800/50 text-center">
              <p className="text-[9px] text-slate-600 font-medium leading-relaxed">
                Melayani sewa apartemen harian Sentul City, transit 3 jam, 6 jam. Solusi penginapan murah alternatif hotel di Bogor.
@@ -868,105 +458,154 @@ const App = () => {
         <div className="absolute top-[-20%] right-[-10%] w-48 h-48 bg-[#D4AF37]/10 rounded-full blur-3xl"></div>
       </footer>
 
-      {/* Modal Detail Room */}
-      {selectedRoom && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center">
-          <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={closeRoomDetail}></div>
-          <div className="bg-white w-full max-w-md rounded-t-[40px] relative z-10 p-7 animate-slide-up overflow-y-auto max-h-[95vh] no-scrollbar shadow-2xl">
-            <div className="flex items-center justify-between mb-6">
-              <button 
-                onClick={closeRoomDetail}
-                className="flex items-center gap-1.5 text-slate-900 font-black text-[11px] uppercase tracking-widest bg-slate-100 px-4 py-2.5 rounded-2xl active:scale-95 transition-all"
-              >
-                <ChevronLeft size={18} /> Kembali
-              </button>
-              <div className="w-12 h-1.5 bg-slate-200 rounded-full"></div>
-              <div className="w-20"></div> 
-            </div>
-            
-            <div className="relative mb-6">
-               <ImageSlider images={selectedRoom.images} heightClass="h-72" roundedClass="rounded-[32px]" altPrefix={`Detail ${selectedRoom.name} - ${selectedRoom.floorLevel}`} />
-               <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-xl shadow-sm z-20">
-                  <p className="text-[10px] font-black text-[#D4AF37] uppercase tracking-widest">Pilihan {selectedRoom.type}</p>
-               </div>
-            </div>
-            
-            {/* SEO: H2 untuk Detail Kamar (Hierarki yang benar) */}
-            <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-2 tracking-tight">{selectedRoom.name}</h2>
-            <p className="text-slate-500 text-sm mb-8 leading-relaxed font-medium">{selectedRoom.description}</p>
-
-            <div className="space-y-6 mb-8">
-              <div className="bg-slate-50 p-5 rounded-[32px] border border-slate-100 shadow-inner">
-                <h4 className="text-[10px] font-black text-slate-400 flex items-center gap-2 mb-5 uppercase tracking-[0.2em]"><Clock size={14} className="text-[#D4AF37]"/> Paket Harga Transit</h4>
-                <div className="grid grid-cols-2 gap-3">
-                  {selectedRoom.transit.map((p, i) => (
-                    <div key={i} className="bg-white p-4 rounded-2xl border border-slate-200/50 shadow-sm flex flex-col items-center">
-                      <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">{p.label}</p>
-                      <p className="text-sm font-black text-slate-800 tracking-tight">{p.price}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="bg-[#D4AF37]/10 p-5 rounded-[32px] border border-[#D4AF37]/20 shadow-sm">
-                <h4 className="text-[10px] font-black text-[#D4AF37] flex items-center gap-2 mb-5 uppercase tracking-[0.2em]"><Calendar size={14}/> Paket Harga Fullday</h4>
-                <div className="space-y-3">
-                  {selectedRoom.fullday.map((p, i) => (
-                    <div key={i} className="flex justify-between items-center bg-white p-4 rounded-2xl border border-[#D4AF37]/10 shadow-sm">
-                      <p className="text-[10px] font-black text-slate-600 uppercase tracking-tight">{p.label}</p>
-                      <p className="text-sm font-black text-slate-900 tracking-tight">{p.price}</p>
-                    </div>
-                  ))}
-                  <div className="pt-2">
-                     <div className="bg-amber-50 p-3 rounded-xl border border-amber-100 flex items-center justify-center gap-2">
-                        <Clock size={14} className="text-amber-600" />
-                        <p className="text-[10px] text-amber-700 font-black uppercase tracking-tighter">Checkout Fullday jam 12 Siang</p>
-                     </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="mb-10 px-1">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="h-[2px] bg-slate-100 flex-1"></div>
-                <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em]">Spesifikasi Unit</h4>
-                <div className="h-[2px] bg-slate-100 flex-1"></div>
-              </div>
-              <div className="grid grid-cols-2 gap-y-5 gap-x-4">
-                {selectedRoom.specs.map((spec, i) => (
-                  <div key={i} className="flex items-center gap-3">
-                    <div className="w-9 h-9 bg-slate-50 rounded-xl flex items-center justify-center text-[#D4AF37] shadow-sm border border-slate-100">
-                      {spec.icon}
-                    </div>
-                    <span className="text-[11px] font-bold text-slate-700 leading-tight tracking-tight uppercase">{spec.text}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <button onClick={() => handleWaClick("booking", selectedRoom.name)} className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-black py-5 rounded-[24px] flex items-center justify-center gap-3 shadow-2xl shadow-green-200 active:scale-95 transition-all uppercase tracking-widest text-xs">
-              <MessageCircle size={20} /> Hubungi Lewat WhatsApp
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* FAB (Floating Action Button) */}
-      {!selectedRoom && (
-        <div className="fixed bottom-6 left-0 right-0 px-6 z-40">
-          <div onClick={() => handleWaClick("general")} className="bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-2xl rounded-[24px] p-5 flex justify-between items-center max-w-sm mx-auto animate-bounce-subtle cursor-pointer active:scale-95 transition-transform">
-            <div className="flex items-center gap-4">
-              <div className="w-11 h-11 rounded-2xl bg-white/20 flex items-center justify-center backdrop-blur-md shadow-inner"><MessageCircle size={24} /></div>
-              <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">Apartemen Sentul Tower</p>
-                <p className="text-sm font-black tracking-tight">Booking Cepat Via WA</p>
+      <div className="fixed bottom-6 left-0 right-0 px-6 z-40">
+        <div onClick={() => handleWaClick("general")} className="bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-2xl rounded-[24px] p-5 flex justify-between items-center max-w-sm mx-auto animate-bounce-subtle cursor-pointer active:scale-95 transition-transform">
+          <div className="flex items-center gap-4">
+            <div className="w-11 h-11 rounded-2xl bg-white/20 flex items-center justify-center backdrop-blur-md shadow-inner"><MessageCircle size={24} /></div>
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">Apartemen Sentul Tower</p>
+              <p className="text-sm font-black tracking-tight">Booking Cepat Via WA</p>
+            </div>
+          </div>
+          <ChevronRight size={24} />
+        </div>
+      </div>
+    </div>
+  );
+};
+// --- HALAMAN DETAIL KAMAR (DULUNYA MODAL) ---
+const UnitDetailPage = () => {
+  const { slug } = useParams();
+  const navigate = useNavigate();
+  const [selectedRoom, setSelectedRoom] = useState(null);
+  const waNumber = "6283830033717";
+  const [refCode, setRefCode] = useState("");
+
+  // Logic: Cari data kamar berdasarkan URL (slug)
+  useEffect(() => {
+    const room = roomsData.find(r => r.slug === slug);
+    if (room) {
+      setSelectedRoom(room);
+      // Update Title Browser untuk SEO
+      document.title = `${room.name} - Sewa Apartemen Sentul Tower`;
+    } else {
+      // Jika kamar tidak ketemu (misal typo URL), balik ke Home
+      navigate('/');
+    }
+  }, [slug, navigate]);
+
+  // Logic: Ambil referral code jika ada
+  useEffect(() => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const ref = queryParams.get('ref');
+    if (ref) setRefCode(ref);
+  }, []);
+
+  const handleWaClick = (messageType = "general", roomName = "") => {
+    let text = "";
+    const refTag = refCode ? `\n\n(Info by ${refCode})` : "";
+    
+    switch (messageType) {
+      case "booking": text = `Halo, saya tertarik dengan unit ${roomName} di Apartemen Sentul Tower.${refTag}`; break;
+      default: text = `Halo, saya mau tanya sewa Apartemen Sentul Tower.${refTag}`;
+    }
+    window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`, '_blank');
+  };
+
+  if (!selectedRoom) return null; // Loading state
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-50">
+      {/* Background Overlay (Klik untuk kembali ke Home) */}
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => navigate('/')}></div>
+      
+      {/* Container Utama (Slide Up Animation) */}
+      <div className="bg-white w-full max-w-md rounded-t-[40px] relative z-10 p-7 animate-slide-up overflow-y-auto max-h-[95vh] h-[95vh] no-scrollbar shadow-2xl">
+        
+        {/* Header Navigasi */}
+        <div className="flex items-center justify-between mb-6">
+          <button 
+            onClick={() => navigate('/')}
+            className="flex items-center gap-1.5 text-slate-900 font-black text-[11px] uppercase tracking-widest bg-slate-100 px-4 py-2.5 rounded-2xl active:scale-95 transition-all"
+          >
+            <ChevronLeft size={18} /> Kembali
+          </button>
+          <div className="w-12 h-1.5 bg-slate-200 rounded-full"></div>
+          <div className="w-20"></div> 
+        </div>
+        
+        {/* Slider Gambar */}
+        <div className="relative mb-6">
+           <ImageSlider images={selectedRoom.images} heightClass="h-72" roundedClass="rounded-[32px]" altPrefix={`Detail ${selectedRoom.name} - ${selectedRoom.floorLevel}`} />
+           <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-xl shadow-sm z-20">
+              <p className="text-[10px] font-black text-[#D4AF37] uppercase tracking-widest">Pilihan {selectedRoom.type}</p>
+           </div>
+        </div>
+        
+        {/* Judul & Deskripsi */}
+        <h1 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-2 tracking-tight">{selectedRoom.name}</h1>
+        <p className="text-slate-500 text-sm mb-8 leading-relaxed font-medium">{selectedRoom.description}</p>
+
+        {/* Harga & Paket */}
+        <div className="space-y-6 mb-8">
+          {/* Paket Transit */}
+          <div className="bg-slate-50 p-5 rounded-[32px] border border-slate-100 shadow-inner">
+            <h4 className="text-[10px] font-black text-slate-400 flex items-center gap-2 mb-5 uppercase tracking-[0.2em]"><Clock size={14} className="text-[#D4AF37]"/> Paket Harga Transit</h4>
+            <div className="grid grid-cols-2 gap-3">
+              {selectedRoom.transit.map((p, i) => (
+                <div key={i} className="bg-white p-4 rounded-2xl border border-slate-200/50 shadow-sm flex flex-col items-center">
+                  <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">{p.label}</p>
+                  <p className="text-sm font-black text-slate-800 tracking-tight">{p.price}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Paket Fullday */}
+          <div className="bg-[#D4AF37]/10 p-5 rounded-[32px] border border-[#D4AF37]/20 shadow-sm">
+            <h4 className="text-[10px] font-black text-[#D4AF37] flex items-center gap-2 mb-5 uppercase tracking-[0.2em]"><Calendar size={14}/> Paket Harga Fullday</h4>
+            <div className="space-y-3">
+              {selectedRoom.fullday.map((p, i) => (
+                <div key={i} className="flex justify-between items-center bg-white p-4 rounded-2xl border border-[#D4AF37]/10 shadow-sm">
+                  <p className="text-[10px] font-black text-slate-600 uppercase tracking-tight">{p.label}</p>
+                  <p className="text-sm font-black text-slate-900 tracking-tight">{p.price}</p>
+                </div>
+              ))}
+              <div className="pt-2">
+                 <div className="bg-amber-50 p-3 rounded-xl border border-amber-100 flex items-center justify-center gap-2">
+                    <Clock size={14} className="text-amber-600" />
+                    <p className="text-[10px] text-amber-700 font-black uppercase tracking-tighter">Checkout Fullday jam 12 Siang</p>
+                 </div>
               </div>
             </div>
-            <ChevronRight size={24} />
           </div>
         </div>
-      )}
+
+        {/* Spesifikasi */}
+        <div className="mb-10 px-1">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="h-[2px] bg-slate-100 flex-1"></div>
+            <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em]">Spesifikasi Unit</h4>
+            <div className="h-[2px] bg-slate-100 flex-1"></div>
+          </div>
+          <div className="grid grid-cols-2 gap-y-5 gap-x-4">
+            {selectedRoom.specs.map((spec, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <div className="w-9 h-9 bg-slate-50 rounded-xl flex items-center justify-center text-[#D4AF37] shadow-sm border border-slate-100">
+                  {spec.icon}
+                </div>
+                <span className="text-[11px] font-bold text-slate-700 leading-tight tracking-tight uppercase">{spec.text}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Tombol Booking */}
+        <button onClick={() => handleWaClick("booking", selectedRoom.name)} className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-black py-5 rounded-[24px] flex items-center justify-center gap-3 shadow-2xl shadow-green-200 active:scale-95 transition-all uppercase tracking-widest text-xs">
+          <MessageCircle size={20} /> Hubungi Lewat WhatsApp
+        </button>
+      </div>
 
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes slide-up { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -978,9 +617,21 @@ const App = () => {
         .snap-mandatory { scroll-snap-type: x mandatory; }
         .snap-center { scroll-snap-align: center; }
       `}} />
-      
-      <Analytics />
     </div>
+  );
+};
+
+// --- APP COMPONENT UTAMA (ROUTING) ---
+const App = () => {
+  return (
+    <>
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/unit/:slug" element={<UnitDetailPage />} />
+      </Routes>
+      <Analytics />
+    </>
   );
 };
 
