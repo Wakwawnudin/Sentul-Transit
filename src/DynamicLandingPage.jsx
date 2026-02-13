@@ -14,10 +14,22 @@ const ScrollToTop = () => {
   return null;
 };
 
-// --- MINI IMAGE SLIDER (Mandiri agar tidak error) ---
+// --- KOMPONEN IMAGE SLIDER (OPTIMIZED: JURUS MATA ELANG & SPEED) ---
 const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32px]", altPrefix = "Apartemen Sentul" }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef(null);
+  const { seoSlug } = useParams();
+
+  // ⚙️ Optimasi Gambar: Paksa ke format WebP & Kualitas 80 agar loading super ringan
+  const optimizeImg = (url) => {
+    if (url.includes('imagekit.io')) {
+      return `${url.split('?')[0]}?tr=w-800,f-webp,q-80`;
+    }
+    return url;
+  };
+
+  // ⚙️ SEO Alt Text Dinamis (Mata Elang): Mengikuti keyword pencarian Google
+  const dynamicAlt = seoSlug ? seoSlug.replace(/-/g, ' ') : altPrefix;
 
   useEffect(() => {
     if (images.length <= 1) return;
@@ -48,7 +60,13 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
         style={{ scrollBehavior: 'smooth' }}
       >
         {images.map((img, idx) => (
-          <img key={idx} src={img} loading="lazy" className="w-full h-full object-cover shrink-0 snap-center" alt={`${altPrefix} ${idx + 1}`} />
+          <img 
+            key={idx} 
+            src={optimizeImg(img)} 
+            loading="lazy" 
+            className="w-full h-full object-cover shrink-0 snap-center" 
+            alt={`${dynamicAlt} - Foto ${idx + 1}`} 
+          />
         ))}
       </div>
       <div className={`absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none ${roundedClass}`}></div>
@@ -66,44 +84,51 @@ const DynamicLandingPage = () => {
   const { seoSlug } = useParams(); 
   const navigate = useNavigate();
 
-  // 1. DECODE URL SLUG (Misal: "transit-3-jam-murah" jadi "transit 3 jam murah")
+  // 1. DECODE URL SLUG
   const slug = seoSlug ? seoSlug.toLowerCase().replace(/-/g, ' ') : '';
 
-  // 2. DETEKSI INTENSI USER
+  // 2. DETEKSI INTENSI & LOKASI (JURUS KUDA TROYA)
   const isMurah = slug.includes('murah') || slug.includes('budget');
   const isKeluarga = slug.includes('keluarga') || slug.includes('2br') || slug.includes('luas');
   const isTransit = slug.includes('transit');
+  
+  // Deteksi Objek Wisata/Pusat Keramaian
+  const isAeon = slug.includes('aeon');
+  const isSicc = slug.includes('sicc');
+  const isJungle = slug.includes('jungleland');
+  const isSirkuit = slug.includes('sirkuit');
 
   // 3. FILTER UNIT CERDAS
-  // Karena semua unit ada di Sentul Tower, kita atur prioritas tampilannya
   let displayRooms = [...roomsData];
 
   if (isMurah) {
-    // Jika cari murah, tampilkan Studio & 1BR saja
     displayRooms = displayRooms.filter(r => r.type === 'Studio' || r.type === '1BR');
   } else if (isKeluarga) {
-    // Jika cari untuk keluarga, tampilkan 2BR dan 1BR
     displayRooms = displayRooms.filter(r => r.type === '2BR' || r.type === '1BR');
   }
 
-  // Batasi hanya tampilkan 6 unit terbaik di halaman SEO ini agar loading cepat
   displayRooms = displayRooms.slice(0, 6);
 
-  // 4. FORMAT JUDUL HALAMAN (Cantik & SEO Friendly)
+  // 4. FORMAT JUDUL HALAMAN
   const pageTitle = seoSlug
     ? seoSlug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
     : 'Sewa Apartemen Sentul Tower';
 
-  // 👇 5. COPYWRITING DINAMIS (JURUS BUNGLON)
+  // 5. COPYWRITING DINAMIS (JURUS BUNGLON + KUDA TROYA)
   let dynamicDesc = "Pilihan unit apartemen Sentul Tower terbaik yang sesuai dengan pencarian Anda. Privasi terjamin, higienis, dan nyaman untuk staycation atau istirahat sejenak.";
-  if (isTransit) {
-    dynamicDesc = `Layanan ${pageTitle.toLowerCase()} dengan fasilitas lengkap. Sangat cocok untuk Anda yang butuh tempat istirahat sementara yang bersih, aman, dan tanpa ribet di sekitar Sentul.`;
+  
+  if (isAeon) {
+    dynamicDesc = `Butuh penginapan setelah lelah belanja di AEON Mall Sentul? Unit kami hanya berjarak 2 menit berjalan kaki. Solusi paling strategis dan nyaman untuk Anda.`;
+  } else if (isSicc) {
+    dynamicDesc = `Menghadiri event atau wisuda di SICC? Stay di Sentul Tower adalah pilihan paling pas karena jaraknya yang sangat dekat dan bebas macet menuju venue SICC.`;
+  } else if (isJungle) {
+    dynamicDesc = `Habis seru-seruan di JungleLand? Istirahat di apartemen kami dengan fasilitas lengkap untuk memulihkan energi Anda bersama keluarga dengan tenang.`;
+  } else if (isTransit) {
+    dynamicDesc = `Layanan ${pageTitle.toLowerCase()} dengan fasilitas lengkap (Netflix, WiFi, Water Heater). Sangat cocok untuk istirahat sementara yang bersih, aman, dan tanpa ribet.`;
   } else if (isMurah) {
-    dynamicDesc = `Mencari ${pageTitle.toLowerCase()}? Kami menawarkan unit dengan harga paling terjangkau di Sentul Tower tanpa mengorbankan kenyamanan dan kebersihan.`;
+    dynamicDesc = `Mencari ${pageTitle.toLowerCase()}? Kami menawarkan unit dengan harga paling terjangkau di Sentul Tower tanpa mengorbankan kenyamanan, privasi, dan kebersihan.`;
   } else if (isKeluarga) {
-    dynamicDesc = `Nikmati momen kebersamaan dengan ${pageTitle.toLowerCase()}. Unit luas, fasilitas lengkap seperti di rumah sendiri, dengan pemandangan pegunungan yang menenangkan.`;
-  } else {
-    dynamicDesc = `Temukan ${pageTitle.toLowerCase()} dengan pelayanan bintang 5. Bebas ribet, privasi 100% aman, dan berdekatan langsung dengan pusat kuliner serta AEON Mall Sentul City.`;
+    dynamicDesc = `Nikmati momen kebersamaan dengan ${pageTitle.toLowerCase()}. Unit luas 2BR, fasilitas lengkap, dengan pemandangan pegunungan Sentul yang menenangkan.`;
   }
 
   // Jika URL error/aneh, batalkan render
@@ -111,9 +136,9 @@ const DynamicLandingPage = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-24">
+      <ScrollToTop />
       <Helmet>
         <title>{pageTitle} | Apartemen Sentul Tower</title>
-        {/* 👇 Meta Description akan berubah sesuai paragraf bunglon */}
         <meta name="description" content={dynamicDesc} />
         <link rel="canonical" href={`https://apartemensentultower.com/${seoSlug}`} />
       </Helmet>
@@ -131,7 +156,6 @@ const DynamicLandingPage = () => {
             {pageTitle}
           </h1>
           
-          {/* 👇 Paragraf layar akan berubah sesuai keyword */}
           <p className="text-slate-400 max-w-xl mx-auto text-sm leading-relaxed font-medium">
             {dynamicDesc}
           </p>
