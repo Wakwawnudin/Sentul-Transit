@@ -10,9 +10,11 @@ import {
   ShoppingBag, Palmtree, Maximize, Search
 } from 'lucide-react';
 
-// Import data kamar
+// Import data kamar & Komponen SEO
 import { roomsData } from './roomsData';
 import SEOStructuredData from './SEOStructuredData';
+import SEOStructuredDataHome from './SEOStructuredDataHome'; // 👇 INJEKSI BARU
+import DynamicLandingPage from './DynamicLandingPage'; // 👇 INJEKSI BARU
 
 // --- KOMPONEN SCROLL TO TOP ---
 const ScrollToTop = () => {
@@ -139,7 +141,6 @@ const GoogleMapsLogo = () => (
 const HomePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   
-  // 👇 UPDATE: Ambil filter & page dari URL
   const pageParam = searchParams.get('page');
   const filterParam = searchParams.get('filter');
 
@@ -155,7 +156,6 @@ const HomePage = () => {
   const waNumber = "6283830033717";
   const mapsLink = "https://share.google/490MII2W8A99899m7";
 
-  // 👇 UPDATE: Sinkronisasi URL saat currentPage ATAU activeFilter berubah
   useEffect(() => {
     const currentParams = Object.fromEntries([...searchParams]);
     setSearchParams({ ...currentParams, filter: activeFilter, page: currentPage });
@@ -171,7 +171,6 @@ const HomePage = () => {
     if (ref) setRefCode(ref);
   }, []);
 
-  // Reset ke halaman 1 jika filter berubah
   const handleFilterChange = (filter) => {
     setActiveFilter(filter);
     setCurrentPage(1);
@@ -728,9 +727,14 @@ const App = () => {
   return (
     <HelmetProvider>
       <ScrollToTop />
+      {/* 👇 Panggil SEO Home di sini agar dibaca Google */}
+      <SEOStructuredDataHome /> 
+      
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/unit/:slug" element={<UnitDetailPage />} />
+        {/* 👇 Route penangkap keyword SEO (Harus ditaruh paling bawah) */}
+        <Route path="/:seoSlug" element={<DynamicLandingPage />} />
       </Routes>
       <Analytics />
     </HelmetProvider>
