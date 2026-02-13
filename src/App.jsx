@@ -29,10 +29,24 @@ const ScrollToTop = () => {
   return null;
 };
 
-// --- KOMPONEN IMAGE SLIDER (TIDAK DIUBAH) ---
+// --- KOMPONEN IMAGE SLIDER (OPTIMIZED: SEO MATA ELANG & SPEED) ---
 const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32px]", altPrefix = "Apartemen Sentul Tower" }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef(null);
+  const { seoSlug } = useParams(); // Ambil keyword dari URL untuk ALT text otomatis
+
+  // ⚙️ Optimasi Gambar: Paksa ke format WebP & Kualitas 80 agar loading kilat
+  const optimizeImg = (url) => {
+    if (url.includes('imagekit.io')) {
+      return `${url.split('?')[0]}?tr=w-800,f-webp,q-80`;
+    }
+    return url;
+  };
+
+  // ⚙️ SEO Alt Text: Jika di halaman SEO, gunakan keyword URL sebagai nama gambar
+  const dynamicAlt = seoSlug 
+    ? seoSlug.replace(/-/g, ' ') 
+    : altPrefix;
 
   useEffect(() => {
     if (images.length <= 1) return;
@@ -81,10 +95,10 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
         {images.map((img, idx) => (
           <img 
             key={idx}
-            src={img} 
+            src={optimizeImg(img)} 
             loading="lazy" 
             className="w-full h-full object-cover shrink-0 snap-center" 
-            alt={`${altPrefix} - Foto ${idx + 1}`} 
+            alt={`${dynamicAlt} - ${idx + 1}`} 
           />
         ))}
       </div>
