@@ -84,7 +84,6 @@ export const realUnits = [
       'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2012/20260207_215054.jpg?updatedAt=1770485467769&tr=w-800,q-80',
       'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2012/20260207_215107.jpg?updatedAt=1770485467865&tr=w-800,q-80',
       'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2012/20260207_215120.jpg?updatedAt=1770485467711&tr=w-800,q-80',
-      'https://ik.imagekit.io/x06namgbin/STUDIO%20LANTAI%2012/20260207_215139.jpg?updatedAt=1770485467195&tr=w-800,q-80'
     ]
   },
   {
