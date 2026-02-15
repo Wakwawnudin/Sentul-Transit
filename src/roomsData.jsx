@@ -87,7 +87,7 @@ export const realUnits = [
     ]
   },
   {
-    type: '1BR', floor: 'Lantai 01',
+    type: '1BR', floor: 'Deluxe',
     images: [
       'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215859.jpg?updatedAt=1770486566474&tr=w-800,q-80',
       'https://ik.imagekit.io/x06namgbin/1%20BEDROOM%20LANTAI%201/20260207_215257.jpg?updatedAt=1770482875988&tr=w-800,q-80',
