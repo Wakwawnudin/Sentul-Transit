@@ -30,7 +30,8 @@ const ScrollToTop = () => {
 };
 
 // --- KOMPONEN IMAGE SLIDER (OPTIMIZED: SEO MATA ELANG & SPEED) ---
-const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32px]", altPrefix = "Apartemen Sentul Tower" }) => {
+const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32px]", altPrefix = "Apartemen Sentul Tower", priority = false }) => {
+
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef(null);
   const { seoSlug } = useParams(); 
@@ -92,10 +93,13 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
           <img 
             key={idx}
             src={optimizeImg(img)} 
-            loading="lazy" 
+            // 👇 Hanya gambar pertama dari slider prioritas yang dipaksa loading instan
+            loading={priority && idx === 0 ? "eager" : "lazy"} 
+            fetchpriority={priority && idx === 0 ? "high" : "auto"}
             className="w-full h-full object-cover shrink-0 snap-center" 
             alt={`${dynamicAlt} - ${idx + 1}`} 
           />
+
         ))}
       </div>
       <div className={`absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none ${roundedClass}`}></div>
@@ -272,34 +276,36 @@ const HomePage = () => {
         <meta name="description" content="Daftar Harga Sewa Apartemen Sentul Tower: Transit 3 Jam (150rb), 6 Jam (200rb), Fullday (300rb). Fasilitas Netflix, Wifi, Water Heater. Booking via WA." />
       </Helmet>
 
-      {/* NAVBAR: Mobile 100% Asli, Desktop Kaca Premium */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 px-6 py-4 flex justify-between items-center transition-all duration-300 md:px-12 ${scrolled ? 'bg-gradient-to-b from-black/80 to-transparent md:bg-white/90 md:backdrop-blur-xl md:border-b md:border-slate-200 md:py-3' : 'bg-gradient-to-b from-black/80 to-transparent md:bg-transparent md:py-6'}`}>
+      {/* NAVBAR: Mobile & Desktop 100% Transparan/Gradient */}
+      <nav className={`fixed top-0 left-0 right-0 z-50 px-6 flex justify-between items-center transition-all duration-300 md:px-12 bg-gradient-to-b from-black/80 to-transparent ${scrolled ? 'py-4 md:py-3' : 'py-4 md:py-6'}`}>
         <div className="flex items-center gap-3">
           <img 
             src="https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/1770491932595.png" 
             alt="Logo Apartemen Sentul Tower - Sewa Harian" 
-            className={`h-14 w-auto object-contain drop-shadow-md transition-all duration-300 ${scrolled ? 'md:brightness-0 md:invert-0' : ''}`} 
+            className="h-14 w-auto object-contain drop-shadow-md" 
           />
           <div className="flex flex-col justify-center pl-1">
-            <span className={`font-black text-[10px] md:text-sm tracking-[0.2em] leading-tight uppercase drop-shadow-md transition-colors ${scrolled ? 'text-white md:text-slate-900' : 'text-white'}`}>APARTEMEN</span>
+            <span className="font-black text-[10px] md:text-sm tracking-[0.2em] leading-tight uppercase drop-shadow-md text-white">APARTEMEN</span>
             <span className="font-black text-[11px] md:text-base text-[#D4AF37] tracking-widest leading-tight uppercase -mt-0.5 drop-shadow-md">SENTUL TOWER</span>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <a href={mapsLink} target="_blank" rel="noopener noreferrer" aria-label="Lokasi Google Maps" className={`p-2.5 rounded-full border shadow-lg active:scale-90 transition-all flex items-center justify-center ${scrolled ? 'bg-white/20 backdrop-blur-md border-white/30 text-white md:bg-white md:border-slate-200 md:text-slate-600 md:hover:bg-slate-50' : 'bg-white/20 backdrop-blur-md border-white/30 text-white hover:bg-white/30'}`}>
+          <a href={mapsLink} target="_blank" rel="noopener noreferrer" aria-label="Lokasi Google Maps" className="p-2.5 rounded-full border shadow-lg active:scale-90 transition-all flex items-center justify-center bg-white/20 backdrop-blur-md border-white/30 text-white hover:bg-white/30">
              <GoogleMapsLogo />
           </a>
-          <button onClick={() => handleWaClick("general")} aria-label="Chat WhatsApp Admin" className={`p-2.5 rounded-full border shadow-lg active:scale-90 transition-all ${scrolled ? 'bg-white/20 backdrop-blur-md text-white border-white/30 md:bg-slate-900 md:text-white md:border-slate-900 md:hover:bg-slate-800' : 'bg-white/20 backdrop-blur-md text-white border-white/30 hover:bg-green-500/80 hover:border-green-500'}`}>
+          <button onClick={() => handleWaClick("general")} aria-label="Chat WhatsApp Admin" className="p-2.5 rounded-full border shadow-lg active:scale-90 transition-all bg-white/20 backdrop-blur-md text-white border-white/30 hover:bg-green-500/80 hover:border-green-500">
             <MessageCircle size={20} />
           </button>
         </div>
       </nav>
 
+
       {/* HERO: Mobile 100% Asli, Desktop Cinematic 75vh */}
       <header className="relative h-[600px] md:h-[75vh] w-full overflow-hidden">
         <div className="absolute inset-0 w-full h-full">
-           <ImageSlider images={heroImages} heightClass="h-full" roundedClass="rounded-none" altPrefix="Fasilitas & View Apartemen Sentul Tower" />
+           <ImageSlider images={heroImages} heightClass="h-full" roundedClass="rounded-none" altPrefix="Fasilitas & View Apartemen Sentul Tower" priority={true} />
         </div>
+
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent md:from-black/60 md:via-black/30 md:to-transparent flex flex-col justify-end p-6 pb-20 md:items-center md:justify-center md:text-center md:pb-0 pointer-events-none z-20">
           <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-md border border-white/10 text-[#D4AF37] text-[10px] md:text-xs font-bold px-3 py-1.5 md:px-5 md:py-2.5 rounded-full w-fit mb-3 md:mb-6 shadow-lg">
             <MapPin size={10} className="md:w-4 md:h-4" /> DEKAT AEON MALL SENTUL
@@ -309,8 +315,9 @@ const HomePage = () => {
         </div>
       </header>
 
-      {/* RINGKASAN HARGA: Mobile 100% Asli, Desktop Melayang (Floating) */}
-      <section className="px-4 py-8 bg-white/50 backdrop-blur-sm md:bg-transparent md:backdrop-blur-none relative z-10 md:max-w-4xl md:mx-auto md:-mt-16 md:py-0" aria-label="Ringkasan Harga">
+      {/* RINGKASAN HARGA: Tanpa Tabrakan (Clean Stacked Layout) */}
+      <section className="px-4 py-8 bg-white/50 backdrop-blur-sm relative z-10 md:max-w-4xl md:mx-auto md:mt-10 md:bg-transparent md:backdrop-blur-none" aria-label="Ringkasan Harga">
+
         <div className="bg-white rounded-[24px] md:rounded-[32px] shadow-2xl shadow-slate-200/50 border border-slate-100 p-4 md:p-6 grid grid-cols-2 gap-3 md:gap-6">
           <div className="bg-slate-50 p-4 md:p-8 rounded-2xl md:rounded-3xl flex flex-col items-center border border-slate-100 group hover:border-[#D4AF37]/50 transition-colors">
             <Clock className="text-[#D4AF37] mb-1.5 md:mb-3 md:w-8 md:h-8 transition-transform group-hover:scale-110" size={18} />
