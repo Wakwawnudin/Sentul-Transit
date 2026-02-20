@@ -689,7 +689,8 @@ const UnitDetailPage = () => {
             
             {/* KOLOM KIRI: Slider Gambar */}
             <div className="relative mb-6 md:mb-0 md:sticky md:top-0">
-               <ImageSlider images={selectedRoom.images} heightClass="h-72 md:h-[60vh]" roundedClass="rounded-[32px] md:rounded-[40px]" altPrefix={`Detail ${selectedRoom.name} - ${selectedRoom.floorLevel}`} />
+               <ImageSlider images={selectedRoom.images} heightClass="h-72 md:h-[450px]" roundedClass="rounded-[32px] md:rounded-[40px]" altPrefix={`Detail ${selectedRoom.name} - ${selectedRoom.floorLevel}`} />
+
                <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 md:px-5 md:py-2.5 rounded-xl shadow-sm z-20">
                   <p className="text-[10px] md:text-xs font-black text-[#D4AF37] uppercase tracking-widest">Pilihan {selectedRoom.type}</p>
                </div>
