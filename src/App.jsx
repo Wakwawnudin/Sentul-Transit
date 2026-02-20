@@ -13,8 +13,8 @@ import {
 // Import data kamar & Komponen SEO
 import { roomsData } from './roomsData';
 import SEOStructuredData from './SEOStructuredData';
-import SEOStructuredDataHome from './SEOStructuredDataHome'; // 👇 INJEKSI BARU
-import DynamicLandingPage from './DynamicLandingPage'; // 👇 INJEKSI BARU
+import SEOStructuredDataHome from './SEOStructuredDataHome'; 
+import DynamicLandingPage from './DynamicLandingPage'; 
 
 // --- KOMPONEN SCROLL TO TOP ---
 const ScrollToTop = () => {
@@ -33,9 +33,8 @@ const ScrollToTop = () => {
 const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32px]", altPrefix = "Apartemen Sentul Tower" }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef(null);
-  const { seoSlug } = useParams(); // Ambil keyword dari URL untuk ALT text otomatis
+  const { seoSlug } = useParams(); 
 
-  // ⚙️ Optimasi Gambar: Paksa ke format WebP & Kualitas 80 agar loading kilat
   const optimizeImg = (url) => {
     if (url.includes('imagekit.io')) {
       return `${url.split('?')[0]}?tr=w-800,f-webp,q-80`;
@@ -43,10 +42,7 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
     return url;
   };
 
-  // ⚙️ SEO Alt Text: Jika di halaman SEO, gunakan keyword URL sebagai nama gambar
-  const dynamicAlt = seoSlug 
-    ? seoSlug.replace(/-/g, ' ') 
-    : altPrefix;
+  const dynamicAlt = seoSlug ? seoSlug.replace(/-/g, ' ') : altPrefix;
 
   useEffect(() => {
     if (images.length <= 1) return;
@@ -150,7 +146,6 @@ const GoogleMapsLogo = () => (
     <path d="M12 2c-.34 0-.67.02-1 .07V9h1V2z" fill="#EA4335"/>
   </svg>
 );
-
 // --- HALAMAN UTAMA (HOME) ---
 const HomePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -166,7 +161,25 @@ const HomePage = () => {
   const [currentPage, setCurrentPage] = useState(initialPage); 
   const [jumpPageInput, setJumpPageInput] = useState(""); 
 
-  const itemsPerPage = 3; 
+  // 👇 LOGIKA PINTAR: 3 Unit di Mobile, 6 Unit di Desktop
+  const [itemsPerPage, setItemsPerPage] = useState(3);
+  useEffect(() => {
+    const handleResize = () => {
+      setItemsPerPage(window.innerWidth >= 768 ? 6 : 3);
+    };
+    handleResize(); // Cek saat pertama load
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // 👇 LOGIKA SCROLL: Untuk Navbar Kaca di Desktop
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const waNumber = "6283830033717";
   const mapsLink = "https://share.google/490MII2W8A99899m7";
 
@@ -213,7 +226,7 @@ const HomePage = () => {
     const targetPage = Number(pageNumber);
     if (targetPage >= 1 && targetPage <= totalPages) {
         setCurrentPage(targetPage);
-        window.scrollTo({ top: 500, behavior: 'smooth' });
+        window.scrollTo({ top: window.innerWidth >= 768 ? 600 : 500, behavior: 'smooth' });
     }
   };
 
@@ -259,71 +272,78 @@ const HomePage = () => {
         <meta name="description" content="Daftar Harga Sewa Apartemen Sentul Tower: Transit 3 Jam (150rb), 6 Jam (200rb), Fullday (300rb). Fasilitas Netflix, Wifi, Water Heater. Booking via WA." />
       </Helmet>
 
-      <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex justify-between items-center transition-all duration-300 bg-gradient-to-b from-black/80 to-transparent">
+      {/* NAVBAR: Mobile 100% Asli, Desktop Kaca Premium */}
+      <nav className={`fixed top-0 left-0 right-0 z-50 px-6 py-4 flex justify-between items-center transition-all duration-300 md:px-12 ${scrolled ? 'bg-gradient-to-b from-black/80 to-transparent md:bg-white/90 md:backdrop-blur-xl md:border-b md:border-slate-200 md:py-3' : 'bg-gradient-to-b from-black/80 to-transparent md:bg-transparent md:py-6'}`}>
         <div className="flex items-center gap-3">
           <img 
             src="https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/1770491932595.png" 
             alt="Logo Apartemen Sentul Tower - Sewa Harian" 
-            className="h-14 w-auto object-contain drop-shadow-md" 
+            className={`h-14 w-auto object-contain drop-shadow-md transition-all duration-300 ${scrolled ? 'md:brightness-0 md:invert-0' : ''}`} 
           />
           <div className="flex flex-col justify-center pl-1">
-            <span className="font-black text-[10px] md:text-sm text-white tracking-[0.2em] leading-tight uppercase drop-shadow-md">APARTEMEN</span>
+            <span className={`font-black text-[10px] md:text-sm tracking-[0.2em] leading-tight uppercase drop-shadow-md transition-colors ${scrolled ? 'text-white md:text-slate-900' : 'text-white'}`}>APARTEMEN</span>
             <span className="font-black text-[11px] md:text-base text-[#D4AF37] tracking-widest leading-tight uppercase -mt-0.5 drop-shadow-md">SENTUL TOWER</span>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <a href={mapsLink} target="_blank" rel="noopener noreferrer" aria-label="Lokasi Google Maps" className="bg-white/20 backdrop-blur-md p-2.5 rounded-full border border-white/30 text-white shadow-lg active:scale-90 transition-transform flex items-center justify-center hover:bg-white/30">
+          <a href={mapsLink} target="_blank" rel="noopener noreferrer" aria-label="Lokasi Google Maps" className={`p-2.5 rounded-full border shadow-lg active:scale-90 transition-all flex items-center justify-center ${scrolled ? 'bg-white/20 backdrop-blur-md border-white/30 text-white md:bg-white md:border-slate-200 md:text-slate-600 md:hover:bg-slate-50' : 'bg-white/20 backdrop-blur-md border-white/30 text-white hover:bg-white/30'}`}>
              <GoogleMapsLogo />
           </a>
-          <button onClick={() => handleWaClick("general")} aria-label="Chat WhatsApp Admin" className="bg-white/20 backdrop-blur-md text-white p-2.5 rounded-full border border-white/30 shadow-lg active:scale-90 transition-transform hover:bg-green-500/80 hover:border-green-500">
+          <button onClick={() => handleWaClick("general")} aria-label="Chat WhatsApp Admin" className={`p-2.5 rounded-full border shadow-lg active:scale-90 transition-all ${scrolled ? 'bg-white/20 backdrop-blur-md text-white border-white/30 md:bg-slate-900 md:text-white md:border-slate-900 md:hover:bg-slate-800' : 'bg-white/20 backdrop-blur-md text-white border-white/30 hover:bg-green-500/80 hover:border-green-500'}`}>
             <MessageCircle size={20} />
           </button>
         </div>
       </nav>
 
-      <header className="relative h-[600px] w-full overflow-hidden">
+      {/* HERO: Mobile 100% Asli, Desktop Cinematic 75vh */}
+      <header className="relative h-[600px] md:h-[75vh] w-full overflow-hidden">
         <div className="absolute inset-0 w-full h-full">
            <ImageSlider images={heroImages} heightClass="h-full" roundedClass="rounded-none" altPrefix="Fasilitas & View Apartemen Sentul Tower" />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent flex flex-col justify-end p-6 pb-20 pointer-events-none z-20">
-          <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-md border border-white/10 text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-full w-fit mb-3 shadow-lg">
-            <MapPin size={10} /> DEKAT AEON MALL SENTUL
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent md:from-black/60 md:via-black/30 md:to-transparent flex flex-col justify-end p-6 pb-20 md:items-center md:justify-center md:text-center md:pb-0 pointer-events-none z-20">
+          <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-md border border-white/10 text-[#D4AF37] text-[10px] md:text-xs font-bold px-3 py-1.5 md:px-5 md:py-2.5 rounded-full w-fit mb-3 md:mb-6 shadow-lg">
+            <MapPin size={10} className="md:w-4 md:h-4" /> DEKAT AEON MALL SENTUL
           </div>
-          <h1 className="text-3xl font-black text-white leading-tight uppercase tracking-tight drop-shadow-lg mb-1">Apartemen Sentul Tower</h1>
-          <p className="text-slate-200 text-sm italic font-medium drop-shadow-md">Solusi Staycation Mewah & Nyaman</p>
+          <h1 className="text-3xl md:text-6xl lg:text-7xl font-black text-white leading-tight uppercase tracking-tight drop-shadow-lg mb-1 md:mb-4">Apartemen Sentul Tower</h1>
+          <p className="text-slate-200 text-sm md:text-xl italic font-medium drop-shadow-md max-w-2xl">Solusi Staycation Mewah & Nyaman tepat di jantung Sentul City.</p>
         </div>
       </header>
 
-      <section className="px-4 py-8 bg-white/50 backdrop-blur-sm relative z-10" aria-label="Ringkasan Harga">
-        <div className="bg-white rounded-[24px] shadow-2xl shadow-slate-200/50 border border-slate-100 p-4 grid grid-cols-2 gap-3">
-          <div className="bg-slate-50 p-4 rounded-2xl flex flex-col items-center border border-slate-100">
-            <Clock className="text-[#D4AF37] mb-1.5" size={18} />
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Transit</span>
-            <span className="text-sm font-black text-slate-800 underline decoration-[#D4AF37]/50 decoration-2 underline-offset-4 tracking-tight">Mulai 150rb</span>
+      {/* RINGKASAN HARGA: Mobile 100% Asli, Desktop Melayang (Floating) */}
+      <section className="px-4 py-8 bg-white/50 backdrop-blur-sm md:bg-transparent md:backdrop-blur-none relative z-10 md:max-w-4xl md:mx-auto md:-mt-16 md:py-0" aria-label="Ringkasan Harga">
+        <div className="bg-white rounded-[24px] md:rounded-[32px] shadow-2xl shadow-slate-200/50 border border-slate-100 p-4 md:p-6 grid grid-cols-2 gap-3 md:gap-6">
+          <div className="bg-slate-50 p-4 md:p-8 rounded-2xl md:rounded-3xl flex flex-col items-center border border-slate-100 group hover:border-[#D4AF37]/50 transition-colors">
+            <Clock className="text-[#D4AF37] mb-1.5 md:mb-3 md:w-8 md:h-8 transition-transform group-hover:scale-110" size={18} />
+            <span className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest">Transit</span>
+            <span className="text-sm md:text-xl font-black text-slate-800 underline decoration-[#D4AF37]/50 decoration-2 underline-offset-4 tracking-tight md:mt-1">Mulai 150rb</span>
           </div>
-          <div className="bg-slate-50 p-4 rounded-2xl flex flex-col items-center border border-slate-100">
-            <Calendar className="text-[#D4AF37] mb-1.5" size={18} />
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Fullday</span>
-            <span className="text-sm font-black text-slate-800 underline decoration-[#D4AF37]/50 decoration-2 underline-offset-4 tracking-tight">Mulai 300rb</span>
+          <div className="bg-slate-50 p-4 md:p-8 rounded-2xl md:rounded-3xl flex flex-col items-center border border-slate-100 group hover:border-[#D4AF37]/50 transition-colors">
+            <Calendar className="text-[#D4AF37] mb-1.5 md:mb-3 md:w-8 md:h-8 transition-transform group-hover:scale-110" size={18} />
+            <span className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest">Fullday</span>
+            <span className="text-sm md:text-xl font-black text-slate-800 underline decoration-[#D4AF37]/50 decoration-2 underline-offset-4 tracking-tight md:mt-1">Mulai 300rb</span>
           </div>
         </div>
       </section>
 
-      <section className="px-4 py-8" aria-label="Daftar Unit Apartemen">
-        <div className="flex flex-col gap-4 mb-6 md:flex-row md:justify-between md:items-center">
-          <h2 className="text-lg font-black text-slate-800 uppercase tracking-widest">KATALOG APARTEMEN</h2>
+      {/* KATALOG UNIT: Mobile 100% Asli, Desktop Grid 3 Kolom */}
+      <section className="px-4 py-8 md:max-w-6xl md:mx-auto md:px-6 md:py-16" aria-label="Daftar Unit Apartemen">
+        <div className="flex flex-col gap-4 mb-6 md:mb-12 md:flex-row md:justify-between md:items-end">
+          <div>
+            <h2 className="text-lg md:text-3xl font-black text-slate-800 uppercase tracking-widest md:tracking-tighter md:mb-2">KATALOG APARTEMEN</h2>
+            <p className="hidden md:block text-slate-500 font-medium">Pilih unit premium yang sesuai dengan kebutuhan Anda.</p>
+          </div>
           <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1 md:pb-0">
             {['Semua', 'Studio', '1BR', '2BR'].map(f => (
-              <button key={f} onClick={() => handleFilterChange(f)} className={`text-[9px] font-black px-3.5 py-2 rounded-full border transition-all whitespace-nowrap ${activeFilter === f ? 'bg-slate-900 border-slate-900 text-[#D4AF37] shadow-lg' : 'bg-white border-slate-200 text-slate-500 hover:border-[#D4AF37] hover:text-[#D4AF37]'}`}>{f}</button>
+              <button key={f} onClick={() => handleFilterChange(f)} className={`text-[9px] md:text-xs font-black px-3.5 py-2 md:px-6 md:py-3 rounded-full border transition-all whitespace-nowrap ${activeFilter === f ? 'bg-slate-900 border-slate-900 text-[#D4AF37] shadow-lg' : 'bg-white border-slate-200 text-slate-500 hover:border-[#D4AF37] hover:text-[#D4AF37]'}`}>{f}</button>
             ))}
           </div>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-6 md:space-y-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-8">
           {currentItems.map(room => (
-            <Link to={`/unit/${room.slug}`} key={room.id} className="block bg-white rounded-[32px] p-3 shadow-sm border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer group">
+            <Link to={`/unit/${room.slug}`} key={room.id} className="block bg-white rounded-[32px] md:rounded-[40px] p-3 md:p-4 shadow-sm border border-slate-100 active:scale-[0.98] transition-all duration-500 cursor-pointer group md:hover:shadow-2xl md:hover:-translate-y-2">
               <div className="relative">
-                <ImageSlider images={room.images} heightClass="h-72" roundedClass="rounded-[24px]" altPrefix={room.altPrefix} />
+                <ImageSlider images={room.images} heightClass="h-72 md:h-64" roundedClass="rounded-[24px] md:rounded-[32px]" altPrefix={room.altPrefix} />
                 <div className="absolute top-4 left-4 flex gap-2 pointer-events-none z-20">
                   <span className="bg-black/70 backdrop-blur-md text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest">{room.type}</span>
                   {room.type === '2BR' && <span className="bg-[#D4AF37] text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg">PREMIUM</span>}
@@ -335,23 +355,23 @@ const HomePage = () => {
                 </div>
               </div>
 
-              <div className="pt-5 px-3 pb-3">
-                <h3 className="text-xl font-black text-slate-900 mb-1.5 uppercase tracking-tight">{room.name}</h3>
+              <div className="pt-5 px-3 pb-3 md:p-6">
+                <h3 className="text-xl md:text-2xl font-black text-slate-900 mb-1.5 uppercase tracking-tight group-hover:text-[#D4AF37] transition-colors">{room.name}</h3>
                 <div className="flex items-center gap-4 text-slate-400 text-[11px] font-bold mb-4 uppercase tracking-wide">
-                  <div className="flex items-center gap-1.5"><Maximize size={14}/> {room.size}</div>
-                  <div className="flex items-center gap-1.5"><Bed size={14}/> {room.beds} Bed</div>
-                  <div className="flex items-center gap-1.5"><Shield size={14}/> 24/7 Aman</div>
+                  <div className="flex items-center gap-1.5"><Maximize size={14} className="md:text-[#D4AF37]/50"/> {room.size}</div>
+                  <div className="flex items-center gap-1.5"><Bed size={14} className="md:text-[#D4AF37]/50"/> {room.beds} Bed</div>
+                  <div className="flex items-center gap-1.5"><Shield size={14} className="md:text-[#D4AF37]/50"/> 24/7 Aman</div>
                 </div>
-                <div className="flex items-center gap-1.5 mb-3">
+                <div className="flex items-center gap-1.5 mb-3 md:mb-6">
                    <CheckCircle2 size={12} className="text-green-500" fill="currentColor" color="white" />
                    <span className="text-[10px] font-bold text-slate-500 tracking-tight">Verified • Higienis • Aman</span>
                 </div>
-                <div className="flex justify-between items-end pt-4 border-t border-slate-50">
+                <div className="flex justify-between items-end pt-4 border-t border-slate-50 md:pt-6">
                   <div>
                     <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1">Harga Mulai</p>
-                    <p className="text-2xl font-black text-slate-900 tracking-tight">Rp {room.startFrom}</p>
+                    <p className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Rp {room.startFrom}</p>
                   </div>
-                  <button className="bg-slate-900 text-white font-bold px-6 py-3 rounded-2xl text-[11px] uppercase tracking-widest shadow-lg shadow-slate-200">Detail</button>
+                  <button className="bg-slate-900 text-white font-bold px-6 py-3 md:px-8 md:py-4 rounded-2xl md:rounded-[20px] text-[11px] md:text-xs uppercase tracking-widest shadow-lg shadow-slate-200 group-hover:bg-[#D4AF37] transition-colors">Detail</button>
                 </div>
               </div>
             </Link>
@@ -359,8 +379,8 @@ const HomePage = () => {
         </div>
 
         {totalPages > 1 && (
-          <div className="mt-8 flex flex-col items-center gap-4">
-             <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+          <div className="mt-8 md:mt-16 flex flex-col items-center gap-4">
+             <div className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest">
                 Menampilkan {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, filteredRooms.length)} dari {filteredRooms.length} Unit
              </div>
              
@@ -369,11 +389,11 @@ const HomePage = () => {
                   onClick={() => handlePageChange(currentPage - 1)} 
                   disabled={currentPage === 1}
                   aria-label="Halaman Sebelumnya"
-                  className={`p-3 rounded-xl border transition-all ${currentPage === 1 ? 'bg-slate-50 border-slate-100 text-slate-300' : 'bg-white border-slate-200 text-slate-800 hover:border-[#D4AF37] shadow-sm'}`}
+                  className={`p-3 rounded-xl border transition-all ${currentPage === 1 ? 'bg-slate-50 border-slate-100 text-slate-300' : 'bg-white border-slate-200 text-slate-800 hover:border-[#D4AF37] shadow-sm hover:bg-slate-50'}`}
                 >
                    <ChevronLeft size={16} />
                 </button>
-                <div className="flex gap-1">
+                <div className="flex gap-1 md:gap-2">
                    {(() => {
                       let pages = [];
                       if (totalPages <= 5) {
@@ -388,12 +408,12 @@ const HomePage = () => {
                           key={index}
                           onClick={() => typeof page === 'number' && handlePageChange(page)}
                           disabled={page === '...'}
-                          className={`w-10 h-10 flex items-center justify-center rounded-xl text-xs font-black transition-all ${
+                          className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl md:rounded-2xl text-xs md:text-sm font-black transition-all ${
                             page === currentPage 
                               ? 'bg-slate-900 text-[#D4AF37] shadow-lg scale-110 z-10' 
                               : page === '...'
                                 ? 'bg-transparent text-slate-400 cursor-default border-none' 
-                                : 'bg-white border border-slate-200 text-slate-500 hover:bg-slate-50'
+                                : 'bg-white border border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-[#D4AF37]'
                           }`}
                         >
                            {page}
@@ -405,27 +425,27 @@ const HomePage = () => {
                   onClick={() => handlePageChange(currentPage + 1)} 
                   disabled={currentPage === totalPages}
                   aria-label="Halaman Selanjutnya"
-                  className={`p-3 rounded-xl border transition-all ${currentPage === totalPages ? 'bg-slate-50 border-slate-100 text-slate-300' : 'bg-white border-slate-200 text-slate-800 hover:border-[#D4AF37] shadow-sm'}`}
+                  className={`p-3 rounded-xl border transition-all ${currentPage === totalPages ? 'bg-slate-50 border-slate-100 text-slate-300' : 'bg-white border-slate-200 text-slate-800 hover:border-[#D4AF37] shadow-sm hover:bg-slate-50'}`}
                 >
                    <ChevronRight size={16} />
                 </button>
              </div>
 
-             <form onSubmit={handleJumpSubmit} className="flex items-center gap-2 bg-white p-1.5 pl-3 rounded-xl border border-slate-200 shadow-sm mt-1">
-                <span className="text-[10px] font-bold text-slate-400 uppercase">Lompat ke Hal:</span>
+             <form onSubmit={handleJumpSubmit} className="flex items-center gap-2 bg-white p-1.5 pl-3 md:p-2 md:pl-5 rounded-xl md:rounded-2xl border border-slate-200 shadow-sm mt-1">
+                <span className="text-[10px] md:text-xs font-bold text-slate-400 uppercase">Lompat ke Hal:</span>
                 <input 
                   type="number" 
                   min="1" 
                   max={totalPages}
                   value={jumpPageInput}
                   onChange={(e) => setJumpPageInput(e.target.value)}
-                  className="w-10 h-7 bg-slate-50 rounded-lg border border-slate-200 text-center text-xs font-bold focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-none"
+                  className="w-10 h-7 md:w-16 md:h-10 bg-slate-50 rounded-lg border border-slate-200 text-center text-xs md:text-sm font-bold focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-none"
                   placeholder="#"
                 />
                 <button 
                   type="submit"
                   disabled={!jumpPageInput}
-                  className="bg-slate-900 text-[#D4AF37] h-7 px-3 rounded-lg text-[9px] font-black uppercase hover:bg-slate-800 transition-colors disabled:opacity-50"
+                  className="bg-slate-900 text-[#D4AF37] h-7 px-3 md:h-10 md:px-6 rounded-lg text-[9px] md:text-xs font-black uppercase hover:bg-slate-800 transition-colors disabled:opacity-50"
                 >
                   Go
                 </button>
@@ -434,9 +454,11 @@ const HomePage = () => {
         )}
       </section>
 
-      <footer className="bg-slate-900 text-white p-6 mx-4 rounded-[40px] mb-8 shadow-2xl relative overflow-hidden">
-        <div className="relative z-10">
-          <div className="mb-10 pb-8 border-b border-slate-800/50">
+      {/* FOOTER: Mobile 100% Asli, Desktop Lebar Premium */}
+      <footer className="bg-slate-900 text-white p-6 mx-4 rounded-[40px] mb-8 shadow-2xl relative overflow-hidden md:max-w-6xl md:mx-auto md:p-12 md:rounded-[48px] md:mb-12">
+        <div className="relative z-10 md:grid md:grid-cols-12 md:gap-12 md:items-start">
+          
+          <div className="mb-10 pb-8 border-b border-slate-800/50 md:col-span-5 md:border-b-0 md:mb-0 md:pb-0">
             <div className="flex items-center gap-2 mb-4">
               <HelpCircle className="text-[#D4AF37]" size={16} />
               <h3 className="text-xs font-black text-slate-300 uppercase tracking-widest">Tanya Jawab</h3>
@@ -452,66 +474,76 @@ const HomePage = () => {
               </div>
             </div>
           </div>
-          <div className="text-center mb-8">
-             <h3 className="text-2xl font-black mb-2 uppercase tracking-tighter italic">Apartemen Sentul Tower</h3>
-             <p className="text-slate-500 text-[10px] mb-8 italic">"Privasi & Kenyamanan Prioritas Kami"</p>
-             <h4 className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-4">Cara Order Mudah</h4>
+
+          <div className="text-center md:col-span-7 md:text-left">
+             <h3 className="text-2xl md:text-4xl font-black mb-2 uppercase tracking-tighter italic">Apartemen Sentul Tower</h3>
+             <p className="text-slate-500 text-[10px] md:text-sm mb-8 italic">"Privasi & Kenyamanan Prioritas Kami"</p>
+             
+             <h4 className="text-[10px] md:text-xs font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-4">Cara Order Mudah</h4>
              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                <div onClick={() => handleWaClick("chat")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all">
+                <div onClick={() => handleWaClick("chat")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-800 active:scale-95 transition-all">
                    <MessageCircle className="text-[#D4AF37] mb-2" size={24} />
-                   <span className="text-[10px] font-bold text-slate-300 uppercase">1. Chat WhatsApp</span>
+                   <span className="text-[10px] font-bold text-slate-300 uppercase text-center">1. Chat WA</span>
                 </div>
-                <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all">
+                <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-800 active:scale-95 transition-all">
                    <MapPin className="text-[#D4AF37] mb-2" size={24} />
-                   <span className="text-[10px] font-bold text-slate-300 uppercase">2. Datang Lokasi</span>
+                   <span className="text-[10px] font-bold text-slate-300 uppercase text-center">2. Ke Lokasi</span>
                 </a>
-                <div onClick={() => handleWaClick("key")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all">
+                <div onClick={() => handleWaClick("key")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-800 active:scale-95 transition-all">
                    <Key className="text-[#D4AF37] mb-2" size={24} />
-                   <span className="text-[10px] font-bold text-slate-300 uppercase">3. Ambil Kunci</span>
+                   <span className="text-[10px] font-bold text-slate-300 uppercase text-center">3. Ambil Kunci</span>
                 </div>
-                <div onClick={() => handleWaClick("payment")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all">
+                <div onClick={() => handleWaClick("payment")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-800 active:scale-95 transition-all">
                    <Wallet className="text-[#D4AF37] mb-2" size={24} />
-                   <span className="text-[10px] font-bold text-slate-300 uppercase">4. Bayar di Tempat</span>
+                   <span className="text-[10px] font-bold text-slate-300 uppercase text-center">4. Bayar Tujuan</span>
                 </div>
              </div>
-             <div className="mt-8 pt-8 border-t border-slate-800/50">
-                 <h4 className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-4">Lokasi Strategis</h4>
-                 <div className="grid grid-cols-2 gap-2 text-left">
+
+             <div className="mt-8 pt-8 border-t border-slate-800/50 md:mt-12 md:pt-12">
+                 <h4 className="text-[10px] md:text-xs font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-4">Lokasi Strategis</h4>
+                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-left">
                    {nearbyData.map((item, idx) => (
-                     <div key={idx} className="bg-slate-800/40 p-2.5 rounded-xl border border-slate-700/30 flex items-center gap-2.5">
+                     <div key={idx} className="bg-slate-800/40 p-2.5 md:p-4 rounded-xl md:rounded-2xl border border-slate-700/30 flex items-center gap-2.5">
                         <div className="text-[#D4AF37]">{item.icon}</div>
                         <div>
-                          <p className="text-[9px] text-slate-500 uppercase font-bold tracking-wider">{item.dist}</p>
-                          <p className="text-[10px] text-slate-200 font-bold leading-tight">{item.name}</p>
+                          <p className="text-[9px] md:text-[10px] text-slate-500 uppercase font-bold tracking-wider">{item.dist}</p>
+                          <p className="text-[10px] md:text-xs text-slate-200 font-bold leading-tight">{item.name}</p>
                         </div>
                      </div>
                    ))}
                  </div>
              </div>
           </div>
-          <div className="flex items-center justify-center gap-6 pt-6 border-t border-slate-800">
+        </div>
+
+        {/* Garis Footer Bawah */}
+        <div className="relative z-10 flex items-center justify-center gap-6 pt-6 mt-10 border-t border-slate-800 md:justify-between md:pt-8 md:mt-12">
+          <div className="flex items-center gap-6">
             <a href={mapsLink} target="_blank" rel="noopener noreferrer" aria-label="Buka Google Maps" className="bg-white p-2 rounded-xl hover:scale-110 active:scale-95 transition-all shadow-xl flex items-center justify-center">
               <GoogleMapsLogo />
             </a>
             <button onClick={() => handleWaClick("general")} aria-label="Chat WhatsApp" className="bg-[#25D366] p-2 rounded-xl hover:scale-110 active:scale-95 transition-all shadow-xl shadow-green-900/30">
               <MessageCircle className="text-white" size={20} />
             </button>
-            <div className="h-5 w-[1px] bg-slate-700"></div>
-            <p className="text-[9px] font-black text-[#D4AF37] tracking-widest uppercase text-center leading-tight">
-              Apartemen<br/>Sentul Tower
+            <div className="h-5 w-[1px] bg-slate-700 md:hidden"></div>
+            <p className="text-[9px] md:text-xs font-black text-[#D4AF37] tracking-widest uppercase text-center md:text-left leading-tight">
+              Apartemen<br className="md:hidden"/>Sentul Tower
             </p>
           </div>
-          <div className="mt-6 pt-4 border-t border-slate-800/50 text-center">
+          <p className="hidden md:block text-[10px] text-slate-600 font-medium">Melayani sewa apartemen harian Sentul City, transit 3 jam, 6 jam.</p>
+        </div>
+        <div className="md:hidden mt-6 pt-4 border-t border-slate-800/50 text-center">
              <p className="text-[9px] text-slate-600 font-medium leading-relaxed">
                Melayani sewa apartemen harian Sentul City, transit 3 jam, 6 jam. Solusi penginapan murah alternatif hotel di Bogor.
              </p>
-          </div>
         </div>
-        <div className="absolute top-[-20%] right-[-10%] w-48 h-48 bg-[#D4AF37]/10 rounded-full blur-3xl"></div>
+        
+        <div className="absolute top-[-20%] right-[-10%] w-48 md:w-96 h-48 md:h-96 bg-[#D4AF37]/10 rounded-full blur-3xl"></div>
       </footer>
       
-      <div className="fixed bottom-6 left-0 right-0 px-6 z-40">
-        <div onClick={() => handleWaClick("general")} className="bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-2xl rounded-[24px] p-5 flex justify-between items-center max-w-sm mx-auto animate-bounce-subtle cursor-pointer active:scale-95 transition-transform">
+      {/* TOMBOL WA MELAYANG (Mobile & Desktop Tetap Ada) */}
+      <div className="fixed bottom-6 left-0 right-0 px-6 z-40 md:left-auto md:right-6 md:w-96 md:px-0">
+        <div onClick={() => handleWaClick("general")} className="bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-2xl rounded-[24px] p-5 flex justify-between items-center max-w-sm mx-auto md:max-w-none md:mx-0 animate-bounce-subtle cursor-pointer active:scale-95 transition-transform border border-white/20">
           <div className="flex items-center gap-4">
             <div className="w-11 h-11 rounded-2xl bg-white/20 flex items-center justify-center backdrop-blur-md shadow-inner"><MessageCircle size={24} /></div>
             <div>
@@ -525,7 +557,7 @@ const HomePage = () => {
     </div>
   );
 };
-// --- HALAMAN DETAIL KAMAR (UPDATE: FIX LINK LUAR & SMART BACK) ---
+// --- HALAMAN DETAIL KAMAR (UPDATE: DESKTOP DUAL PANE LAYOUT, MOBILE 100% ASLI) ---
 const UnitDetailPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -542,7 +574,6 @@ const UnitDetailPage = () => {
     if (room) {
       setSelectedRoom(room);
     } else {
-      // Jika slug salah, lempar ke home
       navigate('/', { replace: true });
     }
   }, [slug, navigate]);
@@ -554,31 +585,27 @@ const UnitDetailPage = () => {
     if (ref) setRefCode(ref);
   }, []);
 
-  // 👇 LOGIKA BARU: HANDLE BACK BUTTON (CERDAS + FILTER AWARE)
+  // LOGIKA BACK BUTTON (CERDAS + FILTER AWARE)
   const handleBack = () => {
-    // Cek apakah ada history state (artinya datang dari dalam web, filter aman)
     if (window.history.state && window.history.state.idx > 0) {
       navigate(-1);
     } else {
-      // Jika tidak ada history (Datang dari Link Luar WA/IG)
       if (selectedRoom) {
-        // Cari unit ini ada di urutan ke berapa pada Kategori filternya
         const filteredRooms = roomsData.filter(r => r.type === selectedRoom.type);
         const roomIndex = filteredRooms.findIndex(r => r.slug === slug);
         
-        // Hitung target halaman (3 unit per halaman)
-        const targetPage = roomIndex !== -1 ? Math.ceil((roomIndex + 1) / 3) : 1; 
+        // Cek target halaman (Desktop 6, Mobile 3)
+        const itemsPerPg = window.innerWidth >= 768 ? 6 : 3;
+        const targetPage = roomIndex !== -1 ? Math.ceil((roomIndex + 1) / itemsPerPg) : 1; 
         
-        // Arahkan ke home lengkap dengan Filter dan Halamannya!
         navigate(`/?filter=${selectedRoom.type}&page=${targetPage}`, { replace: true });
       } else {
-        // Fallback
         navigate('/', { replace: true });
       }
     }
   };
 
-  // Logic 3: Handle Swipe Gesture
+  // Logic 3: Handle Swipe Gesture (Mobile)
   const onTouchStart = (e) => {
     const scrollTop = e.currentTarget.scrollTop;
     if (scrollTop === 0) {
@@ -625,102 +652,116 @@ const UnitDetailPage = () => {
         <meta name="description" content={`Sewa ${selectedRoom.name} Sentul Tower. Fasilitas: ${selectedRoom.specs.map(s=>s.text).join(', ')}. Harga mulai ${selectedRoom.startFrom}.`} />
       </Helmet>
 
-      <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-50">
-        {/* Background Overlay */}
+      {/* MODAL WRAPPER: Mobile Bawah, Desktop Tengah Layar */}
+      <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-50 md:items-center md:bg-slate-900/80 md:backdrop-blur-sm md:p-6">
+        {/* Background Overlay Mobile */}
         <div 
-          className="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity duration-300" 
+          className="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity duration-300 md:hidden" 
           style={{ opacity: 1 - (pullY / 1000) }}
           onClick={handleBack} 
         ></div>
         
-        {/* Container Utama */}
+        {/* Container Utama: Mobile Modal, Desktop Kartu Lebar */}
         <div 
-          className="bg-white w-full max-w-md rounded-t-[40px] relative z-10 p-7 animate-slide-up overflow-y-auto max-h-[95vh] h-[95vh] no-scrollbar shadow-2xl transition-transform duration-200 ease-out"
+          className="bg-white w-full max-w-md rounded-t-[40px] relative z-10 p-7 animate-slide-up overflow-y-auto max-h-[95vh] h-[95vh] no-scrollbar shadow-2xl transition-transform duration-200 ease-out md:max-w-6xl md:h-auto md:max-h-[90vh] md:rounded-[48px] md:p-10 md:shadow-2xl"
           style={{ transform: `translateY(${pullY}px)` }} 
           onTouchStart={onTouchStart}
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
         >
           
-          <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6"></div>
+          <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6 md:hidden"></div>
 
           {/* Header Navigasi */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-6 md:mb-10">
             <button 
               onClick={handleBack} 
-              className="flex items-center gap-1.5 text-slate-900 font-black text-[11px] uppercase tracking-widest bg-slate-100 px-4 py-2.5 rounded-2xl active:scale-95 transition-all"
+              className="flex items-center gap-1.5 text-slate-900 font-black text-[11px] md:text-sm uppercase tracking-widest bg-slate-100 px-4 py-2.5 md:px-6 md:py-3 rounded-2xl active:scale-95 transition-all hover:bg-slate-200"
             >
-              <ChevronLeft size={18} /> Kembali
+              <ChevronLeft size={18} className="md:w-5 md:h-5" /> Kembali
             </button>
-            <div className="w-12 h-1.5 bg-transparent"></div> 
-            <div className="w-20"></div> 
+            <div className="w-12 h-1.5 bg-transparent md:hidden"></div> 
+            <div className="w-20 md:hidden"></div> 
           </div>
           
-          <div className="relative mb-6">
-             <ImageSlider images={selectedRoom.images} heightClass="h-72" roundedClass="rounded-[32px]" altPrefix={`Detail ${selectedRoom.name} - ${selectedRoom.floorLevel}`} />
-             <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-xl shadow-sm z-20">
-                <p className="text-[10px] font-black text-[#D4AF37] uppercase tracking-widest">Pilihan {selectedRoom.type}</p>
-             </div>
-          </div>
-          
-          <h1 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-2 tracking-tight">{selectedRoom.name}</h1>
-          <p className="text-slate-500 text-sm mb-8 leading-relaxed font-medium">{selectedRoom.description}</p>
-
-          <div className="space-y-6 mb-8">
-            <div className="bg-slate-50 p-5 rounded-[32px] border border-slate-100 shadow-inner">
-              <h4 className="text-[10px] font-black text-slate-400 flex items-center gap-2 mb-5 uppercase tracking-[0.2em]"><Clock size={14} className="text-[#D4AF37]"/> Paket Harga Transit</h4>
-              <div className="grid grid-cols-2 gap-3">
-                {selectedRoom.transit.map((p, i) => (
-                  <div key={i} className="bg-white p-4 rounded-2xl border border-slate-200/50 shadow-sm flex flex-col items-center">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">{p.label}</p>
-                    <p className="text-sm font-black text-slate-800 tracking-tight">{p.price}</p>
-                  </div>
-                ))}
-              </div>
+          {/* PEMBAGIAN LAYOUT DESKTOP (DUAL PANE) */}
+          <div className="md:grid md:grid-cols-2 md:gap-12 md:items-start">
+            
+            {/* KOLOM KIRI: Slider Gambar */}
+            <div className="relative mb-6 md:mb-0 md:sticky md:top-0">
+               <ImageSlider images={selectedRoom.images} heightClass="h-72 md:h-[60vh]" roundedClass="rounded-[32px] md:rounded-[40px]" altPrefix={`Detail ${selectedRoom.name} - ${selectedRoom.floorLevel}`} />
+               <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 md:px-5 md:py-2.5 rounded-xl shadow-sm z-20">
+                  <p className="text-[10px] md:text-xs font-black text-[#D4AF37] uppercase tracking-widest">Pilihan {selectedRoom.type}</p>
+               </div>
             </div>
+            
+            {/* KOLOM KANAN: Informasi */}
+            <div className="flex flex-col md:pb-8">
+              <h1 className="text-2xl md:text-4xl lg:text-5xl font-black text-slate-900 uppercase tracking-tighter mb-2 tracking-tight">{selectedRoom.name}</h1>
+              <p className="text-slate-500 text-sm md:text-base mb-8 leading-relaxed font-medium md:max-w-md">{selectedRoom.description}</p>
 
-            <div className="bg-[#D4AF37]/10 p-5 rounded-[32px] border border-[#D4AF37]/20 shadow-sm">
-              <h4 className="text-[10px] font-black text-[#D4AF37] flex items-center gap-2 mb-5 uppercase tracking-[0.2em]"><Calendar size={14}/> Paket Harga Fullday</h4>
-              <div className="space-y-3">
-                {selectedRoom.fullday.map((p, i) => (
-                  <div key={i} className="flex justify-between items-center bg-white p-4 rounded-2xl border border-[#D4AF37]/10 shadow-sm">
-                    <p className="text-[10px] font-black text-slate-600 uppercase tracking-tight">{p.label}</p>
-                    <p className="text-sm font-black text-slate-900 tracking-tight">{p.price}</p>
+              <div className="space-y-6 mb-8 md:space-y-8">
+                {/* Harga Transit */}
+                <div className="bg-slate-50 p-5 md:p-8 rounded-[32px] border border-slate-100 shadow-inner">
+                  <h4 className="text-[10px] md:text-xs font-black text-slate-400 flex items-center gap-2 mb-5 md:mb-6 uppercase tracking-[0.2em]"><Clock size={14} className="text-[#D4AF37] md:w-5 md:h-5"/> Paket Harga Transit</h4>
+                  <div className="grid grid-cols-2 gap-3 md:gap-4">
+                    {selectedRoom.transit.map((p, i) => (
+                      <div key={i} className="bg-white p-4 md:p-5 rounded-2xl md:rounded-3xl border border-slate-200/50 shadow-sm flex flex-col items-center hover:border-[#D4AF37] transition-colors">
+                        <p className="text-[10px] md:text-xs font-bold text-slate-400 uppercase mb-1">{p.label}</p>
+                        <p className="text-sm md:text-xl font-black text-slate-800 tracking-tight">{p.price}</p>
+                      </div>
+                    ))}
                   </div>
-                ))}
-                <div className="pt-2">
-                   <div className="bg-amber-50 p-3 rounded-xl border border-amber-100 flex items-center justify-center gap-2">
-                      <Clock size={14} className="text-amber-600" />
-                      <p className="text-[10px] text-amber-700 font-black uppercase tracking-tighter">Checkout Fullday jam 12 Siang</p>
-                   </div>
+                </div>
+
+                {/* Harga Fullday */}
+                <div className="bg-[#D4AF37]/10 p-5 md:p-8 rounded-[32px] border border-[#D4AF37]/20 shadow-sm">
+                  <h4 className="text-[10px] md:text-xs font-black text-[#D4AF37] flex items-center gap-2 mb-5 md:mb-6 uppercase tracking-[0.2em]"><Calendar size={14} className="md:w-5 md:h-5"/> Paket Harga Fullday</h4>
+                  <div className="space-y-3 md:space-y-4">
+                    {selectedRoom.fullday.map((p, i) => (
+                      <div key={i} className="flex justify-between items-center bg-white p-4 md:p-5 rounded-2xl md:rounded-3xl border border-[#D4AF37]/10 shadow-sm">
+                        <p className="text-[10px] md:text-xs font-black text-slate-600 uppercase tracking-tight">{p.label}</p>
+                        <p className="text-sm md:text-xl font-black text-slate-900 tracking-tight">{p.price}</p>
+                      </div>
+                    ))}
+                    <div className="pt-2 md:pt-4">
+                       <div className="bg-amber-50 p-3 md:p-4 rounded-xl md:rounded-2xl border border-amber-100 flex items-center justify-center gap-2">
+                          <Clock size={14} className="text-amber-600 md:w-5 md:h-5" />
+                          <p className="text-[10px] md:text-xs text-amber-700 font-black uppercase tracking-tighter">Checkout Fullday jam 12 Siang</p>
+                       </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          <div className="mb-10 px-1">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="h-[2px] bg-slate-100 flex-1"></div>
-              <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em]">Spesifikasi Unit</h4>
-              <div className="h-[2px] bg-slate-100 flex-1"></div>
-            </div>
-            <div className="grid grid-cols-2 gap-y-5 gap-x-4">
-              {selectedRoom.specs.map((spec, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <div className="w-9 h-9 bg-slate-50 rounded-xl flex items-center justify-center text-[#D4AF37] shadow-sm border border-slate-100">
-                    {spec.icon}
-                  </div>
-                  <span className="text-[11px] font-bold text-slate-700 leading-tight tracking-tight uppercase">{spec.text}</span>
+              {/* Spesifikasi Unit */}
+              <div className="mb-10 px-1 md:px-0">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="h-[2px] bg-slate-100 flex-1"></div>
+                  <h4 className="text-[11px] md:text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Spesifikasi Unit</h4>
+                  <div className="h-[2px] bg-slate-100 flex-1 md:hidden"></div>
                 </div>
-              ))}
+                <div className="grid grid-cols-2 gap-y-5 gap-x-4 md:gap-y-6">
+                  {selectedRoom.specs.map((spec, i) => (
+                    <div key={i} className="flex items-center gap-3 md:gap-4">
+                      <div className="w-9 h-9 md:w-12 md:h-12 bg-slate-50 rounded-xl md:rounded-2xl flex items-center justify-center text-[#D4AF37] shadow-sm border border-slate-100">
+                        {spec.icon}
+                      </div>
+                      <span className="text-[11px] md:text-xs font-bold text-slate-700 leading-tight tracking-tight uppercase">{spec.text}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Tombol Action */}
+              <button onClick={() => handleWaClick("booking", selectedRoom.name)} className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-black py-5 md:py-6 rounded-[24px] flex items-center justify-center gap-3 shadow-2xl shadow-green-200 active:scale-95 transition-all uppercase tracking-widest text-xs md:text-sm md:mt-auto">
+                <MessageCircle size={20} className="md:w-6 md:h-6" /> Hubungi Lewat WhatsApp
+              </button>
             </div>
           </div>
-
-          <button onClick={() => handleWaClick("booking", selectedRoom.name)} className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-black py-5 rounded-[24px] flex items-center justify-center gap-3 shadow-2xl shadow-green-200 active:scale-95 transition-all uppercase tracking-widest text-xs">
-            <MessageCircle size={20} /> Hubungi Lewat WhatsApp
-          </button>
         </div>
 
+        {/* Global Styles for Animations */}
         <style dangerouslySetInnerHTML={{ __html: `
           @keyframes slide-up { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
           @keyframes bounce-subtle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
@@ -741,13 +782,13 @@ const App = () => {
   return (
     <HelmetProvider>
       <ScrollToTop />
-      {/* 👇 Panggil SEO Home di sini agar dibaca Google */}
+      {/* Panggil SEO Home di sini agar dibaca Google */}
       <SEOStructuredDataHome /> 
       
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/unit/:slug" element={<UnitDetailPage />} />
-        {/* 👇 Route penangkap keyword SEO (Harus ditaruh paling bawah) */}
+        {/* Route penangkap keyword SEO (Harus ditaruh paling bawah) */}
         <Route path="/:seoSlug" element={<DynamicLandingPage />} />
       </Routes>
       <Analytics />
