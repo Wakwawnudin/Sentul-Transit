@@ -315,22 +315,22 @@ const HomePage = () => {
         </div>
       </header>
 
-      {/* RINGKASAN HARGA: Tanpa Tabrakan (Clean Stacked Layout) */}
-      <section className="px-4 py-8 bg-white/50 backdrop-blur-sm relative z-10 md:max-w-4xl md:mx-auto md:mt-10 md:bg-transparent md:backdrop-blur-none" aria-label="Ringkasan Harga">
-
-        <div className="bg-white rounded-[24px] md:rounded-[32px] shadow-2xl shadow-slate-200/50 border border-slate-100 p-4 md:p-6 grid grid-cols-2 gap-3 md:gap-6">
-          <div className="bg-slate-50 p-4 md:p-8 rounded-2xl md:rounded-3xl flex flex-col items-center border border-slate-100 group hover:border-[#D4AF37]/50 transition-colors">
+      {/* RINGKASAN HARGA: Gaya "Buff" (Menutupi bagian bawah gambar utama) */}
+      <section className="px-4 relative z-30 -mt-16 md:-mt-24 md:max-w-4xl md:mx-auto" aria-label="Ringkasan Harga">
+        <div className="bg-white/95 backdrop-blur-xl rounded-[24px] md:rounded-[32px] shadow-2xl shadow-slate-900/20 border border-white/50 p-4 md:p-6 grid grid-cols-2 gap-3 md:gap-6">
+          <div className="bg-slate-50/80 p-4 md:p-8 rounded-2xl md:rounded-3xl flex flex-col items-center border border-slate-100 group hover:border-[#D4AF37]/50 transition-colors">
             <Clock className="text-[#D4AF37] mb-1.5 md:mb-3 md:w-8 md:h-8 transition-transform group-hover:scale-110" size={18} />
             <span className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest">Transit</span>
             <span className="text-sm md:text-xl font-black text-slate-800 underline decoration-[#D4AF37]/50 decoration-2 underline-offset-4 tracking-tight md:mt-1">Mulai 150rb</span>
           </div>
-          <div className="bg-slate-50 p-4 md:p-8 rounded-2xl md:rounded-3xl flex flex-col items-center border border-slate-100 group hover:border-[#D4AF37]/50 transition-colors">
+          <div className="bg-slate-50/80 p-4 md:p-8 rounded-2xl md:rounded-3xl flex flex-col items-center border border-slate-100 group hover:border-[#D4AF37]/50 transition-colors">
             <Calendar className="text-[#D4AF37] mb-1.5 md:mb-3 md:w-8 md:h-8 transition-transform group-hover:scale-110" size={18} />
             <span className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest">Fullday</span>
             <span className="text-sm md:text-xl font-black text-slate-800 underline decoration-[#D4AF37]/50 decoration-2 underline-offset-4 tracking-tight md:mt-1">Mulai 300rb</span>
           </div>
         </div>
       </section>
+
 
       {/* KATALOG UNIT: Mobile 100% Asli, Desktop Grid 3 Kolom */}
       <section className="px-4 py-8 md:max-w-6xl md:mx-auto md:px-6 md:py-16" aria-label="Daftar Unit Apartemen">
