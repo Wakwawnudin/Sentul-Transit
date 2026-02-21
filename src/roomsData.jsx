@@ -341,10 +341,40 @@ export const realUnits = [
 // --- GENERATED FINAL DATA ---
 export const roomsData = realUnits.map((unit, index) => {
   const template = baseTemplates[unit.type];
-  // 👇 MODIFIKASI: Tambahkan index ke slug agar 100% UNIK untuk setiap unit
   const uniqueId = index + 1;
   const baseSlug = `${template.baseName.toLowerCase().replace(/\s+/g, '-')}-${unit.floor.toLowerCase().replace(/[\s.]+/g, '-')}`;
   
+  // ⚙️ LOGIKA PINTAR: HARGA KHUSUS DELUXE (+ Rp 50.000)
+  let finalTransit = template.transit;
+  let finalFullday = template.fullday;
+  let finalStartFrom = template.startFrom;
+
+  // Jika nama lantainya mengandung kata "Deluxe"
+  if (unit.floor.toLowerCase().includes('deluxe')) {
+    
+    // Fungsi nambah 50.000 untuk format "Rp 150.000"
+    const add50k = (priceStr) => {
+      const numStr = priceStr.replace(/\D/g, ''); // Ambil angkanya saja (150000)
+      if (!numStr) return priceStr;
+      const newNum = parseInt(numStr, 10) + 50000;
+      // Kembalikan ke format "Rp 200.000"
+      return 'Rp ' + newNum.toLocaleString('id-ID').replace(/,/g, '.'); 
+    };
+
+    // Fungsi nambah 50 untuk format "150rb"
+    const add50kStart = (startStr) => {
+      const numStr = startStr.replace(/\D/g, ''); // Ambil angkanya saja (150)
+      if (!numStr) return startStr;
+      const newNum = parseInt(numStr, 10) + 50;
+      return newNum + 'rb';
+    };
+
+    // Terapkan penambahan harga ke array baru agar template asli tidak rusak
+    finalTransit = template.transit.map(item => ({ ...item, price: add50k(item.price) }));
+    finalFullday = template.fullday.map(item => ({ ...item, price: add50k(item.price) }));
+    finalStartFrom = add50kStart(template.startFrom);
+  }
+
   return {
     ...template,
     id: uniqueId,
@@ -352,7 +382,10 @@ export const roomsData = realUnits.map((unit, index) => {
     floorLevel: unit.floor,
     images: unit.images,
     altPrefix: `Sewa Apartemen ${template.baseName} ${unit.floor} Sentul Tower - View Gunung & City`,
-    // Format slug baru: 1-bedroom-lantai-10-1, 1-bedroom-lantai-10-2, dst.
-    slug: `${baseSlug}-${uniqueId}`
+    slug: `${baseSlug}-${uniqueId}`,
+    // 👇 Timpa harga asli dengan harga hasil hitungan di atas
+    startFrom: finalStartFrom,
+    transit: finalTransit,
+    fullday: finalFullday
   };
 });
