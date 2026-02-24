@@ -459,20 +459,20 @@ const HomePage = () => {
         )}
       </section>
 
-      {/* FOOTER: Mobile 100% Asli, Desktop Lebar Premium */}
+      {/* FOOTER: Mode Aman (Anti-Crash) untuk TikTok & IG In-App Browser */}
       <footer className="bg-slate-900 text-white p-6 mx-4 rounded-[40px] mb-8 shadow-2xl relative overflow-hidden md:max-w-6xl md:mx-auto md:p-12 md:rounded-[48px] md:mb-12">
         <div className="relative z-10 md:grid md:grid-cols-12 md:gap-12 md:items-start">
           
-          <div className="mb-10 pb-8 border-b border-slate-800/50 md:col-span-5 md:border-b-0 md:mb-0 md:pb-0">
+          <div className="mb-10 pb-8 border-b border-slate-800 md:col-span-5 md:border-b-0 md:mb-0 md:pb-0">
             <div className="flex items-center gap-2 mb-4">
               <HelpCircle className="text-[#D4AF37]" size={16} />
               <h3 className="text-xs font-black text-slate-300 uppercase tracking-widest">Tanya Jawab</h3>
             </div>
-            <div className="bg-slate-800/20 rounded-2xl border border-slate-700/30 p-4">
+            <div className="bg-slate-800 rounded-2xl border border-slate-700 p-4">
               {faqData.map((item, index) => (
                 <FaqItem key={index} question={item.q} answer={item.a} />
               ))}
-              <div className="mt-4 pt-4 border-t border-slate-700/50 text-center">
+              <div className="mt-4 pt-4 border-t border-slate-700 text-center">
                 <button onClick={() => handleWaClick("chat")} className="text-[10px] font-bold text-[#D4AF37] hover:underline uppercase tracking-widest">
                     Chat Admin via WhatsApp
                 </button>
@@ -482,36 +482,36 @@ const HomePage = () => {
 
           <div className="text-center md:col-span-7 md:text-left">
              <h3 className="text-2xl md:text-4xl font-black mb-2 uppercase tracking-tighter italic">Apartemen Sentul Tower</h3>
-             <p className="text-slate-500 text-[10px] md:text-sm mb-8 italic">"Privasi & Kenyamanan Prioritas Kami"</p>
+             <p className="text-slate-400 text-[10px] md:text-sm mb-8 italic">"Privasi & Kenyamanan Prioritas Kami"</p>
              
              <h4 className="text-[10px] md:text-xs font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-4">Cara Order Mudah</h4>
              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                <div onClick={() => handleWaClick("chat")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-800 active:scale-95 transition-all">
+                <div onClick={() => handleWaClick("chat")} className="bg-slate-800 p-4 rounded-2xl border border-slate-700 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-700 active:scale-95 transition-all">
                    <MessageCircle className="text-[#D4AF37] mb-2" size={24} />
                    <span className="text-[10px] font-bold text-slate-300 uppercase text-center">1. Chat WA</span>
                 </div>
-                <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-800 active:scale-95 transition-all">
+                <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-slate-800 p-4 rounded-2xl border border-slate-700 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-700 active:scale-95 transition-all">
                    <MapPin className="text-[#D4AF37] mb-2" size={24} />
                    <span className="text-[10px] font-bold text-slate-300 uppercase text-center">2. Ke Lokasi</span>
                 </a>
-                <div onClick={() => handleWaClick("key")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-800 active:scale-95 transition-all">
+                <div onClick={() => handleWaClick("key")} className="bg-slate-800 p-4 rounded-2xl border border-slate-700 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-700 active:scale-95 transition-all">
                    <Key className="text-[#D4AF37] mb-2" size={24} />
                    <span className="text-[10px] font-bold text-slate-300 uppercase text-center">3. Ambil Kunci</span>
                 </div>
-                <div onClick={() => handleWaClick("payment")} className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-800 active:scale-95 transition-all">
+                <div onClick={() => handleWaClick("payment")} className="bg-slate-800 p-4 rounded-2xl border border-slate-700 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-700 active:scale-95 transition-all">
                    <Wallet className="text-[#D4AF37] mb-2" size={24} />
                    <span className="text-[10px] font-bold text-slate-300 uppercase text-center">4. Bayar Tujuan</span>
                 </div>
              </div>
 
-             <div className="mt-8 pt-8 border-t border-slate-800/50 md:mt-12 md:pt-12">
+             <div className="mt-8 pt-8 border-t border-slate-800 md:mt-12 md:pt-12">
                  <h4 className="text-[10px] md:text-xs font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-4">Lokasi Strategis</h4>
                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-left">
                    {nearbyData.map((item, idx) => (
-                     <div key={idx} className="bg-slate-800/40 p-2.5 md:p-4 rounded-xl md:rounded-2xl border border-slate-700/30 flex items-center gap-2.5">
+                     <div key={idx} className="bg-slate-800 p-2.5 md:p-4 rounded-xl md:rounded-2xl border border-slate-700 flex items-center gap-2.5">
                         <div className="text-[#D4AF37]">{item.icon}</div>
                         <div>
-                          <p className="text-[9px] md:text-[10px] text-slate-500 uppercase font-bold tracking-wider">{item.dist}</p>
+                          <p className="text-[9px] md:text-[10px] text-slate-400 uppercase font-bold tracking-wider">{item.dist}</p>
                           <p className="text-[10px] md:text-xs text-slate-200 font-bold leading-tight">{item.name}</p>
                         </div>
                      </div>
@@ -535,16 +535,15 @@ const HomePage = () => {
               Apartemen<br className="md:hidden"/>Sentul Tower
             </p>
           </div>
-          <p className="hidden md:block text-[10px] text-slate-600 font-medium">Melayani sewa apartemen harian Sentul City, transit 3 jam, 6 jam.</p>
+          <p className="hidden md:block text-[10px] text-slate-500 font-medium">Melayani sewa apartemen harian Sentul City, transit 3 jam, 6 jam.</p>
         </div>
-        <div className="md:hidden mt-6 pt-4 border-t border-slate-800/50 text-center">
-             <p className="text-[9px] text-slate-600 font-medium leading-relaxed">
+        <div className="md:hidden mt-6 pt-4 border-t border-slate-800 text-center">
+             <p className="text-[9px] text-slate-500 font-medium leading-relaxed">
                Melayani sewa apartemen harian Sentul City, transit 3 jam, 6 jam. Solusi penginapan murah alternatif hotel di Bogor.
              </p>
         </div>
-        
-        <div className="absolute top-[-20%] right-[-10%] w-48 md:w-96 h-48 md:h-96 bg-[#D4AF37]/10 rounded-full blur-3xl"></div>
       </footer>
+
       
       {/* TOMBOL WA MELAYANG (Mobile & Desktop Tetap Ada) */}
       <div className="fixed bottom-6 left-0 right-0 px-6 z-40 md:left-auto md:right-6 md:w-96 md:px-0">
