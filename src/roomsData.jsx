@@ -338,6 +338,18 @@ export const realUnits = [
       'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE/20260207_213321.jpg?updatedAt=1770484473185&tr=w-800,q-80',
       'https://ik.imagekit.io/x06namgbin/2%20BEDROOM%20DELUXE/20260207_213345.jpg?updatedAt=1770484472834&tr=w-800,q-80'
     ]
+  },
+  // 👇 INI DIA UNIT BARU BOS YANG BARU DITAMBAHKAN
+  {
+    type: '2BR', floor: 'Deluxe',
+    images: [
+      'https://ik.imagekit.io/x06namgbin/2%20Bedroom%20Deluxe../IMG-20260225-WA0019(1).jpg?updatedAt=1772010186340',
+      'https://ik.imagekit.io/x06namgbin/2%20Bedroom%20Deluxe../IMG-20260225-WA0017.jpg?updatedAt=1772010186259',
+      'https://ik.imagekit.io/x06namgbin/2%20Bedroom%20Deluxe../IMG-20260225-WA0020.jpg?updatedAt=1772010186148',
+      'https://ik.imagekit.io/x06namgbin/2%20Bedroom%20Deluxe../IMG-20260225-WA0018.jpg?updatedAt=1772010185118',
+      'https://ik.imagekit.io/x06namgbin/2%20Bedroom%20Deluxe../IMG-20260225-WA0021.jpg?updatedAt=1772010186301',
+      'https://ik.imagekit.io/x06namgbin/2%20Bedroom%20Deluxe../IMG-20260225-WA0016.jpg?updatedAt=1772010186257'
+    ]
   }
 ];
 
