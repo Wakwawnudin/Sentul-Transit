@@ -15,15 +15,17 @@ const defaultFullday = [
   { label: 'Weekday (Sen-Kam)', price: 'Rp 300.000' },
   { label: 'Weekend (Jum-Min)', price: 'Rp 350.000' },
 ];
+
+// 👇 HARGA 2 BEDROOM SUDAH NAIK 50RB
 const specialTransit2BR = [
-  { label: '3 Jam', price: 'Rp 200.000' },
-  { label: '6 Jam', price: 'Rp 300.000' },
-  { label: '9 Jam', price: 'Rp 350.000' },
-  { label: '12 Jam', price: 'Rp 400.000' },
+  { label: '3 Jam', price: 'Rp 250.000' },
+  { label: '6 Jam', price: 'Rp 350.000' },
+  { label: '9 Jam', price: 'Rp 400.000' },
+  { label: '12 Jam', price: 'Rp 450.000' },
 ];
 const specialFullday2BR = [
-  { label: 'Weekday (Sen-Kam)', price: 'Rp 650.000' },
-  { label: 'Weekend (Jum-Min)', price: 'Rp 700.000' },
+  { label: 'Weekday (Sen-Kam)', price: 'Rp 700.000' },
+  { label: 'Weekend (Jum-Min)', price: 'Rp 750.000' },
 ];
 
 // --- BASE TEMPLATES ---
@@ -63,7 +65,7 @@ export const baseTemplates = {
     baseName: '2 BEDROOM',
     size: '56m²', beds: 2,
     description: 'Unit luas untuk staycation keluarga atau grup. Tersedia opsi transit 3 jam Sentul Tower yang fleksibel. Nikmati pemandangan gunung dan fasilitas lengkap.',
-    startFrom: '200rb', 
+    startFrom: '250rb', // 👇 START FROM JUGA SUDAH NAIK 50RB
     transit: specialTransit2BR, 
     fullday: specialFullday2BR,
     specs: [
