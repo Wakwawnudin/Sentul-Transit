@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import { Routes, Route, Link, useParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
@@ -7,7 +7,7 @@ import {
   Building, ChevronLeft, ChevronRight, CheckCircle2, 
   MessageCircle, Tv, Wind, Coffee, Utensils, Waves, Sparkles, 
   UtensilsCrossed, Key, Wallet, HelpCircle, ChevronDown, ChevronUp,
-  ShoppingBag, Palmtree, Maximize, Search
+  ShoppingBag, Palmtree, Maximize, Search, Loader2
 } from 'lucide-react';
 
 // Import data kamar & Komponen SEO
@@ -93,13 +93,11 @@ const ImageSlider = ({ images, heightClass = "h-56", roundedClass = "rounded-[32
           <img 
             key={idx}
             src={optimizeImg(img)} 
-            // 👇 Hanya gambar pertama dari slider prioritas yang dipaksa loading instan
             loading={priority && idx === 0 ? "eager" : "lazy"} 
             fetchpriority={priority && idx === 0 ? "high" : "auto"}
             className="w-full h-full object-cover shrink-0 snap-center" 
             alt={`${dynamicAlt} - ${idx + 1}`} 
           />
-
         ))}
       </div>
       <div className={`absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none ${roundedClass}`}></div>
@@ -150,33 +148,28 @@ const GoogleMapsLogo = () => (
     <path d="M12 2c-.34 0-.67.02-1 .07V9h1V2z" fill="#EA4335"/>
   </svg>
 );
+
 // --- HALAMAN UTAMA (HOME) ---
 const HomePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  
-  const pageParam = searchParams.get('page');
   const filterParam = searchParams.get('filter');
-
-  const initialPage = pageParam ? parseInt(pageParam, 10) : 1;
   const initialFilter = filterParam ? filterParam : 'Semua';
 
   const [activeFilter, setActiveFilter] = useState(initialFilter);
   const [refCode, setRefCode] = useState("");
-  const [currentPage, setCurrentPage] = useState(initialPage); 
-  const [jumpPageInput, setJumpPageInput] = useState(""); 
-
-  // 👇 LOGIKA PINTAR: 3 Unit di Mobile, 6 Unit di Desktop
+  
+  // ⚙️ STATE UNTUK INFINITE SCROLL
+  const [page, setPage] = useState(1); 
   const [itemsPerPage, setItemsPerPage] = useState(3);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+
   useEffect(() => {
-    const handleResize = () => {
-      setItemsPerPage(window.innerWidth >= 768 ? 6 : 3);
-    };
-    handleResize(); // Cek saat pertama load
+    const handleResize = () => setItemsPerPage(window.innerWidth >= 768 ? 6 : 3);
+    handleResize(); 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // 👇 LOGIKA SCROLL: Untuk Navbar Kaca di Desktop
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -189,8 +182,8 @@ const HomePage = () => {
 
   useEffect(() => {
     const currentParams = Object.fromEntries([...searchParams]);
-    setSearchParams({ ...currentParams, filter: activeFilter, page: currentPage });
-  }, [currentPage, activeFilter, setSearchParams]);
+    setSearchParams({ ...currentParams, filter: activeFilter });
+  }, [activeFilter, setSearchParams]);
 
   useEffect(() => {
     if (window.location.hostname.includes('apartsentul.cloud')) {
@@ -204,8 +197,7 @@ const HomePage = () => {
 
   const handleFilterChange = (filter) => {
     setActiveFilter(filter);
-    setCurrentPage(1);
-    setJumpPageInput("");
+    setPage(1); // Reset kembali ke halaman 1 setiap ganti filter
   };
 
   const handleWaClick = (messageType = "general") => {
@@ -220,27 +212,31 @@ const HomePage = () => {
     window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`, '_blank');
   };
 
+  // ⚙️ LOGIKA FILTER & SLICE UNTUK INFINITE SCROLL
   const filteredRooms = activeFilter === 'Semua' ? roomsData : roomsData.filter(r => r.type === activeFilter);
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredRooms.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(filteredRooms.length / itemsPerPage);
+  const hasMore = (page * itemsPerPage) < filteredRooms.length;
+  const displayedRooms = filteredRooms.slice(0, page * itemsPerPage);
 
-  const handlePageChange = (pageNumber) => {
-    const targetPage = Number(pageNumber);
-    if (targetPage >= 1 && targetPage <= totalPages) {
-        setCurrentPage(targetPage);
-        window.scrollTo({ top: window.innerWidth >= 768 ? 600 : 500, behavior: 'smooth' });
-    }
-  };
+  // ⚙️ INTERSECTION OBSERVER (Detektor Scroll ke Bawah)
+  const observer = useRef();
+  const lastElementRef = useCallback(node => {
+    if (isLoadingMore) return;
+    if (observer.current) observer.current.disconnect();
+    
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore) {
+        setIsLoadingMore(true);
+        // Simulasi delay sedikit agar loading terlihat smooth
+        setTimeout(() => {
+            setPage(prevPage => prevPage + 1);
+            setIsLoadingMore(false);
+        }, 400); 
+      }
+    });
+    
+    if (node) observer.current.observe(node);
+  }, [hasMore, isLoadingMore]);
 
-  const handleJumpSubmit = (e) => {
-    e.preventDefault();
-    if (jumpPageInput) {
-        handlePageChange(jumpPageInput);
-        setJumpPageInput("");
-    }
-  };
 
   const nearbyData = [
     { name: "AEON Mall", dist: "2 Mnt", icon: <ShoppingBag size={14}/> },
@@ -276,7 +272,7 @@ const HomePage = () => {
         <meta name="description" content="Daftar Harga Sewa Apartemen Sentul Tower: Transit 3 Jam (150rb), 6 Jam (200rb), Fullday (300rb). Fasilitas Netflix, Wifi, Water Heater. Booking via WA." />
       </Helmet>
 
-      {/* NAVBAR: Mobile & Desktop 100% Transparan/Gradient */}
+      {/* NAVBAR */}
       <nav className={`fixed top-0 left-0 right-0 z-50 px-6 flex justify-between items-center transition-all duration-300 md:px-12 bg-gradient-to-b from-black/80 to-transparent ${scrolled ? 'py-4 md:py-3' : 'py-4 md:py-6'}`}>
         <div className="flex items-center gap-3">
           <img 
@@ -299,8 +295,7 @@ const HomePage = () => {
         </div>
       </nav>
 
-
-      {/* HERO: Mobile 100% Asli, Desktop Cinematic 75vh */}
+      {/* HERO */}
       <header className="relative h-[600px] md:h-[75vh] w-full overflow-hidden">
         <div className="absolute inset-0 w-full h-full">
            <ImageSlider images={heroImages} heightClass="h-full" roundedClass="rounded-none" altPrefix="Fasilitas & View Apartemen Sentul Tower" priority={true} />
@@ -315,7 +310,7 @@ const HomePage = () => {
         </div>
       </header>
 
-      {/* RINGKASAN HARGA: Gaya "Buff" VIP Hitam & Emas */}
+      {/* RINGKASAN HARGA */}
       <section className="px-4 relative z-30 -mt-16 md:-mt-24 md:max-w-4xl md:mx-auto" aria-label="Ringkasan Harga">
         <div className="bg-slate-900/95 backdrop-blur-xl rounded-[24px] md:rounded-[32px] shadow-2xl shadow-[#D4AF37]/20 border border-[#D4AF37]/30 p-4 md:p-6 grid grid-cols-2 gap-3 md:gap-6">
           <div className="bg-slate-800/80 p-4 md:p-8 rounded-2xl md:rounded-3xl flex flex-col items-center border border-slate-700 group hover:border-[#D4AF37] hover:bg-slate-800 transition-all">
@@ -330,7 +325,8 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-      {/* KATALOG UNIT: Mobile 100% Asli, Desktop Grid 3 Kolom */}
+
+      {/* KATALOG UNIT DENGAN INFINITE SCROLL */}
       <section className="px-4 py-8 md:max-w-6xl md:mx-auto md:px-6 md:py-16" aria-label="Daftar Unit Apartemen">
         <div className="flex flex-col gap-4 mb-6 md:mb-12 md:flex-row md:justify-between md:items-end">
           <div>
@@ -344,122 +340,70 @@ const HomePage = () => {
           </div>
         </div>
 
-        <div className="space-y-6 md:space-y-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-8">
-          {currentItems.map(room => (
-            <Link to={`/unit/${room.slug}`} key={room.id} className="block bg-white rounded-[32px] md:rounded-[40px] p-3 md:p-4 shadow-sm border border-slate-100 active:scale-[0.98] transition-all duration-500 cursor-pointer group md:hover:shadow-2xl md:hover:-translate-y-2">
-              <div className="relative">
-                <ImageSlider images={room.images} heightClass="h-72 md:h-64" roundedClass="rounded-[24px] md:rounded-[32px]" altPrefix={room.altPrefix} />
-                <div className="absolute top-4 left-4 flex gap-2 pointer-events-none z-20">
-                  <span className="bg-black/70 backdrop-blur-md text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest">{room.type}</span>
-                  {room.type === '2BR' && <span className="bg-[#D4AF37] text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg">PREMIUM</span>}
-                </div>
-                <div className="absolute top-4 right-4 pointer-events-none z-20">
-                  <span className="bg-white/90 backdrop-blur text-slate-800 text-[10px] font-black px-3 py-1.5 rounded-xl shadow-lg border border-slate-100 uppercase tracking-wider">
-                    {room.floorLevel}
-                  </span>
-                </div>
-              </div>
-
-              <div className="pt-5 px-3 pb-3 md:p-6">
-                <h3 className="text-xl md:text-2xl font-black text-slate-900 mb-1.5 uppercase tracking-tight group-hover:text-[#D4AF37] transition-colors">{room.name}</h3>
-                <div className="flex items-center gap-4 text-slate-400 text-[11px] font-bold mb-4 uppercase tracking-wide">
-                  <div className="flex items-center gap-1.5"><Maximize size={14} className="md:text-[#D4AF37]/50"/> {room.size}</div>
-                  <div className="flex items-center gap-1.5"><Bed size={14} className="md:text-[#D4AF37]/50"/> {room.beds} Bed</div>
-                  <div className="flex items-center gap-1.5"><Shield size={14} className="md:text-[#D4AF37]/50"/> 24/7 Aman</div>
-                </div>
-                <div className="flex items-center gap-1.5 mb-3 md:mb-6">
-                   <CheckCircle2 size={12} className="text-green-500" fill="currentColor" color="white" />
-                   <span className="text-[10px] font-bold text-slate-500 tracking-tight">Verified • Higienis • Aman</span>
-                </div>
-                <div className="flex justify-between items-end pt-4 border-t border-slate-50 md:pt-6">
-                  <div>
-                    <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1">Harga Mulai</p>
-                    <p className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Rp {room.startFrom}</p>
+        <div className="space-y-6 md:space-y-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-8 min-h-[400px]">
+          {displayedRooms.length > 0 ? (
+            displayedRooms.map((room, index) => {
+              const isLastItem = index === displayedRooms.length - 1;
+              return (
+                <Link 
+                  to={`/unit/${room.slug}`} 
+                  key={room.id} 
+                  ref={isLastItem ? lastElementRef : null} 
+                  className="block bg-white rounded-[32px] md:rounded-[40px] p-3 md:p-4 shadow-sm border border-slate-100 active:scale-[0.98] transition-all duration-500 cursor-pointer group md:hover:shadow-2xl md:hover:-translate-y-2 animate-slide-up"
+                >
+                  <div className="relative">
+                    <ImageSlider images={room.images} heightClass="h-72 md:h-64" roundedClass="rounded-[24px] md:rounded-[32px]" altPrefix={room.altPrefix} />
+                    <div className="absolute top-4 left-4 flex gap-2 pointer-events-none z-20">
+                      <span className="bg-black/70 backdrop-blur-md text-[#D4AF37] text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest">{room.type}</span>
+                      {room.type === '2BR' && <span className="bg-[#D4AF37] text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg">PREMIUM</span>}
+                    </div>
+                    <div className="absolute top-4 right-4 pointer-events-none z-20">
+                      <span className="bg-white/90 backdrop-blur text-slate-800 text-[10px] font-black px-3 py-1.5 rounded-xl shadow-lg border border-slate-100 uppercase tracking-wider">
+                        {room.floorLevel}
+                      </span>
+                    </div>
                   </div>
-                  <button className="bg-slate-900 text-white font-bold px-6 py-3 md:px-8 md:py-4 rounded-2xl md:rounded-[20px] text-[11px] md:text-xs uppercase tracking-widest shadow-lg shadow-slate-200 group-hover:bg-[#D4AF37] transition-colors">Detail</button>
-                </div>
-              </div>
-            </Link>
-          ))}
+
+                  <div className="pt-5 px-3 pb-3 md:p-6">
+                    <h3 className="text-xl md:text-2xl font-black text-slate-900 mb-1.5 uppercase tracking-tight group-hover:text-[#D4AF37] transition-colors">{room.name}</h3>
+                    <div className="flex items-center gap-4 text-slate-400 text-[11px] font-bold mb-4 uppercase tracking-wide">
+                      <div className="flex items-center gap-1.5"><Maximize size={14} className="md:text-[#D4AF37]/50"/> {room.size}</div>
+                      <div className="flex items-center gap-1.5"><Bed size={14} className="md:text-[#D4AF37]/50"/> {room.beds} Bed</div>
+                      <div className="flex items-center gap-1.5"><Shield size={14} className="md:text-[#D4AF37]/50"/> 24/7 Aman</div>
+                    </div>
+                    <div className="flex items-center gap-1.5 mb-3 md:mb-6">
+                      <CheckCircle2 size={12} className="text-green-500" fill="currentColor" color="white" />
+                      <span className="text-[10px] font-bold text-slate-500 tracking-tight">Verified • Higienis • Aman</span>
+                    </div>
+                    <div className="flex justify-between items-end pt-4 border-t border-slate-50 md:pt-6">
+                      <div>
+                        <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1">Harga Mulai</p>
+                        <p className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Rp {room.startFrom}</p>
+                      </div>
+                      <button className="bg-slate-900 text-white font-bold px-6 py-3 md:px-8 md:py-4 rounded-2xl md:rounded-[20px] text-[11px] md:text-xs uppercase tracking-widest shadow-lg shadow-slate-200 group-hover:bg-[#D4AF37] transition-colors">Detail</button>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })
+          ) : (
+            <div className="col-span-full text-center py-20 opacity-50"><div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4"><Search size={24} className="text-slate-400" /></div><p className="font-bold text-slate-400 text-sm">Tidak ada unit yang cocok.</p></div>
+          )}
         </div>
 
-        {totalPages > 1 && (
-          <div className="mt-8 md:mt-16 flex flex-col items-center gap-4">
-             <div className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest">
-                Menampilkan {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, filteredRooms.length)} dari {filteredRooms.length} Unit
-             </div>
-             
-             <div className="flex items-center gap-2">
-                <button 
-                  onClick={() => handlePageChange(currentPage - 1)} 
-                  disabled={currentPage === 1}
-                  aria-label="Halaman Sebelumnya"
-                  className={`p-3 rounded-xl border transition-all ${currentPage === 1 ? 'bg-slate-50 border-slate-100 text-slate-300' : 'bg-white border-slate-200 text-slate-800 hover:border-[#D4AF37] shadow-sm hover:bg-slate-50'}`}
-                >
-                   <ChevronLeft size={16} />
-                </button>
-                <div className="flex gap-1 md:gap-2">
-                   {(() => {
-                      let pages = [];
-                      if (totalPages <= 5) {
-                         pages = Array.from({ length: totalPages }, (_, i) => i + 1);
-                      } else {
-                         if (currentPage <= 3) pages = [1, 2, 3, '...', totalPages];
-                         else if (currentPage >= totalPages - 2) pages = [1, '...', totalPages - 2, totalPages - 1, totalPages];
-                         else pages = [1, '...', currentPage, '...', totalPages];
-                      }
-                      return pages.map((page, index) => (
-                        <button
-                          key={index}
-                          onClick={() => typeof page === 'number' && handlePageChange(page)}
-                          disabled={page === '...'}
-                          className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl md:rounded-2xl text-xs md:text-sm font-black transition-all ${
-                            page === currentPage 
-                              ? 'bg-slate-900 text-[#D4AF37] shadow-lg scale-110 z-10' 
-                              : page === '...'
-                                ? 'bg-transparent text-slate-400 cursor-default border-none' 
-                                : 'bg-white border border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-[#D4AF37]'
-                          }`}
-                        >
-                           {page}
-                        </button>
-                      ));
-                   })()}
-                </div>
-                <button 
-                  onClick={() => handlePageChange(currentPage + 1)} 
-                  disabled={currentPage === totalPages}
-                  aria-label="Halaman Selanjutnya"
-                  className={`p-3 rounded-xl border transition-all ${currentPage === totalPages ? 'bg-slate-50 border-slate-100 text-slate-300' : 'bg-white border-slate-200 text-slate-800 hover:border-[#D4AF37] shadow-sm hover:bg-slate-50'}`}
-                >
-                   <ChevronRight size={16} />
-                </button>
-             </div>
-
-             <form onSubmit={handleJumpSubmit} className="flex items-center gap-2 bg-white p-1.5 pl-3 md:p-2 md:pl-5 rounded-xl md:rounded-2xl border border-slate-200 shadow-sm mt-1">
-                <span className="text-[10px] md:text-xs font-bold text-slate-400 uppercase">Lompat ke Hal:</span>
-                <input 
-                  type="number" 
-                  min="1" 
-                  max={totalPages}
-                  value={jumpPageInput}
-                  onChange={(e) => setJumpPageInput(e.target.value)}
-                  className="w-10 h-7 md:w-16 md:h-10 bg-slate-50 rounded-lg border border-slate-200 text-center text-xs md:text-sm font-bold focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-none"
-                  placeholder="#"
-                />
-                <button 
-                  type="submit"
-                  disabled={!jumpPageInput}
-                  className="bg-slate-900 text-[#D4AF37] h-7 px-3 md:h-10 md:px-6 rounded-lg text-[9px] md:text-xs font-black uppercase hover:bg-slate-800 transition-colors disabled:opacity-50"
-                >
-                  Go
-                </button>
-             </form>
+        {/* LOADING INDICATOR & END MESSAGE */}
+        {isLoadingMore && (
+          <div className="flex justify-center mt-8 md:mt-12 animate-slide-up">
+            <div className="flex items-center gap-2 bg-white border border-slate-200 text-slate-700 px-6 py-3 rounded-full shadow-sm"><Loader2 size={16} className="animate-spin text-[#D4AF37]"/><span className="font-black text-[10px] md:text-xs uppercase tracking-widest">Memuat Unit...</span></div>
           </div>
         )}
+        {!hasMore && displayedRooms.length > itemsPerPage && (
+          <div className="text-center mt-8 md:mt-12 opacity-40"><p className="text-[10px] md:text-xs font-black uppercase tracking-widest">Akhir dari Daftar</p></div>
+        )}
+
       </section>
 
-      {/* FOOTER: Mode Aman (Anti-Crash) untuk TikTok & IG In-App Browser */}
+      {/* FOOTER */}
       <footer className="bg-slate-900 text-white p-6 mx-4 rounded-[40px] mb-8 shadow-2xl relative overflow-hidden md:max-w-6xl md:mx-auto md:p-12 md:rounded-[48px] md:mb-12">
         <div className="relative z-10 md:grid md:grid-cols-12 md:gap-12 md:items-start">
           
@@ -545,7 +489,7 @@ const HomePage = () => {
       </footer>
 
       
-      {/* TOMBOL WA MELAYANG (Mobile & Desktop Tetap Ada) */}
+      {/* TOMBOL WA MELAYANG */}
       <div className="fixed bottom-6 left-0 right-0 px-6 z-40 md:left-auto md:right-6 md:w-96 md:px-0">
         <div onClick={() => handleWaClick("general")} className="bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-2xl rounded-[24px] p-5 flex justify-between items-center max-w-sm mx-auto md:max-w-none md:mx-0 animate-bounce-subtle cursor-pointer active:scale-95 transition-transform border border-white/20">
           <div className="flex items-center gap-4">
@@ -561,7 +505,8 @@ const HomePage = () => {
     </div>
   );
 };
-// --- HALAMAN DETAIL KAMAR (UPDATE: DESKTOP DUAL PANE LAYOUT, MOBILE 100% ASLI) ---
+
+// --- HALAMAN DETAIL KAMAR ---
 const UnitDetailPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -572,7 +517,6 @@ const UnitDetailPage = () => {
   const [touchStart, setTouchStart] = useState(null);
   const [pullY, setPullY] = useState(0);
 
-  // Logic 1: Cari data kamar
   useEffect(() => {
     const room = roomsData.find(r => r.slug === slug);
     if (room) {
@@ -582,34 +526,24 @@ const UnitDetailPage = () => {
     }
   }, [slug, navigate]);
 
-  // Logic 2: Ambil Ref Code
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     const ref = queryParams.get('ref');
     if (ref) setRefCode(ref);
   }, []);
 
-  // LOGIKA BACK BUTTON (CERDAS + FILTER AWARE)
   const handleBack = () => {
     if (window.history.state && window.history.state.idx > 0) {
       navigate(-1);
     } else {
       if (selectedRoom) {
-        const filteredRooms = roomsData.filter(r => r.type === selectedRoom.type);
-        const roomIndex = filteredRooms.findIndex(r => r.slug === slug);
-        
-        // Cek target halaman (Desktop 6, Mobile 3)
-        const itemsPerPg = window.innerWidth >= 768 ? 6 : 3;
-        const targetPage = roomIndex !== -1 ? Math.ceil((roomIndex + 1) / itemsPerPg) : 1; 
-        
-        navigate(`/?filter=${selectedRoom.type}&page=${targetPage}`, { replace: true });
+        navigate(`/?filter=${selectedRoom.type}`, { replace: true });
       } else {
         navigate('/', { replace: true });
       }
     }
   };
 
-  // Logic 3: Handle Swipe Gesture (Mobile)
   const onTouchStart = (e) => {
     const scrollTop = e.currentTarget.scrollTop;
     if (scrollTop === 0) {
@@ -656,16 +590,14 @@ const UnitDetailPage = () => {
         <meta name="description" content={`Sewa ${selectedRoom.name} Sentul Tower. Fasilitas: ${selectedRoom.specs.map(s=>s.text).join(', ')}. Harga mulai ${selectedRoom.startFrom}.`} />
       </Helmet>
 
-      {/* MODAL WRAPPER: Mobile Bawah, Desktop Tengah Layar */}
+      {/* MODAL WRAPPER */}
       <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-50 md:items-center md:bg-slate-900/80 md:backdrop-blur-sm md:p-6">
-        {/* Background Overlay Mobile */}
         <div 
           className="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity duration-300 md:hidden" 
           style={{ opacity: 1 - (pullY / 1000) }}
           onClick={handleBack} 
         ></div>
         
-        {/* Container Utama: Mobile Modal, Desktop Kartu Lebar */}
         <div 
           className="bg-white w-full max-w-md rounded-t-[40px] relative z-10 p-7 animate-slide-up overflow-y-auto max-h-[95vh] h-[95vh] no-scrollbar shadow-2xl transition-transform duration-200 ease-out md:max-w-6xl md:h-auto md:max-h-[90vh] md:rounded-[48px] md:p-10 md:shadow-2xl"
           style={{ transform: `translateY(${pullY}px)` }} 
@@ -688,10 +620,10 @@ const UnitDetailPage = () => {
             <div className="w-20 md:hidden"></div> 
           </div>
           
-          {/* PEMBAGIAN LAYOUT DESKTOP (DUAL PANE) */}
+          {/* PEMBAGIAN LAYOUT DESKTOP */}
           <div className="md:grid md:grid-cols-2 md:gap-12 md:items-start">
             
-            {/* KOLOM KIRI: Slider Gambar */}
+            {/* KOLOM KIRI */}
             <div className="relative mb-6 md:mb-0 md:sticky md:top-0">
                <ImageSlider images={selectedRoom.images} heightClass="h-72 md:h-[450px]" roundedClass="rounded-[32px] md:rounded-[40px]" altPrefix={`Detail ${selectedRoom.name} - ${selectedRoom.floorLevel}`} />
 
@@ -700,7 +632,7 @@ const UnitDetailPage = () => {
                </div>
             </div>
             
-            {/* KOLOM KANAN: Informasi */}
+            {/* KOLOM KANAN */}
             <div className="flex flex-col md:pb-8">
               <h1 className="text-2xl md:text-4xl lg:text-5xl font-black text-slate-900 uppercase tracking-tighter mb-2 tracking-tight">{selectedRoom.name}</h1>
               <p className="text-slate-500 text-sm md:text-base mb-8 leading-relaxed font-medium md:max-w-md">{selectedRoom.description}</p>
@@ -793,7 +725,6 @@ const App = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/unit/:slug" element={<UnitDetailPage />} />
-        {/* Route penangkap keyword SEO (Harus ditaruh paling bawah) */}
         <Route path="/:seoSlug" element={<DynamicLandingPage />} />
       </Routes>
       <Analytics />
