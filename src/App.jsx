@@ -512,6 +512,7 @@ const UnitDetailPage = () => {
   const navigate = useNavigate();
   const [selectedRoom, setSelectedRoom] = useState(null);
   const waNumber = "6283830033717";
+  const mapsLink = "https://share.google/490MII2W8A99899m7";
   const [refCode, setRefCode] = useState("");
 
   const [touchStart, setTouchStart] = useState(null);
@@ -575,6 +576,9 @@ const UnitDetailPage = () => {
     
     switch (messageType) {
       case "booking": text = `Halo, saya tertarik dengan unit ${roomName} di Apartemen Sentul Tower.${refTag}`; break;
+      case "chat": text = `Halo, saya mau tanya-tanya tentang sewa unit ${selectedRoom?.name} di Apartemen Sentul Tower.${refTag}`; break;
+      case "key": text = `Halo, saya sudah sampai di lokasi dan ingin AMBIL KUNCI untuk unit ${selectedRoom?.name}.${refTag}`; break;
+      case "payment": text = `Halo, saya ingin melakukan PEMBAYARAN DI TEMPAT.${refTag}`; break;
       default: text = `Halo, saya mau tanya sewa Apartemen Sentul Tower.${refTag}`;
     }
     window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`, '_blank');
@@ -688,6 +692,33 @@ const UnitDetailPage = () => {
                     </div>
                   ))}
                 </div>
+              </div>
+
+              {/* TATA CARA CHECK-IN / ORDER MUDAH */}
+              <div className="mb-8">
+                 <div className="flex items-center gap-3 mb-6">
+                    <div className="h-[2px] bg-slate-100 flex-1"></div>
+                    <h4 className="text-[11px] md:text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Cara Order Mudah</h4>
+                    <div className="h-[2px] bg-slate-100 flex-1 md:hidden"></div>
+                 </div>
+                 <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                    <div onClick={() => handleWaClick("chat")} className="bg-slate-800 p-4 rounded-2xl border border-slate-700 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-700 active:scale-95 transition-all">
+                       <MessageCircle className="text-[#D4AF37] mb-2" size={24} />
+                       <span className="text-[10px] font-bold text-slate-300 uppercase text-center">1. Chat WA</span>
+                    </div>
+                    <a href={mapsLink} target="_blank" rel="noopener noreferrer" className="bg-slate-800 p-4 rounded-2xl border border-slate-700 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-700 active:scale-95 transition-all">
+                       <MapPin className="text-[#D4AF37] mb-2" size={24} />
+                       <span className="text-[10px] font-bold text-slate-300 uppercase text-center">2. Ke Lokasi</span>
+                    </a>
+                    <div onClick={() => handleWaClick("key")} className="bg-slate-800 p-4 rounded-2xl border border-slate-700 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-700 active:scale-95 transition-all">
+                       <Key className="text-[#D4AF37] mb-2" size={24} />
+                       <span className="text-[10px] font-bold text-slate-300 uppercase text-center">3. Ambil Kunci</span>
+                    </div>
+                    <div onClick={() => handleWaClick("payment")} className="bg-slate-800 p-4 rounded-2xl border border-slate-700 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-700 active:scale-95 transition-all">
+                       <Wallet className="text-[#D4AF37] mb-2" size={24} />
+                       <span className="text-[10px] font-bold text-slate-300 uppercase text-center">4. Bayar Tujuan</span>
+                    </div>
+                 </div>
               </div>
 
               {/* Tombol Action */}
