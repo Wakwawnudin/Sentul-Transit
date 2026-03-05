@@ -390,6 +390,15 @@ export const roomsData = realUnits.map((unit, index) => {
     finalStartFrom = add50kStart(template.startFrom);
   }
 
+  // 👇 OVERRIDE KHUSUS 2 BEDROOM DELUXE (9 Jam = 500k, 12 Jam = 600k)
+  if (unit.type === '2BR' && unit.floor.toLowerCase().includes('deluxe')) {
+    finalTransit = finalTransit.map(item => {
+      if (item.label === '9 Jam') return { ...item, price: 'Rp 500.000' };
+      if (item.label === '12 Jam') return { ...item, price: 'Rp 600.000' };
+      return item;
+    });
+  }
+
   return {
     ...template,
     id: uniqueId,
