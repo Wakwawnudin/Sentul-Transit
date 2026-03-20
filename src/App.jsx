@@ -603,25 +603,40 @@ const UnitDetailPage = () => {
         ></div>
         
         <div 
-          className="bg-white w-full max-w-md rounded-t-[40px] relative z-10 p-7 animate-slide-up overflow-y-auto max-h-[95vh] h-[95vh] no-scrollbar shadow-2xl transition-transform duration-200 ease-out md:max-w-6xl md:h-auto md:max-h-[90vh] md:rounded-[48px] md:p-10 md:shadow-2xl"
+          className="bg-white w-full max-w-md rounded-t-[40px] relative z-10 p-7 animate-slide-up overflow-y-auto overflow-x-hidden max-h-[95vh] h-[95vh] no-scrollbar shadow-2xl transition-transform duration-200 ease-out md:max-w-6xl md:h-auto md:max-h-[90vh] md:rounded-[48px] md:p-10 md:shadow-2xl"
           style={{ transform: `translateY(${pullY}px)` }} 
           onTouchStart={onTouchStart}
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
         >
           
-          <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6 md:hidden"></div>
+          {/* ORNAMENT BACKGROUND SHAPES (Modern Look) */}
+          <div className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96 bg-gradient-to-br from-[#D4AF37]/15 to-transparent rounded-full blur-3xl -z-10 transform translate-x-1/3 -translate-y-1/4 pointer-events-none"></div>
+          <div className="absolute bottom-1/4 left-0 w-80 h-80 bg-gradient-to-tr from-slate-200/50 to-transparent rounded-full blur-3xl -z-10 transform -translate-x-1/3 pointer-events-none"></div>
 
-          {/* Header Navigasi */}
-          <div className="flex items-center justify-between mb-6 md:mb-10">
+          <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6 md:hidden relative z-20"></div>
+
+          {/* Header Navigasi & Branding */}
+          <div className="flex items-center justify-between mb-6 md:mb-10 relative z-20">
             <button 
               onClick={handleBack} 
-              className="flex items-center gap-1.5 text-slate-900 font-black text-[11px] md:text-sm uppercase tracking-widest bg-slate-100 px-4 py-2.5 md:px-6 md:py-3 rounded-2xl active:scale-95 transition-all hover:bg-slate-200"
+              className="flex items-center gap-1.5 text-slate-900 font-black text-[11px] md:text-sm uppercase tracking-widest bg-white border border-slate-200 shadow-sm px-4 py-2.5 md:px-6 md:py-3 rounded-2xl active:scale-95 transition-all hover:border-[#D4AF37] hover:text-[#D4AF37]"
             >
               <ChevronLeft size={18} className="md:w-5 md:h-5" /> Kembali
             </button>
-            <div className="w-12 h-1.5 bg-transparent md:hidden"></div> 
-            <div className="w-20 md:hidden"></div> 
+            
+            {/* LOGO & NAMA BRAND AREA */}
+            <div className="flex items-center gap-2 md:gap-3">
+              <div className="flex flex-col text-right justify-center">
+                <span className="font-black text-[9px] md:text-[11px] text-slate-400 tracking-[0.2em] leading-tight uppercase">Apartemen</span>
+                <span className="font-black text-[11px] md:text-sm text-[#D4AF37] tracking-widest leading-tight uppercase -mt-0.5">Sentul Tower</span>
+              </div>
+              <img 
+                src="https://ik.imagekit.io/x06namgbin/Sentul%202%20bedroom/1770491932595.png" 
+                alt="Logo Apartemen Sentul Tower" 
+                className="h-8 md:h-11 w-auto object-contain drop-shadow-sm" 
+              />
+            </div>
           </div>
           
           {/* PEMBAGIAN LAYOUT DESKTOP */}
